@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -42,4 +44,29 @@ public class User extends AbstractEntity {
 	@Lob
 	@Size(max = 512000, message = "{photo.maxSize}")
 	private byte[] photo;
+	
+	@PastOrPresent(message = "{date.pastOrPresent}")
+	@Column
+	private LocalDateTime created;
+	
+	@PastOrPresent(message = "{date.pastOrPresent}")
+	@Column
+	private LocalDateTime updated;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "updated_by_user_id")
+	private User updatedBy;
+	
+	@OneToMany(mappedBy = "updatedBy")
+	private Set<Post> postsUpdated;
+	
+	@PrePersist
+	public void prePersist() {
+		this.created = LocalDateTime.now();
+	}
+	
+	@PreUpdate
+	public void preUpdate() {
+		this.updated = LocalDateTime.now();
+	}
 }
