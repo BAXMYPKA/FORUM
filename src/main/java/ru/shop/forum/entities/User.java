@@ -1,16 +1,17 @@
 package ru.shop.forum.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
+import java.time.LocalDate;
 
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "Users")
+@Table(name = "Users", schema = "FORUM")
 public class User extends AbstractEntity {
 	
 	@Transient
@@ -18,9 +19,27 @@ public class User extends AbstractEntity {
 	
 	@Id
 	@GeneratedValue(generator = "IdGenerator", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "IdGenerator", sequenceName = "user_id", initialValue = 1000)
-	private long id;
+	@SequenceGenerator(name = "IdGenerator", sequenceName = "user_id", schema = "FORUM", initialValue = 1000)
+	private Long id;
 	
-	@Column(unique = true)
+	@NonNull
+	@NotEmpty(message = "{field.notEmpty}")
+	@Email(message = "{email.notValid}")
+	@Column(unique = true, nullable = false)
 	private String email;
+	
+	@NonNull
+	@Column(nullable = false)
+	private String firstName;
+	
+	@Column
+	private String lastName;
+	
+	@Past(message = "{date.past}")
+	private LocalDate birthdate;
+	
+	@Column
+	@Lob
+	@Size(max = 512000, message = "{photo.maxSize}")
+	private byte[] photo;
 }

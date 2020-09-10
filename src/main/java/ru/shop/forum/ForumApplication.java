@@ -8,13 +8,14 @@ import org.springframework.context.annotation.PropertySources;
 
 @SpringBootApplication
 @PropertySources(
-		@PropertySource(encoding = "UTF-8", value = "classpath:application.properties")
+	value =
+		{@PropertySource(encoding = "UTF-8", value = "classpath:application.properties")}
 )
-//@EntityScan(basePackages = "ru.shop.forum.entities")
+@EntityScan(basePackages = "ru.shop.forum.entities")
 public class ForumApplication {
-
+	
 	public static void main(String[] args) {
 		SpringApplication.run(ForumApplication.class, args);
 	}
-
+	
 }

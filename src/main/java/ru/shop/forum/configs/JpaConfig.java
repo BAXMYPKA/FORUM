@@ -15,7 +15,6 @@ public class JpaConfig {
 	
 	@Bean(initMethod = "start", destroyMethod = "stop")
 	public Server h2Server() throws SQLException {
-		System.out.println("###################"+h2port);
 		return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", h2port);
 	}
 }
