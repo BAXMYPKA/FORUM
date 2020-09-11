@@ -1,6 +1,7 @@
 package ru.shop.forum.entities;
 
 import lombok.*;
+import ru.shop.forum.security.Roles;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(of = {"id", "email", "firstName"}, callSuper = false)
 @Getter
 @Setter
 @Entity
@@ -44,6 +46,10 @@ public class User extends AbstractEntity {
 	@Lob
 	@Size(max = 512000, message = "{photo.maxSize}")
 	private byte[] photo;
+	
+	@Column
+//	@Convert(converter = RolesConverter.class) //No need if "autoApply=true" in the @Converter
+	private Roles role;
 	
 	@PastOrPresent(message = "{date.pastOrPresent}")
 	@Column

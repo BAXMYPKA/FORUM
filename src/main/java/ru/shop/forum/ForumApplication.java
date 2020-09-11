@@ -11,7 +11,6 @@ import org.springframework.context.annotation.PropertySources;
 	value =
 		{@PropertySource(encoding = "UTF-8", value = "classpath:application.properties")}
 )
-@EntityScan(basePackages = "ru.shop.forum.entities")
 public class ForumApplication {
 	
 	public static void main(String[] args) {

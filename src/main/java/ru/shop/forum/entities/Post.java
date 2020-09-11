@@ -1,8 +1,6 @@
 package ru.shop.forum.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
@@ -12,6 +10,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -26,11 +25,13 @@ public class Post {
 	@SequenceGenerator(name = "IdGenerator", sequenceName = "post_id", schema = "FORUM", initialValue = 1000)
 	private Long id;
 	
+	@NonNull
 	@NotEmpty(message = "{field.notEmpty}")
 	@Size(min = 7, max = 100, message = "{postName.length}")
 	@Column(nullable = false, unique = true, length = 100)
 	private String name;
 	
+	@NonNull
 	@NotEmpty(message = "{field.notEmpty}")
 	@Size(min = 5, max = 1000, message = "{postText.length}")
 	@Column(nullable = false, length = 1000)
@@ -48,10 +49,12 @@ public class Post {
 	@JoinColumn(name = "updated_by_user_id")
 	private User updatedBy;
 	
+	@NonNull
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "forum_section_id")
 	private ForumSection forumSection;
 	
+	@NonNull
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "user_id")
 	private User user;

@@ -11,11 +11,12 @@ import java.util.Set;
  */
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(of = {"id", "name"}, callSuper = false)
 @Getter
 @Setter
 @Entity(name = "forum_section")
 @Table(name = "Forum_Sections", schema = "FORUM")
-public class ForumSection {
+public class ForumSection extends AbstractEntity {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;
