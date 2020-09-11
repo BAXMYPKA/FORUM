@@ -11,7 +11,6 @@ import java.util.Set;
 
 @NoArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(of = {"id", "email", "firstName"}, callSuper = false)
 @Getter
 @Setter
 @Entity
@@ -20,11 +19,6 @@ public class User extends AbstractEntity {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;
-	
-	@Id
-	@GeneratedValue(generator = "IdGenerator", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "IdGenerator", sequenceName = "user_id", schema = "FORUM", initialValue = 1000)
-	private Long id;
 	
 	@NonNull
 	@NotEmpty(message = "{field.notEmpty}")
@@ -47,32 +41,16 @@ public class User extends AbstractEntity {
 	@Size(max = 512000, message = "{photo.maxSize}")
 	private byte[] photo;
 	
+	@Column(name = "self_description", length = 35)
+	private String selfDescription;
+	
+	/**
+	 * Security role. Default is {@link Roles#USER}
+	 */
 	@Column
 //	@Convert(converter = RolesConverter.class) //No need if "autoApply=true" in the @Converter
-	private Roles role;
-	
-	@PastOrPresent(message = "{date.pastOrPresent}")
-	@Column
-	private LocalDateTime created;
-	
-	@PastOrPresent(message = "{date.pastOrPresent}")
-	@Column
-	private LocalDateTime updated;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "updated_by_user_id")
-	private User updatedBy;
+	private Roles role = Roles.USER;
 	
 	@OneToMany(mappedBy = "updatedBy")
-	private Set<Post> postsUpdated;
-	
-	@PrePersist
-	public void prePersist() {
-		this.created = LocalDateTime.now();
-	}
-	
-	@PreUpdate
-	public void preUpdate() {
-		this.updated = LocalDateTime.now();
-	}
+	private Set<Post> postsUpdatedBy;
 }

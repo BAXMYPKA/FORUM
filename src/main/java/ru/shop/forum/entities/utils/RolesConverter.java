@@ -1,4 +1,4 @@
-package ru.shop.forum.entities;
+package ru.shop.forum.entities.utils;
 
 import ru.shop.forum.security.Roles;
 

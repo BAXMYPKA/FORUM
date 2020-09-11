@@ -9,24 +9,16 @@ import java.util.Set;
  * The forum subject section.
  * If {{@link #getParent_section()}} is NULL - this is one of the root {@link ForumSection}
  */
-@NoArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(of = {"id", "name"}, callSuper = false)
 @Getter
 @Setter
 @Entity(name = "forum_section")
 @Table(name = "Forum_Sections", schema = "FORUM")
 public class ForumSection extends AbstractEntity {
-	
+
 	@Transient
 	protected static final long SerialVersionUID = 1L;
 	
-	@Id
-	@GeneratedValue(generator = "IdGenerator", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "IdGenerator", sequenceName = "section_id", schema = "FORUM", initialValue = 1000)
-	private Long id;
-	
-	@NonNull
 	@Column(nullable = false, unique = true)
 	private String name;
 	
