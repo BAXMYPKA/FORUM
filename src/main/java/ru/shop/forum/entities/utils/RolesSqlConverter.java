@@ -7,7 +7,7 @@ import javax.persistence.Converter;
 import java.util.NoSuchElementException;
 
 @Converter(autoApply = true)
-public class RolesConverter implements AttributeConverter<Roles, String> {
+public class RolesSqlConverter implements AttributeConverter<Roles, String> {
 	
 	/**
 	 * @param roles

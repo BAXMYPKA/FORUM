@@ -1,6 +1,7 @@
 package ru.shop.forum.entities;
 
 import lombok.*;
+import ru.shop.forum.entities.utils.Sex;
 import ru.shop.forum.security.Roles;
 
 import javax.persistence.*;
@@ -26,6 +27,9 @@ public class User extends AbstractEntity {
 	@Column(unique = true, nullable = false)
 	private String email;
 	
+	@Column
+	private String password;
+	
 	@NonNull
 	@Column(nullable = false)
 	private String firstName;
@@ -35,6 +39,10 @@ public class User extends AbstractEntity {
 	
 	@Past(message = "{date.past}")
 	private LocalDate birthdate;
+	
+	@Column(length = 6)
+	//	@Convert(converter = SexSqlConverter.class) //No need if "autoApply=true" in the @Converter
+	private Sex sex;
 	
 	@Column
 	@Lob
@@ -47,10 +55,19 @@ public class User extends AbstractEntity {
 	/**
 	 * Security role. Default is {@link Roles#USER}
 	 */
-	@Column
+	@Column(length = 35)
 //	@Convert(converter = RolesConverter.class) //No need if "autoApply=true" in the @Converter
 	private Roles role = Roles.USER;
 	
 	@OneToMany(mappedBy = "updatedBy")
 	private Set<Post> postsUpdatedBy;
+	
+	@OneToOne(optional = false, orphanRemoval = true, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private UserForumSettings userForumSettings = new UserForumSettings();
+	
+	@OneToMany(mappedBy = "fromUser")
+	private Set<PrivateMessage> privateMessagesFrom;
+	
+	@ManyToMany(mappedBy = "toUsers")
+	private Set<PrivateMessage> privateMessagesTo;
 }

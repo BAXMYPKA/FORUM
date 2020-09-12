@@ -22,7 +22,7 @@ public class Post extends AbstractEntity {
 	@NotEmpty(message = "{field.notEmpty}")
 	@Size(min = 7, max = 100, message = "{postName.length}")
 	@Column(nullable = false, unique = true, length = 100)
-	private String name;
+	private String title;
 	
 	@NotEmpty(message = "{field.notEmpty}")
 	@Size(min = 5, max = 1000, message = "{postText.length}")

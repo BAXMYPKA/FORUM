@@ -6,13 +6,13 @@ import javax.persistence.*;
 import java.util.Set;
 
 /**
- * The forum subject section.
- * If {{@link #getParent_section()}} is NULL - this is one of the root {@link ForumSection}
+ * The forum's subjects sections. Can contain other {@link ForumSection}s or {@link Post}s if {@link #postsContainer} is true;
+ * If {{@link #parentSection}} is NULL - this is one of the root {@link ForumSection}
  */
 @RequiredArgsConstructor
 @Getter
 @Setter
-@Entity(name = "forum_section")
+@Entity
 @Table(name = "Forum_Sections", schema = "FORUM")
 public class ForumSection extends AbstractEntity {
 
@@ -25,10 +25,16 @@ public class ForumSection extends AbstractEntity {
 	@Column
 	private String description;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	/**
+	 * Whether it can contain {@link Post}s or serves only as the subject section.
+	 */
+	@Column
+	private Boolean postsContainer;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_section_id", referencedColumnName = "id")
-	private ForumSection parent_section;
+	private ForumSection parentSection;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "parent_section")
-	private Set<ForumSection> subsections;
+	@OneToMany(mappedBy = "parentSection")
+	private Set<ForumSection> childSections;
 }
