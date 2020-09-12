@@ -36,7 +36,7 @@ public abstract class AbstractEntity implements Serializable {
 	
 	@EqualsAndHashCode.Include
 	@ManyToOne
-	@JoinColumn(name = "created_by_user_id")
+	@JoinColumn(name = "created_by_user_id", updatable = false)
 	private User createdBy;
 	
 	@EqualsAndHashCode.Include

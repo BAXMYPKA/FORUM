@@ -1,15 +1,19 @@
 package ru.shop.forum.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.shop.forum.entities.AbstractEntity;
 import ru.shop.forum.repositories.EntityRepository;
 
 @Service
-public abstract class EntityService<T extends AbstractEntity> {
+public abstract class AbstractService<T extends AbstractEntity, S extends EntityRepository<T, Long>> {
 	
-	@Autowired
-	protected EntityRepository<T, Long> repository;
+	protected S repository;
+	
+	/**
+	 * @param repository If a special {@link EntityRepository} for a subclass is needed it must be included here.
+	 *                   Otherwise if no specific repository is created just the typed {@link EntityRepository} will be enough here
+	 */
+	protected abstract void setRepository(S repository);
 	
 	protected T getOne(Long id) {
 		return repository.getOne(id);

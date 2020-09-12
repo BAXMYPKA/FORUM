@@ -2,6 +2,7 @@ package ru.shop.forum.entities;
 
 import lombok.*;
 import ru.shop.forum.entities.utils.Sex;
+import ru.shop.forum.entities.utils.UniqueNickname;
 import ru.shop.forum.security.Roles;
 
 import javax.persistence.*;
@@ -27,20 +28,34 @@ public class User extends AbstractEntity {
 	@Column(unique = true, nullable = false)
 	private String email;
 	
-	@Column
+	//TODO: to salt
+	@Column(nullable = false)
 	private String password;
 	
+	@UniqueNickname(message = "{user.nonUniqueNickname}")
 	@NonNull
-	@Column(nullable = false)
+	@NotEmpty(message = "{field.notEmpty}")
+	@Column(updatable = false, nullable = false, unique = true)
+	private String nickName;
+	
+	@Size(min = 2, max = 35, message = "{user.nameLength}")
+	@Column(length = 35)
 	private String firstName;
 	
+	@Size(min = 2, max = 35, message = "{user.nameLength}")
 	@Column
 	private String lastName;
 	
 	@Past(message = "{date.past}")
 	private LocalDate birthdate;
 	
-	@Column(length = 6)
+	/**
+	 * Accepts possible English variations like 'F', 'fm', 'fem', 'female' etc and Russian 'М', 'Ж', 'муж', 'жен' etc.
+	 */
+	//TODO: to do a pattern
+//	@Pattern()
+	@Size(min = 1, max = 8, message = "{user.sex}")
+	@Column(length = 8)
 	//	@Convert(converter = SexSqlConverter.class) //No need if "autoApply=true" in the @Converter
 	private Sex sex;
 	
@@ -49,12 +64,14 @@ public class User extends AbstractEntity {
 	@Size(max = 512000, message = "{photo.maxSize}")
 	private byte[] photo;
 	
-	@Column(name = "self_description", length = 35)
+	@Size(max = 50, message = "{user.selfDescriptionLength}")
+	@Column(name = "self_description", length = 50)
 	private String selfDescription;
 	
 	/**
 	 * Security role. Default is {@link Roles#USER}
 	 */
+	@Size(max = 35, message = "{user.RoleLength}")
 	@Column(length = 35)
 //	@Convert(converter = RolesConverter.class) //No need if "autoApply=true" in the @Converter
 	private Roles role = Roles.USER;

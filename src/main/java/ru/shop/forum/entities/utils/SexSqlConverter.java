@@ -2,6 +2,7 @@ package ru.shop.forum.entities.utils;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Converter(autoApply = true)
@@ -22,9 +23,11 @@ public class SexSqlConverter implements AttributeConverter<Sex, String> {
 	 */
 	@Override
 	public Sex convertToEntityAttribute(String s) {
-		for (Sex sex : Sex.values()) {
-			if (sex.name().equalsIgnoreCase(Objects.requireNonNullElse(s, "male"))) return sex;
+		try {
+			return Sex.getSexByName(s);
+		} catch (NoSuchElementException e) {
+			//TODO: to logout
+			return Sex.MALE;
 		}
-		return Sex.MALE;
 	}
 }
