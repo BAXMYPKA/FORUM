@@ -5,7 +5,7 @@ import ru.shop.forum.entities.AbstractEntity;
 import ru.shop.forum.repositories.EntityRepository;
 
 @Service
-public abstract class AbstractService<T extends AbstractEntity, S extends EntityRepository<T, Long>> {
+public abstract class AbstractEntityService<T extends AbstractEntity, S extends EntityRepository<T, Long>> {
 	
 	protected S repository;
 	
@@ -15,34 +15,34 @@ public abstract class AbstractService<T extends AbstractEntity, S extends Entity
 	 */
 	protected abstract void setRepository(S repository);
 	
-	protected T getOne(Long id) {
+	public T getOne(Long id) {
 		return repository.getOne(id);
 	}
 	
-	protected void delete(T t) {
+	public void delete(T t) {
 		if (t == null) return;
 		repository.delete(t);
 	}
 	
-	protected void deleteById(Long id) {
+	public void deleteById(Long id) {
 		if (id == null) return;
 		repository.deleteById(id);
 	}
 	
-	protected void deleteAll() {
+	public void deleteAll() {
 		repository.deleteAll();
 	}
 	
-	protected void deleteAll(Iterable<T> entities) {
+	public void deleteAll(Iterable<T> entities) {
 		if (entities == null) return;
 		repository.deleteAll(entities);
 	}
 	
-	protected Long count() {
+	public Long count() {
 		return repository.count();
 	}
 	
-	protected Boolean existById(Long id) {
+	public Boolean existById(Long id) {
 		if (id == null) return false;
 		return repository.existsById(id);
 	}

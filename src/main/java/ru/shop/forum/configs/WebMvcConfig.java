@@ -10,12 +10,4 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 	
-	//	public MessageSource messageSource() {
-//		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-//		messageSource.setBasenames();
-//	}
-//	public LocalValidatorFactoryBean getValidator() {
-//		LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-//		validator.getValidator();
-//	}
 }

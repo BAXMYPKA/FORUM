@@ -21,6 +21,7 @@ public class ForumSection extends AbstractEntity {
 	@Transient
 	protected static final long SerialVersionUID = 1L;
 	
+	//TODO: unique
 	@NotBlank(message = "{field.notEmpty}")
 	@Size(min = 3, max = 100, message = "{field.length3-100}")
 	@Column(nullable = false, unique = true)

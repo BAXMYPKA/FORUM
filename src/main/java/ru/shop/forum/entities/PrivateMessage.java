@@ -1,7 +1,9 @@
 package ru.shop.forum.entities;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -12,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "private_message", schema = "FORUM")
 public class PrivateMessage extends AbstractEntity {
-	
+
 	@Transient
 	protected static final long SerialVersionUID = 1L;
 	

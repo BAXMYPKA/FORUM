@@ -5,7 +5,7 @@ import ru.shop.forum.entities.Post;
 import ru.shop.forum.repositories.EntityRepository;
 
 @Service
-public class PostService extends AbstractService<Post, EntityRepository<Post, Long>> {
+public class PostService extends AbstractEntityService<Post, EntityRepository<Post, Long>> {
 	
 	@Override
 	protected void setRepository(EntityRepository<Post, Long> repository) {

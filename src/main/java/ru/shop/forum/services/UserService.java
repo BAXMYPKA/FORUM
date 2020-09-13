@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 import java.util.Objects;
 
 @Service
-public class UserService extends AbstractService<User, UserRepository> {
+public class UserService extends AbstractEntityService<User, UserRepository> {
 
 	@Transactional(value = Transactional.TxType.SUPPORTS)
 	public Boolean existsUserByNickName(String nickname) {

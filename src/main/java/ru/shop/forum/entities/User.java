@@ -30,6 +30,7 @@ public class User extends AbstractEntity {
 	private String email;
 	
 	//TODO: to salt
+	@Pattern(message = "{field.password}", regexp = "^[\\d\\w]{3,}$")
 	@Column(nullable = false)
 	private String password;
 	
@@ -62,14 +63,18 @@ public class User extends AbstractEntity {
 	//	@Convert(converter = SexSqlConverter.class) //No need if "autoApply=true" in the @Converter
 	private Sex sex;
 	
-	@Column
-	@Lob
-	@Size(max = 512000, message = "{photo.maxSize}")
-	private byte[] photo;
+//	@Column
+//	@Lob
+//	@Size(max = 512000, message = "{photo.maxSize}")
+//	private byte[] photo;
 	
 	@Size(max = 50, message = "{user.selfDescriptionLength}")
 	@Column(name = "self_description", length = 50)
 	private String selfDescription;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "avatar_id")
+	private ImgAvatar avatar;
 	
 	/**
 	 * Security role. Default is {@link Roles#USER}
