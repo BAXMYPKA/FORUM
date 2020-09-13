@@ -1,13 +1,13 @@
 package ru.shop.forum.entities;
 
-import lombok.*;
-import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Getter
@@ -28,6 +28,10 @@ public class Post extends AbstractEntity {
 	@Size(min = 5, max = 1000, message = "{postText.length}")
 	@Column(nullable = false, length = 1000)
 	private String text;
+	
+	@NotBlank(message = "{field.notEmpty}")
+	@Column(unique = true, nullable = false)
+	private String url;
 	
 	@ManyToOne( optional = false)
 	@JoinColumn(name = "forum_section_id")

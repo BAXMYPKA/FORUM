@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Getter
@@ -15,14 +16,16 @@ public class PrivateMessage extends AbstractEntity {
 	@Transient
 	protected static final long SerialVersionUID = 1L;
 	
+	@NotEmpty(message = "{field.notEmpty}")
 	@Column
 	private String title;
 	
+	@NotEmpty(message = "{field.notEmpty}")
 	@Column(length = 1000)
 	private String text;
 	
-	@Column
-	private Boolean read;
+//	@Column
+//	private Boolean read;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "from_user_id", updatable = false)

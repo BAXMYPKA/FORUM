@@ -1,6 +1,7 @@
 package ru.shop.forum.entities;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import ru.shop.forum.entities.utils.Sex;
 import ru.shop.forum.entities.utils.UniqueNickname;
 import ru.shop.forum.security.Roles;
@@ -46,14 +47,16 @@ public class User extends AbstractEntity {
 	@Column
 	private String lastName;
 	
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	@Past(message = "{date.past}")
+	@Column
 	private LocalDate birthdate;
 	
 	/**
 	 * Accepts possible English variations like 'F', 'fm', 'fem', 'female' etc and Russian 'М', 'Ж', 'муж', 'жен' etc.
 	 */
-	//TODO: to do a pattern
-//	@Pattern()
+	@Pattern(flags = {Pattern.Flag.CASE_INSENSITIVE}, message = "{user.sexPattern}",
+		  regexp = "(?i)^(m|M|ma|MA|male|f|fe|fem|female|м|М|му|МУ|муж|мужской|Мужской|мужчина|ж|Ж|жен|женский|Женский)$")
 	@Size(min = 1, max = 8, message = "{user.sex}")
 	@Column(length = 8)
 	//	@Convert(converter = SexSqlConverter.class) //No need if "autoApply=true" in the @Converter

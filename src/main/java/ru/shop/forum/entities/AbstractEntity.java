@@ -1,6 +1,7 @@
 package ru.shop.forum.entities;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.PastOrPresent;
@@ -25,11 +26,13 @@ public abstract class AbstractEntity implements Serializable {
 	private Long version;
 	
 	@EqualsAndHashCode.Include
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	@PastOrPresent(message = "{date.pastOrPresent}")
 	@Column
 	private LocalDateTime created;
 	
 	@EqualsAndHashCode.Include
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	@PastOrPresent(message = "{date.pastOrPresent}")
 	@Column
 	private LocalDateTime updated;

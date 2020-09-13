@@ -3,6 +3,8 @@ package ru.shop.forum.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 /**
@@ -19,6 +21,8 @@ public class ForumSection extends AbstractEntity {
 	@Transient
 	protected static final long SerialVersionUID = 1L;
 	
+	@NotBlank(message = "{field.notEmpty}")
+	@Size(min = 3, max = 100, message = "{field.length3-100}")
 	@Column(nullable = false, unique = true)
 	private String name;
 	
