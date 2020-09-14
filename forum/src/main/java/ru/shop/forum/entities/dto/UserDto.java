@@ -8,6 +8,10 @@ import ru.shop.forum.entities.utils.Sex;
 import ru.shop.forum.entities.utils.UniqueNickname;
 import ru.shop.forum.security.Roles;
 
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
@@ -57,5 +61,12 @@ public class UserDto extends AbstractDto {
 	private Roles role = Roles.USER;
 	
 	private ImgAvatar avatar;
+	
+	private Boolean enabled = true;
+	
+	private Boolean locked = false;
+	
+	private LocalDate lockedUntil;
+	
 	
 }

@@ -1,9 +1,11 @@
 package ru.shop.forum.security;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public enum Roles {
+public enum Roles implements GrantedAuthority {
 
 	ANONYMOUS,
 	USER,
@@ -23,5 +25,10 @@ public enum Roles {
 			}
 		}
 		throw new NoSuchElementException("The Role hasn't been found for name " + role);
+	}
+	
+	@Override
+	public String getAuthority() {
+		return this.name();
 	}
 }

@@ -1,0 +1,53 @@
+package ru.shop.security;
+
+import lombok.Data;
+import lombok.NonNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import ru.shop.forum.entities.User;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+@Data
+public class ShopUserDetails implements UserDetails {
+	
+	@NonNull
+	private User user;
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return new ArrayList<GrantedAuthority>(Collections.singletonList(this.user.getRole()));
+	}
+	
+	@Override
+	public String getPassword() {
+		return this.user.getPassword();
+	}
+	
+	@Override
+	public String getUsername() {
+		return this.user.getNickName();
+	}
+	
+	@Override
+	public boolean isAccountNonExpired() {
+		return this.user.isEnabled();
+	}
+	
+	@Override
+	public boolean isAccountNonLocked() {
+		return this.user.isLocked();
+	}
+	
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return this.user.isLocked();
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return this.user.isEnabled();
+	}
+}

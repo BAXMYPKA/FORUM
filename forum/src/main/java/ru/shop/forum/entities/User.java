@@ -2,6 +2,8 @@ package ru.shop.forum.entities;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import ru.shop.forum.entities.utils.Sex;
 import ru.shop.forum.entities.utils.UniqueNickname;
 import ru.shop.forum.security.Roles;
@@ -9,7 +11,7 @@ import ru.shop.forum.security.Roles;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -18,7 +20,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "Users", schema = "FORUM")
-public class User extends AbstractEntity {
+public class User extends AbstractEntity  {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;
@@ -76,6 +78,15 @@ public class User extends AbstractEntity {
 	@JoinColumn(name = "avatar_id")
 	private ImgAvatar avatar;
 	
+	@Column
+	private boolean enabled = true;
+	
+	@Column
+	private boolean locked = false;
+	
+	@Column(name = "locked_until")
+	private LocalDate lockedUntil;
+	
 	/**
 	 * Security role. Default is {@link Roles#USER}
 	 */
@@ -95,4 +106,5 @@ public class User extends AbstractEntity {
 	
 	@ManyToMany(mappedBy = "toUsers")
 	private Set<PrivateMessage> privateMessagesTo;
+	
 }
