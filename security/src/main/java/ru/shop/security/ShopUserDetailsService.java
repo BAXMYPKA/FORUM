@@ -7,15 +7,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.shop.forum.entities.User;
 import ru.shop.forum.services.UserService;
+import ru.shop.security.configs.SecurityConfig;
 
 import javax.persistence.NoResultException;
 import java.util.Objects;
 
-@Service
 public class ShopUserDetailsService implements UserDetailsService {
 	
-	@Autowired
 	private UserService userService;
+	
+	/**
+	 * @param userService bean ss included in {@link SecurityConfig#userDetailsService()}
+	 */
+	public ShopUserDetailsService(UserService userService) {
+		this.userService = userService;
+	}
 	
 	/**
 	 * @param nickNameOrEmail {@link User#getNickName()} or {@link User#getEmail()}

@@ -6,12 +6,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.shop.forum.entities.User;
 
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
 @Data
 public class ShopUserDetails implements UserDetails {
+	
+	@Transient
+	protected static final long SerialVersionUID = 1L;
 	
 	@NonNull
 	private User user;

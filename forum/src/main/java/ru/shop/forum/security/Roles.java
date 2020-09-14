@@ -9,7 +9,7 @@ public enum Roles implements GrantedAuthority {
 
 	ANONYMOUS,
 	USER,
-	BLOCKED_USER,
+	LOCKED_USER,
 	MODERATOR,
 	ADMIN;
 	
