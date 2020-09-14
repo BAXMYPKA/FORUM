@@ -1,11 +1,11 @@
-package ru.shop.forum.configs;
+package ru.shop.configs;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ForumApplicationConfig {
+public class ShopApplicationConfig {
 	
 	@Bean
 	public ModelMapper modelMapper() {

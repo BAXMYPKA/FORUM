@@ -8,16 +8,24 @@
 		<version>2.3.3.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	
 	<groupId>ru.shop</groupId>
-	<artifactId>forum</artifactId>
+	<artifactId>shop-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>shop.forum</name>
+	<name>shop</name>
+	<packaging>pom</packaging>
 	<description>Demo project for Spring Boot</description>
-
+	
+	<modules>
+		<module>shop-application</module>
+		<module>forum</module>
+		<module>security</module>
+	</modules>
+	
 	<properties>
 		<java.version>11</java.version>
 	</properties>
-
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

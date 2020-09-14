@@ -1,4 +1,4 @@
-package ru.shop.forum.configs;
+package ru.shop.configs;
 
 import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Value;

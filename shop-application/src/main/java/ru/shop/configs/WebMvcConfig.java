@@ -1,4 +1,4 @@
-package ru.shop.forum.configs;
+package ru.shop.configs;
 
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.context.MessageSource;
