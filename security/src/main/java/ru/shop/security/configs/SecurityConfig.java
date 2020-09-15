@@ -1,12 +1,17 @@
 package ru.shop.security.configs;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,8 +24,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.shop.forum.services.UserService;
 import ru.shop.security.ShopUserDetailsService;
 
+@Slf4j
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableConfigurationProperties(KeycloakServerProperties.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
@@ -62,6 +69,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return connector;
 	}
 	
+	@Bean
+	public ApplicationListener<ApplicationReadyEvent> onApplicationReadyEventListener(
+			ServerProperties serverProperties, KeycloakServerProperties keycloakServerProperties) {
+		return (evt) -> {
+			Integer port = serverProperties.getPort();
+			String keycloakContextPath = keycloakServerProperties.getContextPath();
+			log.warn("Embedded Keycloak started: http://localhost:{}{} to use keycloak",
+					port, keycloakContextPath);
+		};
+	}
 	@Configuration
 	public static class ForumSecurityConfig extends WebSecurityConfigurerAdapter {
 		
