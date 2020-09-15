@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
-import ru.shop.forum.entities.AbstractEntity;
+import ru.shop.forum.entities.AbstractForumEntity;
 import ru.shop.forum.entities.dto.AbstractDto;
 import ru.shop.forum.entities.dto.UserDto;
 import ru.shop.forum.repositories.EntityRepository;
@@ -16,7 +16,7 @@ import java.util.Objects;
 @RestController
 @Getter
 @Setter
-public abstract class AbstractForumRestController<T extends AbstractEntity, S extends EntityRepository<T, Long>> {
+public abstract class AbstractForumRestController<T extends AbstractForumEntity, S extends EntityRepository<T, Long>> {
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -24,14 +24,14 @@ public abstract class AbstractForumRestController<T extends AbstractEntity, S ex
 	@Autowired
 	private AbstractEntityService<T, S> entityService;
 	
-	protected Class<? extends AbstractEntity> entityClass;
+	protected Class<? extends AbstractForumEntity> entityClass;
 	
 	/**
-	 * The concrete subclass of the {@link AbstractEntity} must be set as {@code this.entityClass = <T extends AbstractEntity>.getClass}
+	 * The concrete subclass of the {@link AbstractForumEntity} must be set as {@code this.entityClass = <T extends AbstractEntity>.getClass}
 	 */
 	protected abstract void setEntityClass();
 	
-	protected AbstractEntity convertToEntity(AbstractDto abstractDto)
+	protected AbstractForumEntity convertToEntity(AbstractDto abstractDto)
 		  throws ClassCastException {
 		Objects.requireNonNull(abstractDto, "The AbstractDto subclass cannot be null!");
 		return entityClass.cast(modelMapper.map(abstractDto, entityClass));
@@ -53,7 +53,7 @@ public abstract class AbstractForumRestController<T extends AbstractEntity, S ex
 	}
 	
 	
-	protected AbstractDto convertToDto(AbstractEntity abstractEntity) {
+	protected AbstractDto convertToDto(AbstractForumEntity abstractEntity) {
 		switch (Objects.requireNonNull(abstractEntity.getClass().getSimpleName(), "The AbstractEntity subclass cannot be null!")) {
 			case "User":
 				return modelMapper.map(abstractEntity, UserDto.class);

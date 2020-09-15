@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.sql.SQLException;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "ru.shop.forum.repositories")
+@EnableJpaRepositories(basePackages = {"ru.shop.forum.repositories", "ru.shop.repositories"})
 @EnableTransactionManagement
-@EntityScan(basePackages = "ru.shop.forum.entities")
+@EntityScan(basePackages = {"ru.shop.forum.entities", "ru.shop.entities"})
 public class JpaConfig {
 	
 	@Value("${h2.port}")

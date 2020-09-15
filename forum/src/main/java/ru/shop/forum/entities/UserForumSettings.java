@@ -15,7 +15,7 @@ import java.util.TimeZone;
 @Setter
 @Entity(name = "user_forum_settings")
 @Table(name = "user_forum_settings", schema = "FORUM")
-public class UserForumSettings extends AbstractEntity {
+public class UserForumSettings extends AbstractForumEntity {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;

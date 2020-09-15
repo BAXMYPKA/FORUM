@@ -1,11 +1,11 @@
 package ru.shop.forum.services;
 
 import org.springframework.stereotype.Service;
-import ru.shop.forum.entities.AbstractEntity;
+import ru.shop.forum.entities.AbstractForumEntity;
 import ru.shop.forum.repositories.EntityRepository;
 
 @Service
-public abstract class AbstractEntityService<T extends AbstractEntity, S extends EntityRepository<T, Long>> {
+public abstract class AbstractEntityService<T extends AbstractForumEntity, S extends EntityRepository<T, Long>> {
 	
 	protected S repository;
 	

@@ -18,9 +18,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Getter
 @Setter
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Table(name = "Users", schema = "FORUM")
-public class User extends AbstractEntity  {
+public class User extends AbstractForumEntity  {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;

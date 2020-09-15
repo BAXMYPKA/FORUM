@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "private_message", schema = "FORUM")
-public class PrivateMessage extends AbstractEntity {
+public class PrivateMessage extends AbstractForumEntity {
 
 	@Transient
 	protected static final long SerialVersionUID = 1L;

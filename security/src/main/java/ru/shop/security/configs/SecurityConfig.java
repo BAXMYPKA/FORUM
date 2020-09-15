@@ -23,16 +23,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Configuration
 	public static class ForumSecurityConfig extends WebSecurityConfigurerAdapter {
 		
+		/**
+		 * AntMatchers syntax: https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html
+		 */
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
 				  .authorizeRequests()
-				  .antMatchers("/forum.shop.ru/user/**", "/forum.shop.ru/admin/**")
+				  .antMatchers("/forum.shop.ru/v.?/user/**", "/forum.shop.ru/v.?/admin/**")
 				  .authenticated()
-				  .antMatchers("/forum.shop.ru").permitAll()
+				  .antMatchers("/forum.shop.ru/v.?").permitAll()
 				  .and()
 				  .formLogin()
-				  .loginPage("/forum.shop.ru/login")
+				  .loginPage("/forum.shop.ru/v.?/login")
 				  .permitAll()
 				  .and()
 				  .logout()

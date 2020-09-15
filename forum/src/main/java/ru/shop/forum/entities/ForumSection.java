@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "Forum_Sections", schema = "FORUM")
-public class ForumSection extends AbstractEntity {
+public class ForumSection extends AbstractForumEntity {
 
 	@Transient
 	protected static final long SerialVersionUID = 1L;

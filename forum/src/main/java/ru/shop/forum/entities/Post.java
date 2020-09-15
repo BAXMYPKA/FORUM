@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @Setter
 @Entity
 @Table(name = "posts", schema = "FORUM")
-public class Post extends AbstractEntity {
+public class Post extends AbstractForumEntity {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;

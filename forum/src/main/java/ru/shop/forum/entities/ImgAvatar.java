@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Setter
 @Entity
 @Table(name = "img_avatars", schema = "FORUM")
-public class ImgAvatar extends AbstractEntity {
+public class ImgAvatar extends AbstractForumEntity {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;
