@@ -6,6 +6,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.shop.forum.entities.utils.Sex;
 import ru.shop.forum.entities.utils.UniqueNickname;
+import ru.shop.forum.entities.utils.ValidationCreateGroup;
+import ru.shop.forum.entities.utils.ValidationUpdateGroup;
 import ru.shop.forum.security.Roles;
 
 import javax.persistence.*;
@@ -21,7 +23,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Table(name = "Users", schema = "FORUM")
-public class User extends AbstractForumEntity  {
+public class User extends AbstractForumEntity {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;
@@ -60,20 +62,19 @@ public class User extends AbstractForumEntity  {
 	 * Accepts possible English variations like 'F', 'fm', 'fem', 'female' etc and Russian 'М', 'Ж', 'муж', 'жен' etc.
 	 */
 	@Pattern(flags = {Pattern.Flag.CASE_INSENSITIVE}, message = "{user.sexPattern}",
-		  regexp = "(?i)^(m|M|ma|MA|male|f|fe|fem|female|м|М|му|МУ|муж|мужской|Мужской|мужчина|ж|Ж|жен|женский|Женский)$")
+		regexp = "(?i)^(m|M|ma|MA|male|f|fe|fem|female|м|М|му|МУ|муж|мужской|Мужской|мужчина|ж|Ж|жен|женский|Женский)$")
 	@Size(min = 1, max = 8, message = "{user.sex}")
 	@Column(length = 8)
 	//	@Convert(converter = SexSqlConverter.class) //No need if "autoApply=true" in the @Converter
 	private Sex sex;
 	
-//	@Column
-//	@Lob
-//	@Size(max = 512000, message = "{photo.maxSize}")
-//	private byte[] photo;
-	
 	@Size(max = 50, message = "{user.selfDescriptionLength}")
 	@Column(name = "self_description", length = 50)
 	private String selfDescription;
+	
+	//	private Address address;
+
+//	private Set<Phone> phones;
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "avatar_id")

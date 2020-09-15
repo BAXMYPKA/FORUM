@@ -11,6 +11,7 @@ import ru.shop.forum.entities.utils.ValidationUpdateGroup;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import java.io.Serializable;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Getter(value = AccessLevel.PUBLIC)
@@ -18,13 +19,16 @@ import javax.validation.constraints.Null;
 @MappedSuperclass
 public class AbstractShopEntity extends AbstractEntity {
 	
-	@EqualsAndHashCode.Include
-	@Null(groups = ValidationCreateGroup.class, message = "{field.mustBeNull}")
-	@NotNull(groups = ValidationUpdateGroup.class, message = "{field.notEmpty}")
-	@Id
-	@Column(updatable = false, nullable = false)
-	@GeneratedValue(generator = "ShopIdGenerator", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "ShopIdGenerator", sequenceName = "entity_idd", schema = "SHOP", initialValue = 1000)
-	private Long id;
+//	@Version
+//	private Long version;
+	
+//	@EqualsAndHashCode.Include
+//	@Null(groups = ValidationCreateGroup.class, message = "{field.mustBeNull}")
+//	@NotNull(groups = ValidationUpdateGroup.class, message = "{field.notEmpty}")
+//	@Id
+//	@Column(updatable = false, nullable = false)
+//	@GeneratedValue(generator = "ShopIdGenerator", strategy = GenerationType.SEQUENCE)
+//	@SequenceGenerator(name = "ShopIdGenerator", sequenceName = "entity_id", schema = "SHOP", initialValue = 1000)
+//	private Long id;
 	
 }
