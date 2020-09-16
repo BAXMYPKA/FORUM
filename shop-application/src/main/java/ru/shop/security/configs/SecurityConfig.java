@@ -1,19 +1,10 @@
 package ru.shop.security.configs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.Context;
-import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,22 +18,15 @@ import ru.shop.security.ShopUserDetailsService;
 @Slf4j
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableConfigurationProperties(KeycloakServerProperties.class)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 	
 	@Autowired
 	private UserService userService;
 	
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return new ShopUserDetailsService(userService);
-	}
 	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder(10);
-	}
-	
+	//The following method MUST be in a separate @Configuration class file!
+	//Otherwise "java.lang.IllegalStateException: No ServletContext set" error will be raised.
+/*
 	@Bean
 	public ServletWebServerFactory servletContainer() {
 		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
@@ -68,18 +52,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		connector.setRedirectPort(8443);
 		return connector;
 	}
+*/
 	
 	@Bean
-	public ApplicationListener<ApplicationReadyEvent> onApplicationReadyEventListener(
-			ServerProperties serverProperties, KeycloakServerProperties keycloakServerProperties) {
-		return (evt) -> {
-			Integer port = serverProperties.getPort();
-			String keycloakContextPath = keycloakServerProperties.getContextPath();
-			log.warn("Embedded Keycloak started: http://localhost:{}{} to use keycloak",
-					port, keycloakContextPath);
-		};
+	public UserDetailsService userDetailsService() {
+		return new ShopUserDetailsService(userService);
 	}
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(10);
+	}
+	
 	@Configuration
+	@Order(1)
+	public static class ShopSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	}
+	
+	@Configuration
+	@Order(2)
 	public static class ForumSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		/**
@@ -88,26 +80,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-				.requiresChannel()
-				.anyRequest()
-				.requiresSecure()
-				.and()
-				.authorizeRequests()
-				.antMatchers("/forum.shop.ru/v.?/user/**", "/forum.shop.ru/v.?/admin/**")
-				.authenticated()
-				.antMatchers("/forum.shop.ru/v.?").permitAll()
-				.and()
-				.formLogin()
-				.loginPage("/forum.shop.ru/v.?/login")
-				.permitAll()
-				.and()
-				.logout()
-				.permitAll();
+					.requiresChannel()
+					.anyRequest()
+					.requiresSecure()
+					.and()
+					.authorizeRequests()
+					.antMatchers("/forum.shop.ru/v.?/user/**", "/forum.shop.ru/v.?/admin/**")
+					.authenticated()
+					.antMatchers("/forum.shop.ru/v.?").permitAll()
+					.and()
+					.formLogin()
+					.loginPage("/forum.shop.ru/v.?/login")
+					.permitAll()
+					.and()
+					.logout()
+					.permitAll();
 		}
 		
 	}
-	
-	@Configuration
-	public static class ShopSecurityConfig extends WebSecurityConfigurerAdapter {
-	}
-	}
+}

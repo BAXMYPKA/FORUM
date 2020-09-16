@@ -10,7 +10,7 @@
 	</parent>
 	
 	<groupId>ru.shop</groupId>
-	<artifactId>shop-parent</artifactId>
+	<artifactId>shop</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>shop</name>
 	<packaging>pom</packaging>
@@ -19,7 +19,6 @@
 	<modules>
 		<module>shop-application</module>
 		<module>forum</module>
-		<module>security</module>
 	</modules>
 	
 	<properties>
