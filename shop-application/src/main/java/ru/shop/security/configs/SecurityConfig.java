@@ -16,8 +16,8 @@ import ru.shop.forum.services.UserService;
 import ru.shop.security.ShopUserDetailsService;
 
 @Slf4j
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	
 	@Autowired
@@ -64,14 +64,14 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder(10);
 	}
 	
-	@Configuration
-	@Order(1)
+//	@Configuration
+//	@Order(1)
 	public static class ShopSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	}
 	
-	@Configuration
-	@Order(2)
+//	@Configuration
+//	@Order(2)
 	public static class ForumSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		/**

@@ -1,9 +1,16 @@
 package ru.shop.forum.services;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.shop.forum.entities.AbstractEntity;
-import ru.shop.forum.entities.AbstractForumEntity;
 import ru.shop.forum.repositories.EntityRepository;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public abstract class AbstractEntityService<T extends AbstractEntity, S extends EntityRepository<T, Long>> {
@@ -16,8 +23,20 @@ public abstract class AbstractEntityService<T extends AbstractEntity, S extends 
 	 */
 	protected abstract void setRepository(S repository);
 	
-	public T getOne(Long id) {
-		return repository.getOne(id);
+	public Optional<T> findOne(Long id) {
+		return repository.findById(id);
+	}
+	
+	public Optional<T> findOne(T example) {
+		return repository.findOne(Example.of(example));
+	}
+	
+	public Collection<T> findAllByIds(Iterable<Long> ids) {
+		return repository.findAllById(Objects.requireNonNullElse(ids, Collections.singleton(0L)));
+	}
+	
+	public Page<T> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 	
 	public void delete(T t) {

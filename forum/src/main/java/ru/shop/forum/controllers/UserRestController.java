@@ -2,6 +2,7 @@ package ru.shop.forum.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 import ru.shop.forum.entities.User;
+import ru.shop.forum.entities.dto.UserDto;
 import ru.shop.forum.repositories.UserRepository;
 
 @RestController
@@ -10,5 +11,10 @@ public class UserRestController extends AbstractForumRestController<User, UserRe
 	@Override
 	protected void setEntityClass() {
 		this.entityClass = User.class;
+	}
+	
+	@Override
+	protected void setEntityDtoClass() {
+		this.entityDtoClass = UserDto.class;
 	}
 }

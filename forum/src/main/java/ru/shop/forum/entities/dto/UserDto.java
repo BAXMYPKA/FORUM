@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.shop.forum.entities.ImgAvatar;
+import ru.shop.forum.entities.User;
 import ru.shop.forum.entities.utils.Sex;
 import ru.shop.forum.entities.utils.UniqueNickname;
 import ru.shop.forum.security.Roles;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class UserDto extends AbstractDto {
+public class UserDto extends AbstractDto<User> {
 	
 	@NotEmpty(message = "{field.notEmpty}")
 	@Email(message = "{email.notValid}")

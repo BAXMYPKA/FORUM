@@ -15,5 +15,4 @@ public abstract class AbstractDto<T extends AbstractForumEntity> implements Seri
 	
 	@EqualsAndHashCode.Include
 	private Long id;
-	
 }
