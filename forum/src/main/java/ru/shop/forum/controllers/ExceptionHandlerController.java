@@ -16,4 +16,9 @@ public class ExceptionHandlerController {
 	public ResponseEntity<String> entityNotFound(RuntimeException ex, WebRequest request) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nothing found for id = " + ex.getMessage());
 	}
+	
+	@ExceptionHandler(value = {IllegalArgumentException.class})
+	public ResponseEntity<String> illegalArgsException(RuntimeException ex, WebRequest request) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
 }
