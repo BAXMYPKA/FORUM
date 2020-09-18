@@ -6,7 +6,7 @@ import ru.shop.forum.entities.User;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends EntityRepository<User, Long> {
+public interface UserRepository extends ForumEntityRepository<User> {
 	
 	boolean existsUserByNickName(String nickName);
 	

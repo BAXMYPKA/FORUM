@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
 @MappedSuperclass
-public class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements Serializable {
 	
 	private Class<? extends AbstractEntity> entityClass;
 	

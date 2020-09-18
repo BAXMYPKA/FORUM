@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public abstract class AbstractDto<T extends AbstractEntity> implements Serializable {
+public abstract class AbstractDto<T extends AbstractEntity> {
 	
 	@Null(groups = ValidationCreateGroup.class, message = "{field.mustBeNull}")
 	@NotNull(groups = ValidationUpdateGroup.class, message = "{field.notEmpty}")

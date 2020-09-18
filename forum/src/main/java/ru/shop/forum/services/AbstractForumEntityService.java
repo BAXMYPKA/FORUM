@@ -3,6 +3,7 @@ package ru.shop.forum.services;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.shop.forum.entities.AbstractForumEntity;
-import ru.shop.forum.entities.User;
 import ru.shop.forum.repositories.EntityRepository;
 import ru.shop.forum.repositories.ForumEntityRepository;
 
@@ -20,37 +20,37 @@ import java.util.*;
 @Getter
 @Setter
 @Service
-public abstract class AbstractForumEntityService <AbstractForumEntity, K extends ForumEntityRepository<AbstractForumEntity>> {
+public abstract class AbstractForumEntityService <T extends AbstractForumEntity, S extends ForumEntityRepository<T>> {
 	
 	@Value("${spring.data.web.pageable.default-page-size}")
 	private Integer DEFAULT_ENTITIES_AT_ONCE;
 	
 	@Getter(AccessLevel.PROTECTED)
-	protected K repository;
+	protected S repository;
 	
 	/**
 	 * @param repository If a special {@link EntityRepository} for a subclass is needed it must be included here.
 	 *                   Otherwise if no specific repository is created just the typed {@link EntityRepository} will be enough here
 	 */
-	protected abstract void setRepository(K repository);
+	protected abstract void setRepository(S repository);
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
-	public Optional<AbstractForumEntity> findOne(Long id) {
+	public Optional<T> findOne(Long id) {
 		return repository.findById(id);
 	}
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
-	public Optional<AbstractForumEntity> findOne(AbstractForumEntity example) {
-		return repository.findOne(Example.of(example));
+	public Optional<T> findOne(T forumEntityExample) {
+		return repository.findOne(Example.of(forumEntityExample));
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public Page<AbstractForumEntity> findAllByIds(Pageable pageable, Iterable<Long> ids) {
+	public Page<T> findAllByIds(Pageable pageable, Iterable<Long> ids) {
 	
 		//TODO: to create pageable response based on pageable info
 	
-		List<AbstractForumEntity> allByIds = repository.findAllById(Objects.requireNonNullElse(ids, Collections.singleton(0L)));
-		return new PageImpl<AbstractForumEntity>(allByIds, pageable, allByIds.size());
+		List<T> allByIds = repository.findAllById(Objects.requireNonNullElse(ids, Collections.singleton(0L)));
+		return new PageImpl<T>(allByIds, pageable, allByIds.size());
 	}
 
 	/**
@@ -61,20 +61,20 @@ public abstract class AbstractForumEntityService <AbstractForumEntity, K extends
 	 * .param("sort", "name,asc")) // <-- no space after comma!
 	 */
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public Page<AbstractForumEntity> findAll(Pageable pageable) throws IllegalArgumentException {
+	public Page<T> findAll(Pageable pageable) throws IllegalArgumentException {
 		return repository.findAll(pageable);
 	}
 	
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
-	public List<? extends AbstractForumEntity> save(AbstractForumEntity forumEntity) {
-		return repository.saveAll(Collections.singletonList(forumEntity));
+	public List<T> save(T... forumEntity) {
+		return repository.saveAll(List.of(forumEntity));
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public void deleteOne(AbstractForumEntity t) {
-		if (t == null) return;
-		repository.delete(t);
+	public void deleteOne(T forumEntity) {
+		if (forumEntity == null) return;
+		repository.delete(forumEntity);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public abstract class AbstractForumEntityService <AbstractForumEntity, K extends
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public void deleteAll(Iterable<AbstractForumEntity> entities) {
+	public void deleteAll(Iterable<T> entities) {
 		if (entities == null) return;
 		repository.deleteAll(entities);
 	}

@@ -7,6 +7,7 @@ import ru.shop.forum.entities.ImgAvatar;
 import ru.shop.forum.entities.User;
 import ru.shop.forum.entities.UserForumSettings;
 import ru.shop.forum.repositories.EntityRepository;
+import ru.shop.forum.repositories.ForumEntityRepository;
 import ru.shop.forum.repositories.UserRepository;
 
 import javax.persistence.NoResultException;
@@ -21,10 +22,10 @@ import java.util.Objects;
 public class UserService extends AbstractForumEntityService<User, UserRepository> {
 	
 	@Autowired
-	private EntityRepository<UserForumSettings, Long> userForumSettingsRepository;
+	private ForumEntityRepository<UserForumSettings> userForumSettingsRepository;
 	
 	@Autowired
-	private EntityRepository<ImgAvatar, Long> imgAvatarRepository;
+	private ForumEntityRepository<ImgAvatar> imgAvatarRepository;
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
 	public Boolean existsUserByNickName(String nickname) {
