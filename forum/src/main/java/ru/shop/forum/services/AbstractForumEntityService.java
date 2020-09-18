@@ -9,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.shop.forum.entities.AbstractEntity;
+import ru.shop.forum.entities.AbstractForumEntity;
+import ru.shop.forum.entities.User;
 import ru.shop.forum.repositories.EntityRepository;
+import ru.shop.forum.repositories.ForumEntityRepository;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -18,37 +20,37 @@ import java.util.*;
 @Getter
 @Setter
 @Service
-public abstract class AbstractEntityService<T extends AbstractEntity, S extends EntityRepository<T, Long>> {
+public abstract class AbstractForumEntityService <AbstractForumEntity, K extends ForumEntityRepository<AbstractForumEntity>> {
 	
 	@Value("${spring.data.web.pageable.default-page-size}")
 	private Integer DEFAULT_ENTITIES_AT_ONCE;
 	
 	@Getter(AccessLevel.PROTECTED)
-	protected S repository;
+	protected K repository;
 	
 	/**
 	 * @param repository If a special {@link EntityRepository} for a subclass is needed it must be included here.
 	 *                   Otherwise if no specific repository is created just the typed {@link EntityRepository} will be enough here
 	 */
-	protected abstract void setRepository(S repository);
+	protected abstract void setRepository(K repository);
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
-	public Optional<T> findOne(Long id) {
+	public Optional<AbstractForumEntity> findOne(Long id) {
 		return repository.findById(id);
 	}
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
-	public Optional<T> findOne(T example) {
+	public Optional<AbstractForumEntity> findOne(AbstractForumEntity example) {
 		return repository.findOne(Example.of(example));
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public Page<T> findAllByIds(Pageable pageable, Iterable<Long> ids) {
+	public Page<AbstractForumEntity> findAllByIds(Pageable pageable, Iterable<Long> ids) {
 	
-		//TODO: to create query based on pageable info
+		//TODO: to create pageable response based on pageable info
 	
-		List<T> allByIds = repository.findAllById(Objects.requireNonNullElse(ids, Collections.singleton(0L)));
-		return new PageImpl<T>(allByIds, pageable, allByIds.size());
+		List<AbstractForumEntity> allByIds = repository.findAllById(Objects.requireNonNullElse(ids, Collections.singleton(0L)));
+		return new PageImpl<AbstractForumEntity>(allByIds, pageable, allByIds.size());
 	}
 
 	/**
@@ -59,19 +61,27 @@ public abstract class AbstractEntityService<T extends AbstractEntity, S extends 
 	 * .param("sort", "name,asc")) // <-- no space after comma!
 	 */
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public Page<T> findAll(Pageable pageable) throws IllegalArgumentException {
+	public Page<AbstractForumEntity> findAll(Pageable pageable) throws IllegalArgumentException {
 		return repository.findAll(pageable);
 	}
 	
+	
+	@Transactional(value = Transactional.TxType.SUPPORTS)
+	public List<? extends AbstractForumEntity> save(AbstractForumEntity forumEntity) {
+		return repository.saveAll(Collections.singletonList(forumEntity));
+	}
+	
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public void delete(T t) {
+	public void deleteOne(AbstractForumEntity t) {
 		if (t == null) return;
 		repository.delete(t);
 	}
 	
+	/**
+	 * @throws IllegalArgumentException If a given ID is null
+	 */
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public void deleteById(Long id) {
-		if (id == null) return;
+	public void deleteOne(Long id) throws IllegalArgumentException {
 		repository.deleteById(id);
 	}
 	
@@ -81,7 +91,7 @@ public abstract class AbstractEntityService<T extends AbstractEntity, S extends 
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public void deleteAll(Iterable<T> entities) {
+	public void deleteAll(Iterable<AbstractForumEntity> entities) {
 		if (entities == null) return;
 		repository.deleteAll(entities);
 	}

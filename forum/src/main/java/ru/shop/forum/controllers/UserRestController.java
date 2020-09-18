@@ -10,11 +10,11 @@ public class UserRestController extends AbstractForumRestController<User, UserRe
 
 	@Override
 	protected void setEntityClass() {
-		this.entityClass = User.class;
+		this.forumEntityClass = User.class;
 	}
 	
 	@Override
 	protected void setEntityDtoClass() {
-		this.entityDtoClass = UserDto.class;
+		this.forumEntityDtoClass = UserDto.class;
 	}
 }

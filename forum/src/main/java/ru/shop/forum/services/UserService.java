@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 @Getter
 @Service
-public class UserService extends AbstractEntityService<User, UserRepository> {
+public class UserService extends AbstractForumEntityService<User, UserRepository> {
 	
 	@Autowired
 	private EntityRepository<UserForumSettings, Long> userForumSettingsRepository;

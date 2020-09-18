@@ -18,7 +18,7 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class UserDto extends AbstractDto<User> {
+public class UserDto extends AbstractForumDto<User> {
 	
 	@NotEmpty(message = "{field.notEmpty}")
 	@Email(message = "{email.notValid}")
