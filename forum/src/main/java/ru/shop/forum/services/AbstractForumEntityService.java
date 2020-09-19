@@ -3,6 +3,7 @@ package ru.shop.forum.services;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
@@ -14,6 +15,7 @@ import ru.shop.forum.entities.AbstractForumEntity;
 import ru.shop.forum.repositories.EntityRepository;
 import ru.shop.forum.repositories.ForumEntityRepository;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -22,11 +24,11 @@ import java.util.*;
 @Service
 public abstract class AbstractForumEntityService <T extends AbstractForumEntity, S extends ForumEntityRepository<T>> {
 	
-	@Value("${spring.data.web.pageable.default-page-size}")
-	private Integer DEFAULT_ENTITIES_AT_ONCE;
-	
 	@Getter(AccessLevel.PROTECTED)
 	protected S repository;
+	
+	@Autowired
+	protected ModelMapper modelMapper;
 	
 	/**
 	 * @param repository If a special {@link EntityRepository} for a subclass is needed it must be included here.
@@ -67,8 +69,16 @@ public abstract class AbstractForumEntityService <T extends AbstractForumEntity,
 	
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
-	public List<T> save(T... forumEntity) {
-		return repository.saveAll(List.of(forumEntity));
+	public T save(T forumEntity) {
+		return repository.saveAndFlush(Objects.requireNonNull(forumEntity, "A ForumEntity cannot be null!"));
+	}
+	
+	@Transactional(value = Transactional.TxType.REQUIRED)
+	public T update(T forumEntity) {
+		T forumEntityToBeUpdated = repository.findById(Objects.requireNonNull(forumEntity.getId(), "An entity to be updated must have an id!"))
+				.orElseThrow(() -> new EntityNotFoundException("No entity found"));
+		modelMapper.map(forumEntity, forumEntityToBeUpdated);
+		return forumEntityToBeUpdated;
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
@@ -94,6 +104,11 @@ public abstract class AbstractForumEntityService <T extends AbstractForumEntity,
 	public void deleteAll(Iterable<T> entities) {
 		if (entities == null) return;
 		repository.deleteAll(entities);
+	}
+	
+	@Transactional(value = Transactional.TxType.REQUIRED)
+	public void deleteAll(Collection<Long> ids) {
+		ids.forEach(id -> repository.deleteById(id));
 	}
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)

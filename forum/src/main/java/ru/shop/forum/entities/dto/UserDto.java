@@ -70,4 +70,8 @@ public class UserDto extends AbstractForumDto<User> {
 	private LocalDate lockedUntil;
 	
 	
+	@Override
+	protected void setAbstractEntityClass(Class<User> abstractEntityClass) {
+		super.abstractEntityClass = abstractEntityClass;
+	}
 }

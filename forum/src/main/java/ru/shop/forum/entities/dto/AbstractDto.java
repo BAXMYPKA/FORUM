@@ -16,7 +16,11 @@ import java.io.Serializable;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public abstract class AbstractDto<T extends AbstractEntity> {
 	
+	protected Class<T> abstractEntityClass;
+	
 	@Null(groups = ValidationCreateGroup.class, message = "{field.mustBeNull}")
 	@NotNull(groups = ValidationUpdateGroup.class, message = "{field.notEmpty}")
 	private Long id;
+	
+	protected abstract void setAbstractEntityClass(Class<T> abstractEntityClass);
 }

@@ -1,29 +1,31 @@
 package ru.shop.forum.controllers;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.RestController;
-import ru.shop.forum.entities.AbstractForumEntity;
 import ru.shop.forum.entities.User;
 import ru.shop.forum.entities.dto.UserDto;
-import ru.shop.forum.repositories.UserRepository;
-import ru.shop.forum.services.AbstractForumEntityService;
 import ru.shop.forum.services.UserService;
 
 @RestController
-public class UserRestController extends AbstractForumRestController<User, UserService> {
+public class UserRestController extends AbstractForumRestController<User, UserDto, UserService> {
 	
 	
-	@Override
-	protected void setForumEntityClass(User forumEntityClass) {
-		this.forumEntityClass = forumEntityClass;
+	protected UserRestController(ModelMapper modelMapper) {
+		super(modelMapper);
 	}
 	
 	@Override
-	protected void setForumEntityDtoClass() {
-	
+	protected void setForumEntityClass(Class<User> forumEntityClass) {
+		super.forumEntityClass = forumEntityClass;
 	}
 	
 	@Override
-	protected void setForumEntityService(AbstractForumEntityService forumEntityService) {
+	protected void setForumEntityDtoClass(Class<UserDto> forumEntityDtoClass) {
+		super.forumEntityDtoClass = forumEntityDtoClass;
+	}
+	
+	@Override
+	protected void setForumEntityService(UserService forumEntityService) {
 	
 	}
 }

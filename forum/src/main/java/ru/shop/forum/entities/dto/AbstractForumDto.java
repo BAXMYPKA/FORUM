@@ -14,7 +14,7 @@ import javax.validation.constraints.Null;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class AbstractForumDto<T extends AbstractForumEntity> extends AbstractDto<T> {
+public abstract class AbstractForumDto<T extends AbstractForumEntity> extends AbstractDto<T> {
 	
 	@Null(groups = ValidationCreateGroup.class, message = "{field.mustBeNull}")
 	@NotNull(groups = ValidationUpdateGroup.class, message = "{field.notEmpty}")
