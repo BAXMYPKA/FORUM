@@ -46,7 +46,7 @@ public class UserService extends AbstractForumEntityService<User, UserRepository
 	
 	@Override
 	protected void setRepository(UserRepository repository) {
-		super.repository = repository;
+		this.repository = repository;
 	}
 	
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,10 +38,11 @@ import java.util.stream.Collectors;
 @Getter
 //@Setter
 @RestController
-//@RequestMapping(path = {"forum.shop.ru", "forum.shop.ru/v.1.0"})
+@RequestMapping(path = {"/v.1.0"})
 public abstract class AbstractForumRestController<T extends AbstractForumEntity, D extends AbstractForumDto<T>, S extends AbstractForumEntityService<T, ? extends ForumEntityRepository<T>>> {
 	
-	protected final ModelMapper modelMapper;
+	@Autowired
+	protected ModelMapper modelMapper;
 	
 	@Getter(AccessLevel.PROTECTED)
 	protected S forumEntityService;
@@ -48,11 +50,6 @@ public abstract class AbstractForumRestController<T extends AbstractForumEntity,
 	protected Class<T> forumEntityClass;
 	
 	protected Class<D> forumEntityDtoClass;
-	
-	@Autowired
-	protected AbstractForumRestController(ModelMapper modelMapper) {
-		this.modelMapper = modelMapper;
-	}
 	
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public D getOne(@PathVariable Long id) {
@@ -77,20 +74,21 @@ public abstract class AbstractForumRestController<T extends AbstractForumEntity,
 		
 		Page<T> entitiesPage = forumEntityService.findAll(pageable);
 		List<D> entitiesDto = entitiesPage.stream()
-				.map(entity -> {
-					return modelMapper.map(entity, forumEntityDtoClass);
-				})
+				.map(entity -> modelMapper.map(entity, forumEntityDtoClass))
 				.collect(Collectors.toList());
 		return new PageImpl<D>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
 	
 	@GetMapping(path = "/all-by-ids", params = {"page", "size", "sort"}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Page<D> getAllByIds(Pageable pageable, @RequestParam Map<String, Long> ids) {
+	public Page<D> getAllByIds(
+			@SortDefault.SortDefaults({
+					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
+					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
+					Pageable pageable, @RequestParam Map<String, Long> ids) {
 		
 		Page<T> entitiesPage = forumEntityService.findAllByIds(pageable, ids.values());
-		List<D> entitiesDto = entitiesPage.stream().map(entity -> {
-			return modelMapper.map(entity, forumEntityDtoClass);
-		})
+		List<D> entitiesDto = entitiesPage.stream()
+				.map(entity -> modelMapper.map(entity, forumEntityDtoClass))
 				.collect(Collectors.toList());
 		return new PageImpl<>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
@@ -137,6 +135,10 @@ public abstract class AbstractForumRestController<T extends AbstractForumEntity,
 	 */
 	protected abstract void setForumEntityDtoClass(Class<D> forumEntityDtoClass);
 	
+	/**
+	 * @param forumEntityService The concrete subclass of {@link AbstractForumEntityService}
+	 *                           must be set as {@code this.forumEntityService = forumEntityService}
+	 */
 	protected abstract void setForumEntityService(S forumEntityService);
 	
 }

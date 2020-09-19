@@ -3,12 +3,13 @@ package ru.shop.forum.services;
 import org.springframework.stereotype.Service;
 import ru.shop.forum.entities.ForumSection;
 import ru.shop.forum.repositories.EntityRepository;
+import ru.shop.forum.repositories.ForumEntityRepository;
 
 @Service
-public class ForumSectionService extends AbstractForumEntityService<ForumSection, EntityRepository<ForumSection, Long>> {
+public class ForumSectionService extends AbstractForumEntityService<ForumSection, ForumEntityRepository<ForumSection>> {
 	
 	@Override
-	protected void setRepository(EntityRepository<ForumSection, Long> repository) {
-		super.repository = repository;
+	protected void setRepository(ForumEntityRepository<ForumSection> repository) {
+		this.repository = repository;
 	}
 }

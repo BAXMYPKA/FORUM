@@ -11,7 +11,7 @@ import ru.shop.forum.entities.AbstractEntity;
 import javax.persistence.EntityNotFoundException;
 
 @ControllerAdvice
-public class ExceptionHandlerController {
+public class ExceptionHandlerRestController {
 	
 	@ExceptionHandler(value = {EntityNotFoundException.class})
 	public ResponseEntity<String> entityNotFound(RuntimeException ex, WebRequest request) {

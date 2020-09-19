@@ -18,6 +18,7 @@ import ru.shop.forum.repositories.ForumEntityRepository;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -29,6 +30,9 @@ public abstract class AbstractForumEntityService <T extends AbstractForumEntity,
 	
 	@Autowired
 	protected ModelMapper modelMapper;
+	
+	@Value("${spring.data.web.pageable.max-page-size}")
+	private Integer MAX_ENTITIES_AT_ONCE;
 	
 	/**
 	 * @param repository If a special {@link EntityRepository} for a subclass is needed it must be included here.
@@ -47,10 +51,12 @@ public abstract class AbstractForumEntityService <T extends AbstractForumEntity,
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public Page<T> findAllByIds(Pageable pageable, Iterable<Long> ids) {
-	
+	public Page<T> findAllByIds(Pageable pageable, Collection<Long> ids) {
+		if (ids.size() > MAX_ENTITIES_AT_ONCE) {
+			ids = ids.stream().limit(50).collect(Collectors.toList());
+		}
 		//TODO: to create pageable response based on pageable info
-	
+		
 		List<T> allByIds = repository.findAllById(Objects.requireNonNullElse(ids, Collections.singleton(0L)));
 		return new PageImpl<T>(allByIds, pageable, allByIds.size());
 	}

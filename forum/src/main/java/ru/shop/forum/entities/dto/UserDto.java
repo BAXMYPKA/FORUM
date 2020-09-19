@@ -72,6 +72,6 @@ public class UserDto extends AbstractForumDto<User> {
 	
 	@Override
 	protected void setAbstractEntityClass(Class<User> abstractEntityClass) {
-		super.abstractEntityClass = abstractEntityClass;
+		this.abstractEntityClass = abstractEntityClass;
 	}
 }
