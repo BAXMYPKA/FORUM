@@ -80,11 +80,32 @@ public abstract class AbstractForumEntityService <T extends AbstractForumEntity,
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
+	public Collection<T> saveAll(Collection<T> forumEntities) {
+		if (forumEntities.size() > MAX_ENTITIES_AT_ONCE)
+			throw new IllegalArgumentException("No more than " + MAX_ENTITIES_AT_ONCE + " at once!");
+		
+		return repository.saveAll(forumEntities);
+	}
+	
+	@Transactional(value = Transactional.TxType.REQUIRED)
 	public T update(T forumEntity) {
 		T forumEntityToBeUpdated = repository.findById(Objects.requireNonNull(forumEntity.getId(), "An entity to be updated must have an id!"))
 				.orElseThrow(() -> new EntityNotFoundException("No entity found"));
 		modelMapper.map(forumEntity, forumEntityToBeUpdated);
 		return forumEntityToBeUpdated;
+	}
+	
+	@Transactional(value = Transactional.TxType.REQUIRED)
+	public Collection<T> updateAll(Collection<T> forumEntities) {
+		if (forumEntities.size() > MAX_ENTITIES_AT_ONCE)
+			throw new IllegalArgumentException("No more than " + MAX_ENTITIES_AT_ONCE + " at once!");
+		
+		for (T forumEntity : forumEntities) {
+			T forumEntityToBeUpdated = repository.findById(Objects.requireNonNull(forumEntity.getId(), "An entity to be updated must have an id!"))
+					.orElseThrow(() -> new EntityNotFoundException("No entity found"));
+			modelMapper.map(forumEntity, forumEntityToBeUpdated);
+		}
+		return forumEntities;
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)

@@ -8,6 +8,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.validation.groups.Default;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -25,7 +26,7 @@ class ValidationTest {
 	}
 	
 	@Test
-	public void validationMessagesShouldBeLocalized() {
+	public void validation_Messages_Should_Be_Localized() {
 		User user = new User();
 		Set<ConstraintViolation<User>> constraintViolations = validator.validateProperty(user, "email");
 		assertEquals(1, constraintViolations.size());
@@ -33,10 +34,9 @@ class ValidationTest {
 	}
 	
 	@Test
-	public void wrongValueShouldBeValidated() {
+	public void wrong_Value_Should_Be_Validated() {
 		Set<ConstraintViolation<User>> constraintViolations = validator.validateValue(User.class, "birthdate", LocalDate.now());
 		assertEquals(1, constraintViolations.size());
 		assertEquals("Дата должна быть в прошлом!", constraintViolations.iterator().next().getMessage());
 	}
-	
 }

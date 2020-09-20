@@ -115,6 +115,18 @@ public abstract class AbstractForumRestController<T extends AbstractForumEntity,
 		return modelMapper.map(savedForumEntity, forumEntityDtoClass);
 	}
 	
+/*
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public List<D> postNewOnes(
+			@Validated(value = {Default.class, ValidationCreateGroup.class}) @RequestBody Collection<D> forumDtos) {
+		
+		List<T> forumEntities = forumDtos.stream()
+				.map(dto -> modelMapper.map(dto, forumEntityClass)).collect(Collectors.toList());
+		return forumEntityService.saveAll(forumEntities).stream()
+				.map(forumEntity -> modelMapper.map(forumEntity, forumEntityDtoClass)).collect(Collectors.toList());
+	}
+*/
+	
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public D putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody D forumDto) {
 		
@@ -122,6 +134,18 @@ public abstract class AbstractForumRestController<T extends AbstractForumEntity,
 		forumEntity = forumEntityService.update(forumEntity);
 		return modelMapper.map(forumEntity, forumEntityDtoClass);
 	}
+	
+/*
+	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public List<D> putNewOnes(
+			@Validated(value = {Default.class, ValidationUpdateGroup.class}) @RequestBody Collection<D> forumDtos) {
+		
+		List<T> forumEntities = forumDtos.stream()
+				.map(dto -> modelMapper.map(dto, forumEntityClass)).collect(Collectors.toList());
+		return forumEntityService.updateAll(forumEntities).stream()
+				.map(forumEntity -> modelMapper.map(forumEntity, forumEntityDtoClass)).collect(Collectors.toList());
+	}
+*/
 	
 	/**
 	 * The concrete subclass of the {@link AbstractForumEntity}
