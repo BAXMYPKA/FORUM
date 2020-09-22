@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.shop.entities.User;
 import ru.shop.entities.dto.AbstractDto;
+import ru.shop.forum.entities.ForumUser;
 import ru.shop.forum.entities.ImgAvatar;
 import ru.shop.entities.utils.Sex;
 import ru.shop.entities.utils.UniqueNickname;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class ForumUserDto extends AbstractDto<User> {
+public class ForumUserDto extends AbstractDto<ForumUser> {
 	
 	@NotEmpty(message = "{field.notEmpty}")
 	@Email(message = "{email.notValid}")
@@ -67,7 +68,7 @@ public class ForumUserDto extends AbstractDto<User> {
 	private LocalDate lockedUntil;
 	
 	@Override
-	protected void setEntityClass(Class<User> entityClass) {
+	protected void setEntityClass(Class<ForumUser> entityClass) {
 		this.entityClass = entityClass;
 	}
 }

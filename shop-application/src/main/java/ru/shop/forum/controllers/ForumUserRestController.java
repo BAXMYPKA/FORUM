@@ -6,14 +6,15 @@ import ru.shop.controllers.AbstractRestController;
 import ru.shop.entities.User;
 import ru.shop.forum.entities.ForumUser;
 import ru.shop.forum.entities.dto.ForumUserDto;
+import ru.shop.forum.services.ForumUserService;
 import ru.shop.services.UserService;
 
 @RestController
 @RequestMapping(path = "/users")
-public class ForumUserRestController extends AbstractRestController<User, ForumUserDto, UserService> {
+public class ForumUserRestController extends AbstractRestController<ForumUser, ForumUserDto, ForumUserService> {
 	
 	@Override
-	protected void setEntityClass(Class<User> entityClass) {
+	protected void setEntityClass(Class<ForumUser> entityClass) {
 		this.entityClass = entityClass;
 	}
 	
@@ -23,7 +24,8 @@ public class ForumUserRestController extends AbstractRestController<User, ForumU
 	}
 	
 	@Override
-	protected void setEntityService(UserService entityService) {
+	protected void setEntityService(ForumUserService entityService) {
 		this.entityService = entityService;
 	}
+	
 }
