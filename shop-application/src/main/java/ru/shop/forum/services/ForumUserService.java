@@ -5,18 +5,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.shop.forum.entities.ForumUser;
 import ru.shop.forum.entities.ImgAvatar;
-import ru.shop.forum.entities.UserForumSettings;
+import ru.shop.forum.entities.ForumUserSettings;
 import ru.shop.forum.repositories.ForumEntityRepository;
 import ru.shop.forum.repositories.ForumUserRepository;
 import ru.shop.services.AbstractEntityService;
-import ru.shop.services.UserService;
 
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import java.util.Objects;
 
 /**
- * Also is in charge of {@link UserForumSettings} and {@link ImgAvatar} entities and their repositories
+ * Also is in charge of {@link ForumUserSettings} and {@link ImgAvatar} entities and their repositories
  */
 @Getter
 @Service

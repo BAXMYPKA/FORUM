@@ -1,15 +1,11 @@
 package ru.shop.forum.entities;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import ru.shop.entities.User;
-import ru.shop.entities.utils.Sex;
 import ru.shop.entities.utils.UniqueNickname;
-import ru.shop.security.Roles;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDate;
 import java.util.Set;
 
 
@@ -18,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "Users", schema = "FORUM")
+@Table(name = "Forum_Users", schema = "FORUM")
 public class ForumUser extends User {
 	
 	@Transient
@@ -37,13 +33,13 @@ public class ForumUser extends User {
 	@OneToMany(mappedBy = "updatedBy")
 	private Set<Post> postsUpdatedBy;
 	
-	@OneToOne(optional = false, orphanRemoval = true, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private UserForumSettings userForumSettings = new UserForumSettings();
+	@OneToOne(optional = false, orphanRemoval = true, mappedBy = "forumUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private ForumUserSettings userForumSettings = new ForumUserSettings();
 	
-	@OneToMany(mappedBy = "fromUser")
+	@OneToMany(mappedBy = "fromForumUser")
 	private Set<PrivateMessage> privateMessagesFrom;
 	
-	@ManyToMany(mappedBy = "toUsers")
+	@ManyToMany(mappedBy = "toForumUsers")
 	private Set<PrivateMessage> privateMessagesTo;
 	
 }

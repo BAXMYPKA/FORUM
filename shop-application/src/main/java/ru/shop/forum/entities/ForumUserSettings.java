@@ -10,9 +10,9 @@ import java.util.TimeZone;
 
 @Getter
 @Setter
-@Entity(name = "user_forum_settings")
-@Table(name = "user_forum_settings", schema = "FORUM")
-public class UserForumSettings extends AbstractForumEntity {
+@Entity(name = "forum_user_settings")
+@Table(name = "forum_user_settings", schema = "FORUM")
+public class ForumUserSettings extends AbstractForumEntity {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;

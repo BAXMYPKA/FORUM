@@ -1,6 +1,5 @@
 package ru.shop.forum.controllers;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.shop.forum.entities.ForumSection;

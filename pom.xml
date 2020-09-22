@@ -18,7 +18,6 @@
 	
 	<modules>
 		<module>shop-application</module>
-		<module>forum</module>
 	</modules>
 	
 	<properties>
