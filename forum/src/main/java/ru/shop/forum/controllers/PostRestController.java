@@ -10,17 +10,17 @@ import ru.shop.forum.services.PostService;
 @RequestMapping(path = "/posts")
 public class PostRestController extends AbstractForumRestController<Post, PostDto, PostService> {
 	@Override
-	protected void setForumEntityClass(Class<Post> forumEntityClass) {
-		this.forumEntityClass = forumEntityClass;
+	protected void setEntityClass(Class<Post> entityClass) {
+		this.entityClass = entityClass;
 	}
 	
 	@Override
-	protected void setForumEntityDtoClass(Class<PostDto> forumEntityDtoClass) {
-		this.forumEntityDtoClass = forumEntityDtoClass;
+	protected void setEntityDtoClass(Class<PostDto> entityDtoClass) {
+		this.entityDtoClass = entityDtoClass;
 	}
 	
 	@Override
-	protected void setForumEntityService(PostService forumEntityService) {
-		this.forumEntityService = forumEntityService;
+	protected void setEntityService(PostService entityService) {
+		this.entityService = entityService;
 	}
 }

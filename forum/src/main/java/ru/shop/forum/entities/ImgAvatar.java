@@ -25,5 +25,5 @@ public class ImgAvatar extends AbstractForumEntity {
 	private byte[] img;
 	
 	@OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "avatar", cascade = CascadeType.ALL)
-	private User user;
+	private ForumUser forumUser;
 }

@@ -1,4 +1,4 @@
-package ru.shop.forum.entities.utils;
+package ru.shop.entities.utils;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

@@ -1,19 +1,14 @@
-package ru.shop.forum.entities;
+package ru.shop.entities;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import ru.shop.forum.entities.utils.Sex;
-import ru.shop.forum.entities.utils.UniqueNickname;
-import ru.shop.forum.entities.utils.ValidationCreateGroup;
-import ru.shop.forum.entities.utils.ValidationUpdateGroup;
-import ru.shop.forum.security.Roles;
+import ru.shop.entities.utils.Sex;
+import ru.shop.entities.utils.UniqueNickname;
+import ru.shop.security.Roles;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -22,8 +17,8 @@ import java.util.Set;
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
-@Table(name = "Users", schema = "FORUM")
-public class User extends AbstractForumEntity {
+@Table(name = "Users", schema = "SHOP")
+public class User extends AbstractEntity {
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;
@@ -40,9 +35,9 @@ public class User extends AbstractForumEntity {
 	private String password;
 	
 	@UniqueNickname(message = "{user.nonUniqueNickname}")
-	@NonNull
-	@NotEmpty(message = "{field.notEmpty}")
-	@Column(updatable = false, nullable = false, unique = true)
+//	@NonNull
+//	@NotEmpty(message = "{field.notEmpty}")
+	@Column(updatable = false, unique = true)
 	private String nickName;
 	
 	@Size(min = 2, max = 35, message = "{user.nameLength}")
@@ -72,14 +67,6 @@ public class User extends AbstractForumEntity {
 	@Column(name = "self_description", length = 50)
 	private String selfDescription;
 	
-	//	private Address address;
-
-//	private Set<Phone> phones;
-	
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "avatar_id")
-	private ImgAvatar avatar;
-	
 	@Column
 	private boolean enabled = true;
 	
@@ -97,16 +84,8 @@ public class User extends AbstractForumEntity {
 //	@Convert(converter = RolesConverter.class) //No need if "autoApply=true" in the @Converter
 	private Roles role = Roles.USER;
 	
-	@OneToMany(mappedBy = "updatedBy")
-	private Set<Post> postsUpdatedBy;
-	
-	@OneToOne(optional = false, orphanRemoval = true, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private UserForumSettings userForumSettings = new UserForumSettings();
-	
-	@OneToMany(mappedBy = "fromUser")
-	private Set<PrivateMessage> privateMessagesFrom;
-	
-	@ManyToMany(mappedBy = "toUsers")
-	private Set<PrivateMessage> privateMessagesTo;
-	
+	//	private Address address;
+
+//	private Set<Phone> phones;
+
 }

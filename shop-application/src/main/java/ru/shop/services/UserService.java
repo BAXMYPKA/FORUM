@@ -1,31 +1,19 @@
-package ru.shop.forum.services;
+package ru.shop.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.shop.forum.entities.ImgAvatar;
-import ru.shop.forum.entities.User;
-import ru.shop.forum.entities.UserForumSettings;
-import ru.shop.forum.repositories.EntityRepository;
-import ru.shop.forum.repositories.ForumEntityRepository;
-import ru.shop.forum.repositories.UserRepository;
+import ru.shop.entities.User;
+import ru.shop.repositories.UserRepository;
 
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import java.util.Objects;
 
-/**
- * Also is in charge of {@link UserForumSettings} and {@link ImgAvatar} entities and their repositories
- */
 @Getter
 @Service
-public class UserService extends AbstractForumEntityService<User, UserRepository> {
+public class UserService extends AbstractEntityService<User, UserRepository> {
 	
-	@Autowired
-	private ForumEntityRepository<UserForumSettings> userForumSettingsRepository;
-	
-	@Autowired
-	private ForumEntityRepository<ImgAvatar> imgAvatarRepository;
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
 	public Boolean existsUserByNickName(String nickname) {
@@ -48,5 +36,4 @@ public class UserService extends AbstractForumEntityService<User, UserRepository
 	protected void setRepository(UserRepository repository) {
 		this.repository = repository;
 	}
-	
 }

@@ -1,6 +1,6 @@
-package ru.shop.forum.entities.utils;
+package ru.shop.entities.utils;
 
-import ru.shop.forum.security.Roles;
+import ru.shop.security.Roles;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

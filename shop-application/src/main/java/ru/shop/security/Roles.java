@@ -1,4 +1,4 @@
-package ru.shop.forum.security;
+package ru.shop.security;
 
 import org.springframework.security.core.GrantedAuthority;
 

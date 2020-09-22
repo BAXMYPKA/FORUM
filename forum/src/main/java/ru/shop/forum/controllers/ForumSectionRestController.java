@@ -12,17 +12,17 @@ import ru.shop.forum.services.ForumSectionService;
 public class ForumSectionRestController extends AbstractForumRestController<ForumSection, ForumSectionDto, ForumSectionService> {
 	
 	@Override
-	protected void setForumEntityClass(Class<ForumSection> forumEntityClass) {
-		this.forumEntityClass = forumEntityClass;
+	protected void setEntityClass(Class<ForumSection> entityClass) {
+		this.entityClass = entityClass;
 	}
 	
 	@Override
-	protected void setForumEntityDtoClass(Class<ForumSectionDto> forumEntityDtoClass) {
-		this.forumEntityDtoClass = forumEntityDtoClass;
+	protected void setEntityDtoClass(Class<ForumSectionDto> entityDtoClass) {
+		this.entityDtoClass = entityDtoClass;
 	}
 	
 	@Override
-	protected void setForumEntityService(ForumSectionService forumEntityService) {
-		this.forumEntityService = forumEntityService;
+	protected void setEntityService(ForumSectionService entityService) {
+		this.entityService = entityService;
 	}
 }

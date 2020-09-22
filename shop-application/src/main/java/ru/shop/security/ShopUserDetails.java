@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.shop.forum.entities.User;
+import ru.shop.entities.User;
 
 import javax.persistence.Transient;
 import java.util.ArrayList;

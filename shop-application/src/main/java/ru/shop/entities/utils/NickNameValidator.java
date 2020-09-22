@@ -1,7 +1,7 @@
-package ru.shop.forum.entities.utils;
+package ru.shop.entities.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.shop.forum.repositories.UserRepository;
+import ru.shop.repositories.UserRepository;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

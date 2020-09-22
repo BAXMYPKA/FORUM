@@ -4,14 +4,8 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import ru.shop.forum.entities.AbstractEntity;
-import ru.shop.forum.entities.utils.ValidationCreateGroup;
-import ru.shop.forum.entities.utils.ValidationUpdateGroup;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import java.io.Serializable;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Getter(value = AccessLevel.PUBLIC)

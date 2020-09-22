@@ -5,9 +5,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.shop.forum.entities.User;
-import ru.shop.forum.services.UserService;
+import ru.shop.entities.User;
 import ru.shop.security.configs.SecurityConfig;
+import ru.shop.services.UserService;
 
 import javax.persistence.NoResultException;
 import java.util.Objects;
@@ -25,7 +25,7 @@ public class ShopUserDetailsService implements UserDetailsService {
 	
 	/**
 	 * @param nickNameOrEmail {@link User#getNickName()} or {@link User#getEmail()}
-	 * @return {@link ShopUserDetails} with {@link ShopUserDetails#setUser(User)}
+	 * @return {@link ShopUserDetails} with {@link ShopUserDetails#setUser(User)} }
 	 * @throws UsernameNotFoundException If no {@link User} found neither for nickname nor for email
 	 */
 	@Override

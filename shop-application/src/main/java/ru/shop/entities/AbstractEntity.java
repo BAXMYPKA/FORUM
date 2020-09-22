@@ -1,9 +1,9 @@
-package ru.shop.forum.entities;
+package ru.shop.entities;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.shop.forum.entities.utils.ValidationCreateGroup;
-import ru.shop.forum.entities.utils.ValidationUpdateGroup;
+import ru.shop.entities.utils.ValidationCreateGroup;
+import ru.shop.entities.utils.ValidationUpdateGroup;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

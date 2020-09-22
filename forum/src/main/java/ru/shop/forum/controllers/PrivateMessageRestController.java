@@ -9,18 +9,19 @@ import ru.shop.forum.services.PrivateMessageService;
 @RestController
 @RequestMapping(path = "/pms")
 public class PrivateMessageRestController extends AbstractForumRestController<PrivateMessage, PrivateMessageDto, PrivateMessageService> {
+	
 	@Override
-	protected void setForumEntityClass(Class<PrivateMessage> forumEntityClass) {
-		this.forumEntityClass = forumEntityClass;
+	protected void setEntityClass(Class<PrivateMessage> entityClass) {
+		this.entityClass = entityClass;
 	}
 	
 	@Override
-	protected void setForumEntityDtoClass(Class<PrivateMessageDto> forumEntityDtoClass) {
-		this.forumEntityDtoClass = forumEntityDtoClass;
+	protected void setEntityDtoClass(Class<PrivateMessageDto> entityDtoClass) {
+		this.entityDtoClass = entityDtoClass;
 	}
 	
 	@Override
-	protected void setForumEntityService(PrivateMessageService forumEntityService) {
-		this.forumEntityService = forumEntityService;
+	protected void setEntityService(PrivateMessageService entityService) {
+		this.entityService = entityService;
 	}
 }

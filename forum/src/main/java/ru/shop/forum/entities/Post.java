@@ -39,6 +39,6 @@ public class Post extends AbstractForumEntity {
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "user_id")
-	private User user;
+	private ForumUser forumUser;
 	
 }

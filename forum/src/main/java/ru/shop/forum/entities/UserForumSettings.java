@@ -6,9 +6,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
 import java.util.TimeZone;
 
 @Getter
@@ -43,5 +40,5 @@ public class UserForumSettings extends AbstractForumEntity {
 	
 	@OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user;
+	private ForumUser forumUser;
 }

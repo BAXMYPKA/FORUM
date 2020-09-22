@@ -1,9 +1,7 @@
 package ru.shop.forum.entities;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
-import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -31,11 +29,11 @@ public class PrivateMessage extends AbstractForumEntity {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "from_user_id", updatable = false)
-	private User fromUser;
+	private ForumUser fromForumUser;
 	
 	@ManyToMany
 	@JoinTable(name = "private_messages_to_user_id", schema = "FORUM",
 			joinColumns = @JoinColumn(name = "private_message_id", updatable = false),
 			inverseJoinColumns = @JoinColumn(name = "to_user_id"))
-	private Set<User> toUsers;
+	private Set<ForumUser> toForumUsers;
 }

@@ -3,22 +3,19 @@ package ru.shop.forum.entities.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import ru.shop.entities.User;
+import ru.shop.entities.dto.AbstractDto;
 import ru.shop.forum.entities.ImgAvatar;
-import ru.shop.forum.entities.User;
-import ru.shop.forum.entities.utils.Sex;
-import ru.shop.forum.entities.utils.UniqueNickname;
-import ru.shop.forum.security.Roles;
+import ru.shop.entities.utils.Sex;
+import ru.shop.entities.utils.UniqueNickname;
+import ru.shop.security.Roles;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class UserDto extends AbstractForumDto<User> {
+public class ForumUserDto extends AbstractDto<User> {
 	
 	@NotEmpty(message = "{field.notEmpty}")
 	@Email(message = "{email.notValid}")
@@ -69,9 +66,8 @@ public class UserDto extends AbstractForumDto<User> {
 	
 	private LocalDate lockedUntil;
 	
-	
 	@Override
-	protected void setAbstractEntityClass(Class<User> abstractEntityClass) {
-		this.abstractEntityClass = abstractEntityClass;
+	protected void setEntityClass(Class<User> entityClass) {
+		this.entityClass = entityClass;
 	}
 }

@@ -1,12 +1,12 @@
-package ru.shop.forum.repositories;
+package ru.shop.repositories;
 
 import org.springframework.stereotype.Repository;
-import ru.shop.forum.entities.User;
+import ru.shop.entities.User;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends ForumEntityRepository<User> {
+public interface UserRepository extends EntityRepository<User> {
 	
 	boolean existsUserByNickName(String nickName);
 	
