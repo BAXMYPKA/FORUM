@@ -1,13 +1,7 @@
 package ru.shop.security.configs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.Context;
-import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -30,8 +24,9 @@ public class SecurityConfig {
 	private UserService userService;
 	
 	
-	//The following method MUST be in a separate @Configuration class file!
+	//The following method MUST be in a separate @Configuration class file!!!!!!!!!!!!!!!!!!!
 	//Otherwise "java.lang.IllegalStateException: No ServletContext set" error will be raised.
+/*
 	@Bean
 	public ServletWebServerFactory servletContainer() {
 		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
@@ -57,6 +52,7 @@ public class SecurityConfig {
 		connector.setRedirectPort(8443);
 		return connector;
 	}
+*/
 	
 	@Bean
 	public UserDetailsService userDetailsService() {
@@ -68,11 +64,11 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder(10);
 	}
 	
-	@Configuration
-	@Order(1)
-	public static class ShopSecurityConfig extends WebSecurityConfigurerAdapter {
-	
-	}
+//	@Configuration
+//	@Order(1)
+//	public static class ShopSecurityConfig extends WebSecurityConfigurerAdapter {
+//
+//	}
 	
 	@Configuration
 	@Order(2)
@@ -90,16 +86,16 @@ public class SecurityConfig {
 				.requiresSecure()
 				.and()
 				.authorizeRequests()
-				.antMatchers("/forum.shop.ru/v.?/user/**", "/forum.shop.ru/v.?/admin/**")
-				.authenticated()
-				.antMatchers("/forum.shop.ru", "/forum.shop.ru/v.?").permitAll()
-				.and()
-				.formLogin()
-				.loginPage("/forum.shop.ru/v.?/login")
-				.permitAll()
-				.and()
-				.logout()
-				.permitAll();
+				.antMatchers("/shop.ru/forum/v?/user/**", "/shop.ru/forum/v?/admin/**").authenticated()
+				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v?").permitAll();
+//				.and()
+//				.formLogin()
+//				.loginPage("/shop.ru/forum/v1.0/login")
+//				.successForwardUrl("/shop.ru/forum/v1.0/")
+//				.permitAll()
+//				.and()
+//				.logout()
+//				.permitAll();
 		}
 		
 	}

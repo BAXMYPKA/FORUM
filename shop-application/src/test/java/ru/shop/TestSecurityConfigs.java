@@ -1,5 +1,6 @@
 package ru.shop;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,7 +10,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Order(1)
-@Configuration
+@TestConfiguration
 public class TestSecurityConfigs extends WebSecurityConfigurerAdapter {
 	
 	@Override
@@ -23,14 +24,14 @@ public class TestSecurityConfigs extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Order(2)
-	@Configuration
+	@TestConfiguration
 	public static class TestForumSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http.authorizeRequests()
-				.antMatchers("/forum.shop.ru/v.?/user/**", "/forum.shop.ru/v.?/admin/**")
+				.antMatchers("/shop.ru/forum/v?/user/**", "/shop.ru/forum/v?/admin/**")
 				.authenticated()
-				.antMatchers("/forum.shop.ru", "/forum.shop.ru/v.?").permitAll()
+				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v?").permitAll()
 				.and()
 				.httpBasic();
 		}

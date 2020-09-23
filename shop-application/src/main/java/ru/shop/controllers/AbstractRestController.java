@@ -27,7 +27,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-public abstract class AbstractRestController <T extends AbstractEntity, D extends AbstractDto<T>, S extends AbstractEntityService<T, ? extends EntityRepository<T>>> {
+@RequestMapping(path = "/shop.ru", produces = {MediaType.APPLICATION_JSON_VALUE})
+public abstract class AbstractRestController <
+	T extends AbstractEntity,
+	D extends AbstractDto<T>,
+	S extends AbstractEntityService<T, ? extends EntityRepository<T>>
+	> {
 	
 	@Autowired
 	protected ModelMapper modelMapper;
@@ -53,7 +58,7 @@ public abstract class AbstractRestController <T extends AbstractEntity, D extend
 	
 	/**
 	 * @param entityService The concrete subclass of {@link AbstractEntityService}
-	 *                           must be set as {@code this.forumEntityService = forumEntityService}
+	 *                      must be set as {@code this.forumEntityService = forumEntityService}
 	 */
 	protected abstract void setEntityService(S entityService);
 	

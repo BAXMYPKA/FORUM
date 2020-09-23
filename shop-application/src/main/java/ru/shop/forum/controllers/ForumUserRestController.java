@@ -1,5 +1,6 @@
 package ru.shop.forum.controllers;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.shop.controllers.AbstractRestController;
@@ -10,7 +11,7 @@ import ru.shop.forum.services.ForumUserService;
 import ru.shop.services.UserService;
 
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping(path = "/shop.ru/forum/v1.0/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ForumUserRestController extends AbstractRestController<ForumUser, ForumUserDto, ForumUserService> {
 	
 	@Override
