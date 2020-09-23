@@ -1,9 +1,19 @@
 package ru.shop.security.configs;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.Context;
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,8 +22,8 @@ import ru.shop.security.ShopUserDetailsService;
 import ru.shop.services.UserService;
 
 @Slf4j
-//@EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	
 	@Autowired
@@ -22,7 +32,6 @@ public class SecurityConfig {
 	
 	//The following method MUST be in a separate @Configuration class file!
 	//Otherwise "java.lang.IllegalStateException: No ServletContext set" error will be raised.
-/*
 	@Bean
 	public ServletWebServerFactory servletContainer() {
 		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
@@ -48,7 +57,6 @@ public class SecurityConfig {
 		connector.setRedirectPort(8443);
 		return connector;
 	}
-*/
 	
 	@Bean
 	public UserDetailsService userDetailsService() {
@@ -60,37 +68,38 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder(10);
 	}
 	
-//	@Configuration
-//	@Order(1)
+	@Configuration
+	@Order(1)
 	public static class ShopSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	}
 	
-//	@Configuration
-//	@Order(2)
+	@Configuration
+	@Order(2)
 	public static class ForumSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		/**
 		 * AntMatchers syntax: https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html
 		 */
+		
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-					.requiresChannel()
-					.anyRequest()
-					.requiresSecure()
-					.and()
-					.authorizeRequests()
-					.antMatchers("/forum.shop.ru/v.?/user/**", "/forum.shop.ru/v.?/admin/**")
-					.authenticated()
-					.antMatchers("/forum.shop.ru/v.?").permitAll()
-					.and()
-					.formLogin()
-					.loginPage("/forum.shop.ru/v.?/login")
-					.permitAll()
-					.and()
-					.logout()
-					.permitAll();
+				.requiresChannel()
+				.anyRequest()
+				.requiresSecure()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/forum.shop.ru/v.?/user/**", "/forum.shop.ru/v.?/admin/**")
+				.authenticated()
+				.antMatchers("/forum.shop.ru", "/forum.shop.ru/v.?").permitAll()
+				.and()
+				.formLogin()
+				.loginPage("/forum.shop.ru/v.?/login")
+				.permitAll()
+				.and()
+				.logout()
+				.permitAll();
 		}
 		
 	}

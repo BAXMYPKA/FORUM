@@ -1,25 +1,22 @@
 package ru.shop.forum.controllers;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
-import ru.shop.ShopApplication;
+import ru.shop.TestSecurityConfigs;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@ExtendWith(SpringExtension.class)
 @WebMvcTest
-//@ContextConfiguration(classes = {ShopApplication.class})
+@AutoConfigureMockMvc
+@ContextConfiguration(classes = {TestSecurityConfigs.class})
 class ForumRestControllerValidationTest {
 
 	@Autowired
@@ -28,8 +25,13 @@ class ForumRestControllerValidationTest {
 	@MockBean
 	private ModelMapper modelMapper;
 	
+	private final String APP_PATH = "/forum.shop.ru";
+	
+	
+	@WithMockUser(username = "Admin", password = "Password", roles = {"ADMIN"})
 	@Test
 	public void testOne() throws Exception {
-		mockMvc.perform(get("/")).andExpect(status().isOk());
+		
+		mockMvc.perform(get(APP_PATH)).andExpect(status().isOk());
 	}
 }
