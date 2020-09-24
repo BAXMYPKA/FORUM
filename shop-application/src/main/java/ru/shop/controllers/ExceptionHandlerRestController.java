@@ -39,4 +39,11 @@ public class ExceptionHandlerRestController {
 		System.out.println(e.getMessage());
 		return new ResponseEntity<>("dsfdsf", HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(value = RuntimeException.class)
+	public ResponseEntity<String> runtimeException(RuntimeException e, WebRequest request) {
+		System.out.println(e.getMessage());
+		return new ResponseEntity<>(e.getMessage() == null ? "NULL" : e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+	
 }

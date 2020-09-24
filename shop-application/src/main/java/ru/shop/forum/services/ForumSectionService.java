@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.shop.entities.User;
 import ru.shop.forum.entities.ForumSection;
 import ru.shop.forum.repositories.ForumEntityRepository;
+import ru.shop.forum.repositories.ForumSectionRepository;
 
 @Service
-public class ForumSectionService extends AbstractForumEntityService<ForumSection, ForumEntityRepository<ForumSection>> {
+public class ForumSectionService extends AbstractForumEntityService<ForumSection, ForumSectionRepository> {
 	
 	
-	public ForumSectionService(ForumEntityRepository<ForumSection> repository) {
+	public ForumSectionService(ForumSectionRepository repository) {
 		super(repository);
 		this.entityClass = ForumSection.class;
 	}

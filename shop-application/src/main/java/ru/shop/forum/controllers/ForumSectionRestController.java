@@ -9,7 +9,7 @@ import ru.shop.forum.entities.dto.ForumSectionDto;
 import ru.shop.forum.services.ForumSectionService;
 
 @RestController
-@RequestMapping(path = "/forum-sections")
+@RequestMapping(path = "/v1.0/forum-sections")
 public class ForumSectionRestController extends AbstractForumRestController<ForumSection, ForumSectionDto, ForumSectionService> {
 	
 	

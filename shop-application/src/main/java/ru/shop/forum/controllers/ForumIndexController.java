@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class ForumIndexController {
 	
 	@GetMapping(path = {"/test"})
-	public ModelAndView getIndex() {
-		return new ModelAndView("index_forum");
+	public String getIndex() {
+		return "index_forum";
 	}
 }

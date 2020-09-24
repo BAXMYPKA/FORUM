@@ -31,7 +31,7 @@ import ru.shop.services.AbstractEntityService;
 public abstract class AbstractForumRestController <
 	T extends AbstractForumEntity,
 	D extends AbstractForumDto<T>,
-	S extends AbstractEntityService<T, ForumEntityRepository<T>>
+	S extends AbstractEntityService<T, ? extends ForumEntityRepository<T>>
 	>
 	extends AbstractRestController<T, D, S> {
 	

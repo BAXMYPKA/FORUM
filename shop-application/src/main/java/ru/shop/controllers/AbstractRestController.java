@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -79,7 +80,7 @@ public abstract class AbstractRestController<
 					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
 					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
 					Pageable pageable) {
-		
+
 		Page<T> entitiesPage = entityService.findAll(pageable);
 		List<D> entitiesDto = entitiesPage.stream()
 				.map(entity -> modelMapper.map(entity, entityDtoClass))

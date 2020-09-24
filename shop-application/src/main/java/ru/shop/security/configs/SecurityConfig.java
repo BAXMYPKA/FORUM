@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,13 +17,40 @@ import ru.shop.security.ShopUserDetailsService;
 import ru.shop.services.UserService;
 
 @Slf4j
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig {
+//@Configuration
+//@EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private UserService userService;
 	
+	/**
+	 * AntMatchers syntax: https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html
+	 */
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+				.requiresChannel()
+				.anyRequest()
+				.requiresSecure()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/shop.ru/forum/v?/admin/**").authenticated()
+				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v?").permitAll()
+				.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.formLogin()
+				.loginPage("/shop.ru/forum/v1.0/login")
+				.successForwardUrl("/shop.ru/forum/v1.0/")
+				.permitAll()
+				.and()
+				.logout()
+				.permitAll();
+	}
 	
 	//The following method MUST be in a separate @Configuration class file!!!!!!!!!!!!!!!!!!!
 	//Otherwise "java.lang.IllegalStateException: No ServletContext set" error will be raised.
@@ -63,40 +91,10 @@ public class SecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
 	}
-	
+
 //	@Configuration
 //	@Order(1)
 //	public static class ShopSecurityConfig extends WebSecurityConfigurerAdapter {
 //
 //	}
-	
-	@Configuration
-	@Order(2)
-	public static class ForumSecurityConfig extends WebSecurityConfigurerAdapter {
-		
-		/**
-		 * AntMatchers syntax: https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html
-		 */
-		
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http
-				.requiresChannel()
-				.anyRequest()
-				.requiresSecure()
-				.and()
-				.authorizeRequests()
-				.antMatchers("/shop.ru/forum/v?/user/**", "/shop.ru/forum/v?/admin/**").authenticated()
-				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v?").permitAll();
-//				.and()
-//				.formLogin()
-//				.loginPage("/shop.ru/forum/v1.0/login")
-//				.successForwardUrl("/shop.ru/forum/v1.0/")
-//				.permitAll()
-//				.and()
-//				.logout()
-//				.permitAll();
-		}
-		
-	}
 }

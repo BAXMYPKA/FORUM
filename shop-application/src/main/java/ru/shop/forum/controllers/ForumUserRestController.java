@@ -1,8 +1,6 @@
 package ru.shop.forum.controllers;
 
-import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +11,7 @@ import ru.shop.forum.services.ForumUserService;
 
 //@NoArgsConstructor
 @RestController
-@RequestMapping(path = "/v1.0/users", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/v1.0/forum-users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ForumUserRestController extends AbstractRestController<ForumUser, ForumUserDto, ForumUserService> {
 	
 	

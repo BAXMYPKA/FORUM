@@ -8,7 +8,7 @@ import ru.shop.forum.entities.dto.PostDto;
 import ru.shop.forum.services.PostService;
 
 @RestController
-@RequestMapping(path = "/posts")
+@RequestMapping(path = "/v1.0/posts")
 public class PostRestController extends AbstractForumRestController<Post, PostDto, PostService> {
 	
 	public PostRestController(PostService entityService, ModelMapper modelMapper) {
