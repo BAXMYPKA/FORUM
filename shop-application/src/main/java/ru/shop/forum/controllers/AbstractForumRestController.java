@@ -1,6 +1,7 @@
 package ru.shop.forum.controllers;
 
 import lombok.Getter;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ import ru.shop.services.AbstractEntityService;
 @Getter
 //@Setter
 @RestController
-@RequestMapping(path = {"/shop.ru/forum/v1.0"}, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public abstract class AbstractForumRestController <
 	T extends AbstractForumEntity,
 	D extends AbstractForumDto<T>,
@@ -35,4 +36,7 @@ public abstract class AbstractForumRestController <
 	extends AbstractRestController<T, D, S> {
 	
 	
+	public AbstractForumRestController(S entityService, ModelMapper modelMapper) {
+		super(entityService, modelMapper);
+	}
 }

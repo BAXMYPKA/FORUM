@@ -1,5 +1,7 @@
 package ru.shop.forum.controllers;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.shop.forum.entities.ForumSection;
@@ -10,18 +12,9 @@ import ru.shop.forum.services.ForumSectionService;
 @RequestMapping(path = "/forum-sections")
 public class ForumSectionRestController extends AbstractForumRestController<ForumSection, ForumSectionDto, ForumSectionService> {
 	
-	@Override
-	protected void setEntityClass(Class<ForumSection> entityClass) {
-		this.entityClass = entityClass;
-	}
 	
-	@Override
-	protected void setEntityDtoClass(Class<ForumSectionDto> entityDtoClass) {
-		this.entityDtoClass = entityDtoClass;
-	}
-	
-	@Override
-	protected void setEntityService(ForumSectionService entityService) {
-		this.entityService = entityService;
+	public ForumSectionRestController(ForumSectionService entityService, ModelMapper modelMapper) {
+		super(entityService, modelMapper);
+		this.entityDtoClass = ForumSectionDto.class;
 	}
 }

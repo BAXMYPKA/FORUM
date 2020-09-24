@@ -2,7 +2,6 @@ package ru.shop.services;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import ru.shop.entities.AbstractEntity;
 import ru.shop.repositories.EntityRepository;
@@ -20,26 +20,31 @@ import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor
+//@NoArgsConstructor
 @Getter
 @Setter
 @Service
-public abstract class AbstractEntityService<T extends AbstractEntity, S extends EntityRepository<T>> {
+public abstract class AbstractEntityService<T extends AbstractEntity, R extends EntityRepository<T>> {
 	
 	@Getter(AccessLevel.PROTECTED)
-	protected S repository;
+	protected R repository;
 	
 	@Autowired
 	protected ModelMapper modelMapper;
 	
+	/**
+	 * MUST be set in every subclass constructor as {@code this.entityClass = Entity<T>.class}
+	 */
+	@NonNull
+	protected Class<T> entityClass;
+	
 	@Value("${spring.data.web.pageable.max-page-size}")
 	private Integer MAX_ENTITIES_AT_ONCE;
 	
-	/**
-	 * @param repository If a special {@link EntityRepository} for a subclass is needed it must be included here.
-	 *                   Otherwise if no specific repository is created just the typed {@link EntityRepository} will be enough here
-	 */
-	protected abstract void setRepository(S repository);
+	@Autowired
+	public AbstractEntityService(R repository) {
+		this.repository = repository;
+	}
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
 	public Optional<T> findOne(Long id) {

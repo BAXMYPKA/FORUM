@@ -1,6 +1,7 @@
 package ru.shop.services;
 
 import lombok.Getter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.shop.entities.User;
@@ -14,6 +15,11 @@ import java.util.Objects;
 @Service
 public class UserService extends AbstractEntityService<User, UserRepository> {
 	
+	
+	public UserService(UserRepository repository) {
+		super(repository);
+		this.entityClass = User.class;
+	}
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
 	public Boolean existsUserByNickName(String nickname) {
@@ -32,8 +38,4 @@ public class UserService extends AbstractEntityService<User, UserRepository> {
 			  .orElseThrow(() -> new NoResultException("No User found for email " + email));
 	}
 	
-	@Override
-	protected void setRepository(UserRepository repository) {
-		this.repository = repository;
-	}
 }

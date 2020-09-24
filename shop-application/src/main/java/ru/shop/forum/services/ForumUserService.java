@@ -1,6 +1,7 @@
 package ru.shop.forum.services;
 
 import lombok.Getter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.shop.forum.entities.ForumUser;
@@ -24,6 +25,11 @@ public class ForumUserService extends AbstractEntityService<ForumUser, ForumUser
 	@Autowired
 	private ForumEntityRepository<ImgAvatar> imgAvatarRepository;
 	
+	public ForumUserService(ForumUserRepository repository) {
+		super(repository);
+		super.entityClass = ForumUser.class;
+	}
+	
 	@Transactional(value = Transactional.TxType.SUPPORTS)
 	public Boolean existsUserByNickName(String nickname) {
 		return repository.existsUserByNickName(Objects.requireNonNullElse(nickname, ""));
@@ -39,10 +45,5 @@ public class ForumUserService extends AbstractEntityService<ForumUser, ForumUser
 	public ForumUser findUserByEmail(String email) throws NoResultException {
 		return repository.findByEmail(Objects.requireNonNullElse(email, ""))
 			  .orElseThrow(() -> new NoResultException("No User found for email " + email));
-	}
-	
-	@Override
-	protected void setRepository(ForumUserRepository repository) {
-		this.repository = repository;
 	}
 }

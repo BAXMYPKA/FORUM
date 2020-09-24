@@ -1,29 +1,25 @@
 package ru.shop.configs;
 
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 //@EnableWebMvc
-public class WebMvcConfig {
-
-	private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
-		"classpath:/resources/", "classpath:/static/", "classpath:/public/" };
+public class WebMvcConfig implements WebMvcConfigurer {
 	
-//	@Override
-//	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//		registry.addResourceHandler("/static/**")
-//		.addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
-//	}
+	@Override
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+		registry.viewResolver(viewResolver());
+	}
 	
-//	@Bean
-//	public InternalResourceViewResolver defaultViewResolver() {
-//		return new InternalResourceViewResolver();
-//	}
+	@Bean
+	public ViewResolver viewResolver() {
+		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+		viewResolver.setSuffix(".html");
+		return viewResolver;
+	}
 }

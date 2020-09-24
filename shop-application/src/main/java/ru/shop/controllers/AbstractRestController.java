@@ -2,15 +2,18 @@ package ru.shop.controllers;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.shop.entities.AbstractEntity;
@@ -26,15 +29,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+//@NoArgsConstructor
 @RestController
-@RequestMapping(path = "/shop.ru", produces = {MediaType.APPLICATION_JSON_VALUE})
-public abstract class AbstractRestController <
-	T extends AbstractEntity,
-	D extends AbstractDto<T>,
-	S extends AbstractEntityService<T, ? extends EntityRepository<T>>
-	> {
+@RequestMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
+public abstract class AbstractRestController<
+		T extends AbstractEntity,
+		D extends AbstractDto<T>,
+		S extends AbstractEntityService<T, ? extends EntityRepository<T>>
+		> {
 	
-	@Autowired
 	protected ModelMapper modelMapper;
 	
 	@Getter(AccessLevel.PROTECTED)
@@ -42,25 +45,18 @@ public abstract class AbstractRestController <
 	
 	protected Class<T> entityClass;
 	
+	/**
+	 * MUST be set in every constructor in subclasses as {@code this.entityDtoClass = EntityDto<D>.class}
+	 */
+	@NonNull
 	protected Class<D> entityDtoClass;
 	
-	/**
-	 * The concrete subclass of the {@link AbstractEntity}
-	 * must be set as {@code this.entityClass = <T extends AbstractEntity>.getClass}
-	 */
-	protected abstract void setEntityClass(Class<T> entityClass);
-	
-	/**
-	 * The concrete subclass of {@link AbstractDto} for the existing {@link #entityClass}
-	 * must be set as {@code this.entityDtoClass = <T extends AbstractDtoEntity>.getClass}
-	 */
-	protected abstract void setEntityDtoClass(Class<D> entityDtoClass);
-	
-	/**
-	 * @param entityService The concrete subclass of {@link AbstractEntityService}
-	 *                      must be set as {@code this.forumEntityService = forumEntityService}
-	 */
-	protected abstract void setEntityService(S entityService);
+	@Autowired
+	public AbstractRestController(S entityService, ModelMapper modelMapper) {
+		this.modelMapper = modelMapper;
+		this.entityService = entityService;
+		this.entityClass = entityService.getEntityClass();
+	}
 	
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public D getOne(@PathVariable Long id) {
@@ -76,31 +72,32 @@ public abstract class AbstractRestController <
 	 * .param("sort", "id,desc")   // <-- no space after comma!
 	 * .param("sort", "name,asc")) // <-- no space after comma!
 	 */
-	@GetMapping(params = {"page", "size", "sort"}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<D> getAllPageable(
-		@SortDefault.SortDefaults({
-			@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
-			@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
-			Pageable pageable) {
+			@PageableDefault
+			@SortDefault.SortDefaults({
+					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
+					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
+					Pageable pageable) {
 		
 		Page<T> entitiesPage = entityService.findAll(pageable);
 		List<D> entitiesDto = entitiesPage.stream()
-			.map(entity -> modelMapper.map(entity, entityDtoClass))
-			.collect(Collectors.toList());
+				.map(entity -> modelMapper.map(entity, entityDtoClass))
+				.collect(Collectors.toList());
 		return new PageImpl<D>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
 	
 	@GetMapping(path = "/all-by-ids", params = {"page", "size", "sort"}, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<D> getAllByIds(
-		@SortDefault.SortDefaults({
-			@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
-			@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
-			Pageable pageable, @RequestParam Map<String, Long> ids) {
+			@SortDefault.SortDefaults({
+					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
+					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
+					Pageable pageable, @RequestParam Map<String, Long> ids) {
 		
 		Page<T> entitiesPage = entityService.findAllByIds(pageable, ids.values());
 		List<D> entitiesDto = entitiesPage.stream()
-			.map(entity -> modelMapper.map(entity, entityDtoClass))
-			.collect(Collectors.toList());
+				.map(entity -> modelMapper.map(entity, entityDtoClass))
+				.collect(Collectors.toList());
 		return new PageImpl<>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
 	
@@ -119,7 +116,7 @@ public abstract class AbstractRestController <
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public D postNewOne(
-		@Validated(value = {Default.class, ValidationCreateGroup.class}) @RequestBody D forumDto) {
+			@Validated(value = {Default.class, ValidationCreateGroup.class}) @RequestBody D forumDto) {
 		
 		T forumEntity = modelMapper.map(forumDto, entityClass);
 		T savedForumEntity = entityService.save(forumEntity);
