@@ -8,7 +8,7 @@ import ru.shop.forum.entities.dto.PrivateMessageDto;
 import ru.shop.forum.services.PrivateMessageService;
 
 @RestController
-@RequestMapping(path = "/pms")
+@RequestMapping(path = "/v1.0/pms")
 public class PrivateMessageRestController extends AbstractForumRestController<PrivateMessage, PrivateMessageDto, PrivateMessageService> {
 	
 	public PrivateMessageRestController(PrivateMessageService entityService, ModelMapper modelMapper) {

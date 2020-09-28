@@ -7,6 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Null is valid.
+ */
 @Constraint(validatedBy = NickNameValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })

@@ -2,6 +2,7 @@ package ru.shop.forum.entities;
 
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
+import ru.shop.entities.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -25,5 +26,5 @@ public class ImgAvatar extends AbstractForumEntity {
 	private byte[] img;
 	
 	@OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "avatar", cascade = CascadeType.ALL)
-	private ForumUser forumUser;
+	private User user;
 }

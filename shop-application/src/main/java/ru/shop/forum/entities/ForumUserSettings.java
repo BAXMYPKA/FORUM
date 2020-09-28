@@ -2,6 +2,7 @@ package ru.shop.forum.entities;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.shop.entities.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -40,5 +41,5 @@ public class ForumUserSettings extends AbstractForumEntity {
 	
 	@OneToOne(orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private ForumUser forumUser;
+	private User user;
 }

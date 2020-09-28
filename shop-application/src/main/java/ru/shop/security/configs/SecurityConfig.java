@@ -17,9 +17,9 @@ import ru.shop.security.ShopUserDetailsService;
 import ru.shop.services.UserService;
 
 @Slf4j
-//@Configuration
-//@EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired

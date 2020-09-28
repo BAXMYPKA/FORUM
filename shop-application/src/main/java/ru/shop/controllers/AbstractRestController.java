@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.shop.entities.AbstractEntity;
@@ -60,7 +61,7 @@ public abstract class AbstractRestController<
 	}
 	
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public D getOne(@PathVariable Long id) {
+	public D getOne(@PathVariable Long id, Authentication authentication) {
 		
 		AbstractEntity entity = entityService.findOne(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
 		return modelMapper.map(entity, entityDtoClass);

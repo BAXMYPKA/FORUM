@@ -3,6 +3,7 @@ package ru.shop.forum.entities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import ru.shop.entities.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -39,6 +40,6 @@ public class Post extends AbstractForumEntity {
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "user_id")
-	private ForumUser forumUser;
+	private User user;
 	
 }

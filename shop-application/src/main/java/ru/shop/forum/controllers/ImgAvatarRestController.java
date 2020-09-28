@@ -8,7 +8,7 @@ import ru.shop.forum.entities.dto.ImgAvatarDto;
 import ru.shop.forum.services.ImgAvatarService;
 
 @RestController
-@RequestMapping(path = "/img-avatars")
+@RequestMapping(path = "/v1.0/img-avatars")
 public class ImgAvatarRestController extends AbstractForumRestController<ImgAvatar, ImgAvatarDto, ImgAvatarService> {
 	
 	public ImgAvatarRestController(ImgAvatarService entityService, ModelMapper modelMapper) {

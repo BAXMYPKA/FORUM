@@ -3,6 +3,7 @@ package ru.shop.services;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.shop.entities.User;
 import ru.shop.repositories.UserRepository;
@@ -15,10 +16,18 @@ import java.util.Objects;
 @Service
 public class UserService extends AbstractEntityService<User, UserRepository> {
 	
+	private PasswordEncoder passwordEncoder;
 	
-	public UserService(UserRepository repository) {
+	public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
 		super(repository);
 		this.entityClass = User.class;
+		this.passwordEncoder = passwordEncoder;
+	}
+	
+	@Transactional(value = Transactional.TxType.REQUIRED)
+	public User saveUser(User user) {
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		return repository.save(user);
 	}
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)

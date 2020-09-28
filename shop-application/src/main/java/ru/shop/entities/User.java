@@ -4,6 +4,10 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.shop.entities.utils.Sex;
 import ru.shop.entities.utils.UniqueNickname;
+import ru.shop.forum.entities.ForumUserSettings;
+import ru.shop.forum.entities.ImgAvatar;
+import ru.shop.forum.entities.Post;
+import ru.shop.forum.entities.PrivateMessage;
 import ru.shop.security.Roles;
 
 import javax.persistence.*;
@@ -84,8 +88,32 @@ public class User extends AbstractEntity {
 //	@Convert(converter = RolesConverter.class) //No need if "autoApply=true" in the @Converter
 	private Roles role = Roles.USER;
 	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "avatar_id")
+	private ImgAvatar avatar;
+	
+	@OneToMany(mappedBy = "updatedBy")
+	private Set<Post> postsUpdatedBy;
+	
+	@OneToOne(optional = false, orphanRemoval = true, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private ForumUserSettings userForumSettings = new ForumUserSettings();
+	
+	@OneToMany(mappedBy = "fromUser")
+	private Set<PrivateMessage> privateMessagesFrom;
+	
+	@ManyToMany(mappedBy = "toUsers")
+	private Set<PrivateMessage> privateMessagesTo;
+	
 	//	private Address address;
 
 //	private Set<Phone> phones;
-
+	
+	@PrePersist
+	@Override
+	public void prePersist() {
+		super.prePersist();
+		if (this.nickName == null || this.nickName.isBlank()) {
+			this.nickName = this.email.substring(0, this.email.indexOf("@"));
+		}
+	}
 }
