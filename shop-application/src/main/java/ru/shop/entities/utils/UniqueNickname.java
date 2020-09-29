@@ -8,7 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Null is valid.
+ * Null is considered valid.
+ * Empty or blank string is considered not valid.
  */
 @Constraint(validatedBy = NickNameValidator.class)
 @Retention(RetentionPolicy.RUNTIME)

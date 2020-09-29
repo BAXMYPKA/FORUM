@@ -1,26 +1,26 @@
 package ru.shop.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 import ru.shop.entities.User;
+import ru.shop.repositories.UserRepository;
 import ru.shop.security.configs.SecurityConfig;
 import ru.shop.services.UserService;
 
 import javax.persistence.NoResultException;
 import java.util.Objects;
+import java.util.Optional;
 
 public class ShopUserDetailsService implements UserDetailsService {
 	
-	private UserService userService;
+	private UserRepository userRepository;
 	
 	/**
-	 * @param userService bean ss included in {@link SecurityConfig#userDetailsService()}
+	 * @param userRepository bean ss included in {@link SecurityConfig#userDetailsService()}
 	 */
-	public ShopUserDetailsService(UserService userService) {
-		this.userService = userService;
+	public ShopUserDetailsService(UserRepository userRepository) {
+		this.userRepository = userRepository;
 	}
 	
 	/**
@@ -30,18 +30,13 @@ public class ShopUserDetailsService implements UserDetailsService {
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String nickNameOrEmail) throws UsernameNotFoundException {
-		nickNameOrEmail = Objects.requireNonNullElse(nickNameOrEmail, "");
-		User user = null;
-		try {
-			user = userService.findUserByNickname(nickNameOrEmail);
-		} catch (NoResultException e) {
-			user = userService.findUserByEmail(nickNameOrEmail);
-		} finally {
-			if (user != null) {
-				return new ShopUserDetails(user);
-			} else {
-				throw new UsernameNotFoundException("No user found for = " + nickNameOrEmail);
-			}
-		}
+		if (nickNameOrEmail == null || nickNameOrEmail.isBlank())
+			throw new UsernameNotFoundException("Nickname or email is null or empty!");
+		
+		User user = userRepository.findByNickName(nickNameOrEmail)
+				.orElseGet(() -> userRepository.findByNickName(nickNameOrEmail)
+						.orElseThrow(() -> new NoResultException("No user found for = " + nickNameOrEmail)));
+		return new ShopUserDetails(user);
 	}
 }
+

@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(properties = {"spring.jpa.properties.javax.persistence.validation.mode=none"})

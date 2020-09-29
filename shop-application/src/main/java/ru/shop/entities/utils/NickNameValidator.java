@@ -25,6 +25,11 @@ public class NickNameValidator implements ConstraintValidator<UniqueNickname, St
 	
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+		if (value == null){
+			return true;
+		} else if (value.isBlank()) {
+			return false;
+		}
 		return userService.existsUserByNickName(Objects.requireNonNullElse(value, ""));
 	}
 }

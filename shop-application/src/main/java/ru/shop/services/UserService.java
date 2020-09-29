@@ -24,8 +24,9 @@ public class UserService extends AbstractEntityService<User, UserRepository> {
 		this.passwordEncoder = passwordEncoder;
 	}
 	
+	@Override
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public User saveUser(User user) {
+	public User save(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		return repository.save(user);
 	}

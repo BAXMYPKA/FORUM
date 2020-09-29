@@ -33,9 +33,8 @@ public class User extends AbstractEntity {
 	@Column(unique = true, nullable = false)
 	private String email;
 	
-	//TODO: to salt
 	@Pattern(message = "{field.password}", regexp = "^[\\d\\w]{3,}$")
-	@Column(nullable = false)
+	@Column(nullable = false, length = 255)
 	private String password;
 	
 	@UniqueNickname(message = "{user.nonUniqueNickname}")

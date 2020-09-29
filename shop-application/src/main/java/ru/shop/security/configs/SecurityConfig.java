@@ -3,8 +3,10 @@ package ru.shop.security.configs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,17 +15,18 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.shop.repositories.UserRepository;
 import ru.shop.security.ShopUserDetailsService;
-import ru.shop.services.UserService;
 
 @Slf4j
 @Configuration
+@ComponentScan(basePackages = {"ru.shop.security"})
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
-	private UserService userService;
+	private UserRepository userRepository;
 	
 	/**
 	 * AntMatchers syntax: https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html
@@ -52,7 +55,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.permitAll();
 	}
 	
-	//The following method MUST be in a separate @Configuration class file!!!!!!!!!!!!!!!!!!!
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(authenticationProvider());
+	}
+
+//The following method MUST be in a separate @Configuration class file!!!!!!!!!!!!!!!!!!!
 	//Otherwise "java.lang.IllegalStateException: No ServletContext set" error will be raised.
 /*
 	@Bean
@@ -84,14 +92,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Bean
 	public UserDetailsService userDetailsService() {
-		return new ShopUserDetailsService(userService);
+		return new ShopUserDetailsService(userRepository);
 	}
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
 	}
-
+	
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setPasswordEncoder(passwordEncoder());
+		authenticationProvider.setUserDetailsService(userDetailsService());
+		return authenticationProvider;
+	}
 //	@Configuration
 //	@Order(1)
 //	public static class ShopSecurityConfig extends WebSecurityConfigurerAdapter {
