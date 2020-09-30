@@ -34,11 +34,11 @@ import java.util.stream.Collectors;
 //@NoArgsConstructor
 @RestController
 @RequestMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-public abstract class AbstractRestController<
-		T extends AbstractEntity,
-		D extends AbstractDto<T>,
-		S extends AbstractEntityService<T, ? extends EntityRepository<T>>
-		> {
+public abstract class AbstractRestController <
+	T extends AbstractEntity,
+	D extends AbstractDto<T>,
+	S extends AbstractEntityService<T, ? extends EntityRepository<T>>
+	> {
 	
 	protected ModelMapper modelMapper;
 	
@@ -76,30 +76,31 @@ public abstract class AbstractRestController<
 	 */
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<D> getAllPageable(
-			@PageableDefault
-			@SortDefault.SortDefaults({
-					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
-					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
-					Pageable pageable) {
-
+		@PageableDefault
+		@SortDefault.SortDefaults({
+			@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
+			@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
+			Pageable pageable) {
+		
 		Page<T> entitiesPage = entityService.findAll(pageable);
 		List<D> entitiesDto = entitiesPage.stream()
-				.map(entity -> modelMapper.map(entity, entityDtoClass))
-				.collect(Collectors.toList());
+			.map(entity -> modelMapper.map(entity, entityDtoClass))
+			.collect(Collectors.toList());
 		return new PageImpl<D>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
 	
 	@GetMapping(path = "/all-by-ids", params = {"page", "size", "sort"}, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<D> getAllByIds(
-			@SortDefault.SortDefaults({
-					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
-					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
-					Pageable pageable, @RequestParam Map<String, Long> ids) {
+		@SortDefault.SortDefaults({
+			@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
+			@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
+			Pageable pageable,
+		@RequestParam Map<String, Long> ids) {
 		
 		Page<T> entitiesPage = entityService.findAllByIds(pageable, ids.values());
 		List<D> entitiesDto = entitiesPage.stream()
-				.map(entity -> modelMapper.map(entity, entityDtoClass))
-				.collect(Collectors.toList());
+			.map(entity -> modelMapper.map(entity, entityDtoClass))
+			.collect(Collectors.toList());
 		return new PageImpl<>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
 	
@@ -118,11 +119,11 @@ public abstract class AbstractRestController<
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public D postNewOne(
-			@Validated(value = {Default.class, ValidationCreateGroup.class}) @RequestBody D forumDto) {
+		@Validated(value = {Default.class, ValidationCreateGroup.class}) @RequestBody D entityDto) {
 		
-		T forumEntity = modelMapper.map(forumDto, entityClass);
-		T savedForumEntity = entityService.save(forumEntity);
-		return modelMapper.map(savedForumEntity, entityDtoClass);
+		T entity = modelMapper.map(entityDto, entityClass);
+		T savedEntity = entityService.save(entity);
+		return modelMapper.map(savedEntity, entityDtoClass);
 	}
 	
 /*
@@ -138,11 +139,11 @@ public abstract class AbstractRestController<
 */
 	
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public D putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody D forumDto) {
+	public D putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody D entityDto) {
 		
-		T forumEntity = modelMapper.map(forumDto, entityClass);
-		forumEntity = entityService.update(forumEntity);
-		return modelMapper.map(forumEntity, entityDtoClass);
+		T entity = modelMapper.map(entityDto, entityClass);
+		entity = entityService.update(entity);
+		return modelMapper.map(entity, entityDtoClass);
 	}
 	
 /*

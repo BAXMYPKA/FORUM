@@ -20,10 +20,10 @@ import ru.shop.security.ShopUserDetailsService;
 
 @Slf4j
 @Configuration
-@ComponentScan(basePackages = {"ru.shop.security"})
+//@ComponentScan(basePackages = {"ru.shop.security"})
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -35,24 +35,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-				.requiresChannel()
-				.anyRequest()
-				.requiresSecure()
-				.and()
-				.authorizeRequests()
-				.antMatchers("/shop.ru/forum/v?/admin/**").authenticated()
-				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v?").permitAll()
-				.and()
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and()
-				.formLogin()
-				.loginPage("/shop.ru/forum/v1.0/login")
-				.successForwardUrl("/shop.ru/forum/v1.0/")
-				.permitAll()
-				.and()
-				.logout()
-				.permitAll();
+			.requiresChannel()
+			.anyRequest()
+			.requiresSecure()
+			.and()
+			.authorizeRequests()
+			.antMatchers("/shop.ru/forum/v?/admin/**").authenticated()
+			.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
+			.and()
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.formLogin()
+			.loginPage("/shop.ru/forum/v1.0/login")
+			.successForwardUrl("/shop.ru/forum/v1.0/")
+			.permitAll()
+			.and()
+			.logout()
+			.permitAll();
 	}
 	
 	@Override
