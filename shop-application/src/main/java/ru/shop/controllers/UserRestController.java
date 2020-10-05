@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.shop.entities.User;
@@ -22,21 +23,18 @@ public class UserRestController extends AbstractRestController<User, UserDto, Us
 	@GetMapping(path = "/{id}")
 	@Override
 	public UserDto getOne(@PathVariable Long id, Authentication authentication) {
-		System.out.println("GET ONE POST CONTROLLER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		return super.getOne(id, authentication);
 	}
 	
 	@GetMapping
 	@Override
 	public Page<UserDto> getAllPageable(Pageable pageable) {
-		System.out.println("GET ALL POST CONTROLLER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		return super.getAllPageable(pageable);
 	}
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@Override
-	public UserDto postNewOne(UserDto entityDto) {
-		System.out.println("POST CONTROLLER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+	public ResponseEntity<UserDto> postNewOne(UserDto entityDto) {
 		return super.postNewOne(entityDto);
 	}
 }

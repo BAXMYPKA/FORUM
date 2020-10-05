@@ -19,5 +19,5 @@ public abstract class AbstractDto<T extends AbstractEntity> {
 	@NotNull(groups = ValidationUpdateGroup.class, message = "{field.notEmpty}")
 	private Long id;
 	
-	protected abstract void setEntityClass(Class<T> entityClass);
+//	protected abstract void setEntityClass(Class<T> entityClass);
 }

@@ -65,8 +65,7 @@ public class UserDto extends AbstractDto<User> {
 	
 	private LocalDate lockedUntil;
 	
-	@Override
-	protected void setEntityClass(Class<User> entityClass) {
+	public void setEntityClass(Class<User> entityClass) {
 		this.entityClass = entityClass;
 	}
 }

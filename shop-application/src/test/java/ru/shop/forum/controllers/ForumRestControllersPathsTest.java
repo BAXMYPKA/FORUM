@@ -1,5 +1,6 @@
 package ru.shop.forum.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -7,17 +8,22 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import ru.shop.entities.User;
 import ru.shop.forum.entities.Post;
+import ru.shop.forum.entities.dto.PostDto;
 import ru.shop.forum.services.PostService;
 import ru.shop.forum.services.PrivateMessageService;
 import ru.shop.repositories.UserRepository;
 
-import java.util.*;
+import java.util.Optional;
 
 @WebMvcTest(controllers = {ForumIndexController.class, PostRestController.class, PrivateMessageRestController.class})
 public class ForumRestControllersPathsTest {
@@ -39,6 +45,9 @@ public class ForumRestControllersPathsTest {
 	
 	@MockBean
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	@BeforeEach
 	private void beforeEach() {
@@ -87,10 +96,42 @@ public class ForumRestControllersPathsTest {
 	@Test
 	public void delete_One_Post_Should_Return_OK() throws Exception {
 		//given
+		postRestController.setEntityClass(Post.class);
 		//when
-		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/posts/0").secure(true))
+		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/posts/0")
+				.secure(true)
+				.with(SecurityMockMvcRequestPostProcessors.csrf()))
 			.andDo(MockMvcResultHandlers.print())
-			.andExpect(MockMvcResultMatchers.status().isOk());
+			.andExpect(MockMvcResultMatchers.status().isNoContent());
+	}
+	
+	@Test
+	public void delete_All_Posts_By_Ids_Should_Return_OK() throws Exception {
+		//given
+		postRestController.setEntityClass(Post.class);
+		//when
+		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/posts/all-by-ids?id=0,1,2")
+				.secure(true)
+				.with(SecurityMockMvcRequestPostProcessors.csrf()))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isNoContent());
+	}
+	
+	@Test
+	public void post_One_Post_Should_Return_OK() throws Exception {
+		//given
+		PostDto postDto = new PostDto();
+		System.out.println(objectMapper.writeValueAsString(postDto));
+		postRestController.setEntityClass(Post.class);
+		//when
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/posts")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(postDto))
+				.secure(true)
+				.with(SecurityMockMvcRequestPostProcessors.csrf()))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isCreated());
+		
 	}
 	
 }

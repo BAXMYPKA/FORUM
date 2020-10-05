@@ -3,6 +3,7 @@ package ru.shop.controllers;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,17 +34,18 @@ import java.util.stream.Collectors;
 //@NoArgsConstructor
 @RestController
 @RequestMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-public abstract class AbstractRestController <
-	T extends AbstractEntity,
-	D extends AbstractDto<T>,
-	S extends AbstractEntityService<T, ? extends EntityRepository<T>>
-	> {
+public abstract class AbstractRestController<
+		T extends AbstractEntity,
+		D extends AbstractDto<T>,
+		S extends AbstractEntityService<T, ? extends EntityRepository<T>>
+		> {
 	
 	protected ModelMapper modelMapper;
 	
 	@Getter(AccessLevel.PROTECTED)
 	protected S entityService;
 	
+	@Setter
 	protected Class<T> entityClass;
 	
 	/**
@@ -75,57 +77,58 @@ public abstract class AbstractRestController <
 	 */
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<D> getAllPageable(
-		@PageableDefault
-		@SortDefault.SortDefaults({
-			@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
-			@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
-			Pageable pageable) {
+			@PageableDefault
+			@SortDefault.SortDefaults({
+					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
+					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
+					Pageable pageable) {
 		
 		Page<T> entitiesPage = entityService.findAll(pageable);
 		List<D> entitiesDto = entitiesPage.stream()
-			.map(entity -> modelMapper.map(entity, entityDtoClass))
-			.collect(Collectors.toList());
+				.map(entity -> modelMapper.map(entity, entityDtoClass))
+				.collect(Collectors.toList());
 		return new PageImpl<D>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
 	
 	/**
-	 * @param id "/all-by-ids?id=1&id=2" etc.
+	 * @param id "/all-by-ids?id=1,2" etc.
 	 */
 	@GetMapping(path = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<D> getAllByIds(
-		@SortDefault.SortDefaults({
-			@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
-			@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
-			Pageable pageable,
-		@RequestParam Set<Long> id) {
+			@PageableDefault
+			@SortDefault.SortDefaults({
+					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
+					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
+					Pageable pageable,
+			@RequestParam Set<Long> id) {
 		
 		Page<T> entitiesPage = entityService.findAllByIds(pageable, id);
 		List<D> entitiesDto = entitiesPage.stream()
-			.map(entity -> modelMapper.map(entity, entityDtoClass))
-			.collect(Collectors.toList());
+				.map(entity -> modelMapper.map(entity, entityDtoClass))
+				.collect(Collectors.toList());
 		return new PageImpl<>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
 	
 	@DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> deleteOne(@PathVariable Long id) {
-		
 		entityService.deleteOne(id);
-		return ResponseEntity.ok().body("The " + entityClass.getSimpleName() + " with the given ID = " + id + " has been deleted.");
+		return new ResponseEntity<>(
+				"The " + entityClass.getSimpleName() + " with the given ID = " + id + " has been deleted.", HttpStatus.NO_CONTENT);
 	}
 	
 	@DeleteMapping(path = "/all-by-ids")
-	public ResponseEntity<String> deleteAllByIds(@RequestParam Map<String, Long> ids) {
-		entityService.deleteAll(ids.values());
-		return ResponseEntity.ok("All entities with the given ids have been deleted!");
+	public ResponseEntity<String> deleteAllByIds(@RequestParam Set<Long> id) {
+		entityService.deleteAll(id);
+		return new ResponseEntity<>("All entities with the given ids = " + id + " have been deleted!", HttpStatus.NO_CONTENT);
 	}
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public D postNewOne(
-		@Validated(value = {Default.class, ValidationCreateGroup.class}) @RequestBody D entityDto) {
+	public ResponseEntity<D> postNewOne(
+			@Validated(value = {ValidationCreateGroup.class}) D entityDto) {
 		
 		T entity = modelMapper.map(entityDto, entityClass);
 		T savedEntity = entityService.save(entity);
-		return modelMapper.map(savedEntity, entityDtoClass);
+		return new ResponseEntity<D>(modelMapper.map(savedEntity, entityDtoClass), HttpStatus.CREATED);
 	}
 	
 /*
@@ -141,11 +144,11 @@ public abstract class AbstractRestController <
 */
 	
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public D putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody D entityDto) {
+	public ResponseEntity<D> putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody D entityDto) {
 		
 		T entity = modelMapper.map(entityDto, entityClass);
 		entity = entityService.update(entity);
-		return modelMapper.map(entity, entityDtoClass);
+		return new ResponseEntity<D>(modelMapper.map(entity, entityDtoClass), HttpStatus.OK);
 	}
 	
 /*
