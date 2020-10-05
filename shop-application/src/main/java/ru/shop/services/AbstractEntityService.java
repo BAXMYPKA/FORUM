@@ -18,7 +18,9 @@ import ru.shop.repositories.EntityRepository;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 //@NoArgsConstructor
 @Getter
@@ -57,9 +59,10 @@ public abstract class AbstractEntityService<T extends AbstractEntity, R extends 
 	}
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
-	public Page<T> findAllByIds(Pageable pageable, Collection<Long> ids) {
+	public Page<T> findAllByIds(Pageable pageable, Set<Long> ids) throws IllegalArgumentException {
+		if (ids == null) throw new IllegalArgumentException("A collection of id's cannot be null!");
 		if (ids.size() > MAX_ENTITIES_AT_ONCE) {
-			ids = ids.stream().limit(50).collect(Collectors.toList());
+			ids = ids.stream().limit(50).collect(Collectors.toSet());
 		}
 		//TODO: to create pageable response based on pageable info
 		

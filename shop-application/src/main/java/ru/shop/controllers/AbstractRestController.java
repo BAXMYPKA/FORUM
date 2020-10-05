@@ -27,8 +27,7 @@ import ru.shop.services.AbstractEntityService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.groups.Default;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //@NoArgsConstructor
@@ -89,15 +88,18 @@ public abstract class AbstractRestController <
 		return new PageImpl<D>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
 	
-	@GetMapping(path = "/all-by-ids", params = {"page", "size", "sort"}, produces = MediaType.APPLICATION_JSON_VALUE)
+	/**
+	 * @param id "/all-by-ids?id=1&id=2" etc.
+	 */
+	@GetMapping(path = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<D> getAllByIds(
 		@SortDefault.SortDefaults({
 			@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
 			@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
 			Pageable pageable,
-		@RequestParam Map<String, Long> ids) {
+		@RequestParam Set<Long> id) {
 		
-		Page<T> entitiesPage = entityService.findAllByIds(pageable, ids.values());
+		Page<T> entitiesPage = entityService.findAllByIds(pageable, id);
 		List<D> entitiesDto = entitiesPage.stream()
 			.map(entity -> modelMapper.map(entity, entityDtoClass))
 			.collect(Collectors.toList());

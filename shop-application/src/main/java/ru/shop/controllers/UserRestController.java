@@ -1,11 +1,11 @@
 package ru.shop.controllers;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
 import ru.shop.services.UserService;
@@ -17,6 +17,20 @@ public class UserRestController extends AbstractRestController<User, UserDto, Us
 	public UserRestController(UserService entityService, ModelMapper modelMapper) {
 		super(entityService, modelMapper);
 		this.entityDtoClass = UserDto.class;
+	}
+	
+	@GetMapping(path = "/{id}")
+	@Override
+	public UserDto getOne(@PathVariable Long id, Authentication authentication) {
+		System.out.println("GET ONE POST CONTROLLER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		return super.getOne(id, authentication);
+	}
+	
+	@GetMapping
+	@Override
+	public Page<UserDto> getAllPageable(Pageable pageable) {
+		System.out.println("GET ALL POST CONTROLLER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		return super.getAllPageable(pageable);
 	}
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -3,10 +3,8 @@ package ru.shop.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,11 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -29,26 +23,25 @@ import ru.shop.entities.dto.UserDto;
 import ru.shop.entities.utils.Sex;
 import ru.shop.forum.repositories.ForumSectionRepository;
 import ru.shop.repositories.UserRepository;
-import ru.shop.security.configs.SecurityConfig;
 import ru.shop.security.configs.TestSecurityConfig;
 import ru.shop.services.UserService;
 
-import javax.servlet.Filter;
 import java.time.LocalDate;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-//@WebMvcTest(controllers = {UserRestController.class})
-@Import({TestSecurityConfig.class})
+@WebMvcTest(controllers = {UserRestController.class})
+@Import({UserRestController.class})
 //@ContextConfiguration(classes = {SecurityConfig.class, WebMvcConfig.class})
 //@ContextConfiguration
 //@ExtendWith(SpringExtension.class)
 //@WebMvcTest(controllers = {UserRestController.class})
 //@WebAppConfiguration
-@AutoConfigureMockMvc
+//@AutoConfigureMockMvc
 //@EnableAutoConfiguration(exclude = {SecurityConfig.class})
-@WithMockUser(username = "Admin", password = "Password", roles = {"ADMIN"})
-@ActiveProfiles(profiles = {"test"})
+//@WithMockUser(username = "Admin", password = "Password", roles = {"ADMIN"})
+//	@WithMockUser
+//@ActiveProfiles(profiles = {"test"})
 class RestControllersValidationTest {
 	
 	//	@LocalServerPort
@@ -70,7 +63,8 @@ class RestControllersValidationTest {
 //	@Autowired
 //	private Filter springSecurityFilterChain;
 	
-	@Autowired
+//	@Autowired
+	@MockBean
 	private ModelMapper modelMapper;
 
 	private User user;
@@ -94,10 +88,17 @@ class RestControllersValidationTest {
 	}
 	
 	@Test
+	public void getOne() throws Exception {
+		userDto.setEmail("notValidEmail");
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/users/0")
+			.accept(MediaType.APPLICATION_JSON)
+		).andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
 	public void tst() throws Exception {
 		userDto.setEmail("notValidEmail");
 		mockMvc.perform(MockMvcRequestBuilders.post("/shop.ru/forum/v1.0/users")
-			.secure(false)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(userDto))
 			.accept(MediaType.APPLICATION_JSON)
