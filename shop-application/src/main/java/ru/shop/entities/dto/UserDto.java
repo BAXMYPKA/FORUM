@@ -1,9 +1,12 @@
 package ru.shop.entities.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.shop.entities.User;
+import ru.shop.entities.utils.ShopViews;
+import ru.shop.entities.utils.ValidationCreateGroup;
 import ru.shop.forum.entities.ImgAvatar;
 import ru.shop.entities.utils.Sex;
 import ru.shop.entities.utils.UniqueNickname;
@@ -16,23 +19,29 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserDto extends AbstractDto<User> {
 	
+	@JsonView(ShopViews.UserDtoExt.class)
 	@NotEmpty(message = "{field.notEmpty}")
 	@Email(message = "{email.notValid}")
 	private String email;
 	
-//	@Pattern(message = "{field.password}", regexp = "^[\\d\\w]{3,}$")
-//	private String password;
+	@JsonView(ShopViews.UserDtoInt.class)
+	@Pattern(groups = {ValidationCreateGroup.class}, message = "{field.password}", regexp = "^[\\d\\w]{3,}$")
+	private String password;
 	
+	@JsonView(ShopViews.UserDtoExt.class)
 	@UniqueNickname(message = "{user.nonUniqueNickname}")
 	@NotEmpty(message = "{field.notEmpty}")
 	private String nickName;
 	
+	@JsonView(ShopViews.UserDtoExt.class)
 	@Size(min = 2, max = 35, message = "{user.nameLength}")
 	private String firstName;
 	
+	@JsonView(ShopViews.UserDtoExt.class)
 	@Size(min = 2, max = 35, message = "{user.nameLength}")
 	private String lastName;
 	
+	@JsonView(ShopViews.UserDtoExt.class)
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	@Past(message = "{date.past}")
 	private LocalDate birthdate;

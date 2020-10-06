@@ -11,9 +11,5 @@ import java.util.Collection;
 @Repository
 public interface EntityRepository<T extends AbstractEntity> extends JpaRepository<T, Long> {
 	
-	//TODO: to test out
-	@Modifying
-	@Query("DELETE FROM AbstractEntity e WHERE e.id IN :ids")
-	void deleteAll(Collection<Long> ids);
 }
 

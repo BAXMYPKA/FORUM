@@ -1,5 +1,6 @@
 package ru.shop.forum.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,7 @@ public abstract class AbstractForumRestController <
 	extends AbstractRestController<T, D, S> {
 	
 	
-	public AbstractForumRestController(S entityService, ModelMapper modelMapper) {
-		super(entityService, modelMapper);
+	public AbstractForumRestController(S entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
+		super(entityService, modelMapper, objectMapper);
 	}
 }

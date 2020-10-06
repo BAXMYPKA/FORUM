@@ -39,7 +39,7 @@ public class RestControllersDtoTemplatesTest {
 		this.URL = restTemplate.getRootUri();
 	}
 	
-	@Test
+//	@Test
 	public void rer() throws Exception {
 		System.out.println(URL);
 //		mockMvc.perform(MockMvcRequestBuilders.get("/shop.ru/forum/v1.0/posts").secure(true))

@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.shop.entities.User;
 import ru.shop.forum.entities.Post;
 import ru.shop.forum.entities.dto.PostDto;
 import ru.shop.forum.services.PostService;
@@ -26,19 +25,19 @@ import ru.shop.repositories.UserRepository;
 import java.util.Optional;
 
 @WebMvcTest(controllers = {ForumIndexController.class, PostRestController.class, PrivateMessageRestController.class})
-public class ForumRestControllersPathsTest {
+public class PostRestControllerPathsTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@MockBean
+	private UserRepository userRepository;
 	
 	@Autowired
 	private PostRestController postRestController;
 	
 	@MockBean
 	private PrivateMessageService privateMessageService;
-	
-	@MockBean
-	private UserRepository userRepository;
 	
 	@MockBean
 	private PostService postService;
@@ -50,16 +49,10 @@ public class ForumRestControllersPathsTest {
 	private ObjectMapper objectMapper;
 	
 	@BeforeEach
-	private void beforeEach() {
+	public void beforeEach() {
 		Mockito.when(postService.getEntityClass()).thenReturn(Post.class);
-	}
-	
-	@Test
-	public void forum_Index_Page_Should_Return_Ok() throws Exception {
-		//given
-		mockMvc.perform(MockMvcRequestBuilders.get("/").secure(true))
-			.andDo(MockMvcResultHandlers.print())
-			.andExpect(MockMvcResultMatchers.status().isOk());
+		postRestController.setEntityClass(Post.class);
+		Mockito.when(postService.save(Mockito.any(Post.class))).thenReturn(new Post());
 	}
 	
 	@Test
@@ -118,11 +111,25 @@ public class ForumRestControllersPathsTest {
 	}
 	
 	@Test
-	public void post_One_Post_Should_Return_OK() throws Exception {
+	public void post_One_Post_Should_Return_201_Created() throws Exception {
 		//given
 		PostDto postDto = new PostDto();
-		System.out.println(objectMapper.writeValueAsString(postDto));
-		postRestController.setEntityClass(Post.class);
+		//when
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/posts")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(postDto))
+				.secure(true)
+				.with(SecurityMockMvcRequestPostProcessors.csrf()))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isCreated());
+		
+	}
+	
+	@Test
+	public void put_One_Post_Should_Return_OK() throws Exception {
+		//given
+		PostDto postDto = new PostDto();
+		postDto.setId(1L);
 		//when
 		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/posts")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -130,7 +137,7 @@ public class ForumRestControllersPathsTest {
 				.secure(true)
 				.with(SecurityMockMvcRequestPostProcessors.csrf()))
 				.andDo(MockMvcResultHandlers.print())
-				.andExpect(MockMvcResultMatchers.status().isCreated());
+				.andExpect(MockMvcResultMatchers.status().isOk());
 		
 	}
 	

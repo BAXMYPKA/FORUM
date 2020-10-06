@@ -144,7 +144,7 @@ public abstract class AbstractEntityService<T extends AbstractEntity, R extends 
 	
 	@Transactional(value = Transactional.TxType.REQUIRED)
 	public void deleteAll(Collection<Long> ids) {
-		repository.deleteAll(ids);
+		ids.forEach(id -> repository.deleteById(id));
 	}
 	
 	@Transactional(value = Transactional.TxType.SUPPORTS)

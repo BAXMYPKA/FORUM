@@ -1,5 +1,6 @@
 package ru.shop.forum.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,8 +39,8 @@ public class UserForumSettingRestController extends AbstractForumRestController<
 		return super.getAllPageable(pageable);
 	}
 	
-	public UserForumSettingRestController(ForumUserSettingsService entityService, ModelMapper modelMapper) {
-		super(entityService, modelMapper);
+	public UserForumSettingRestController(ForumUserSettingsService entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
+		super(entityService, modelMapper, objectMapper);
 		this.entityDtoClass = UserForumSettingsDto.class;
 	}
 }

@@ -1,5 +1,6 @@
 package ru.shop.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +16,8 @@ import ru.shop.services.UserService;
 @RequestMapping(path = "/v1.0/users", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class UserRestController extends AbstractRestController<User, UserDto, UserService> {
 	
-	public UserRestController(UserService entityService, ModelMapper modelMapper) {
-		super(entityService, modelMapper);
+	public UserRestController(UserService entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
+		super(entityService, modelMapper, objectMapper);
 		this.entityDtoClass = UserDto.class;
 	}
 	

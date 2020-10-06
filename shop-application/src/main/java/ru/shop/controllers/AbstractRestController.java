@@ -1,5 +1,6 @@
 package ru.shop.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ import ru.shop.entities.AbstractEntity;
 import ru.shop.entities.dto.AbstractDto;
 import ru.shop.entities.utils.ValidationCreateGroup;
 import ru.shop.entities.utils.ValidationUpdateGroup;
+import ru.shop.forum.repositories.ForumEntityRepository;
 import ru.shop.repositories.EntityRepository;
 import ru.shop.services.AbstractEntityService;
 
@@ -42,6 +44,8 @@ public abstract class AbstractRestController<
 	
 	protected ModelMapper modelMapper;
 	
+	protected ObjectMapper objectMapper;
+	
 	@Getter(AccessLevel.PROTECTED)
 	protected S entityService;
 	
@@ -55,9 +59,10 @@ public abstract class AbstractRestController<
 	protected Class<D> entityDtoClass;
 	
 	@Autowired
-	public AbstractRestController(S entityService, ModelMapper modelMapper) {
+	public AbstractRestController(S entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
 		this.modelMapper = modelMapper;
 		this.entityService = entityService;
+		this.objectMapper = objectMapper;
 		this.entityClass = entityService.getEntityClass();
 	}
 	
@@ -124,7 +129,7 @@ public abstract class AbstractRestController<
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<D> postNewOne(
-			@Validated(value = {ValidationCreateGroup.class}) D entityDto) {
+			@Validated(value = {ValidationCreateGroup.class, Default.class}) D entityDto) {
 		
 		T entity = modelMapper.map(entityDto, entityClass);
 		T savedEntity = entityService.save(entity);
