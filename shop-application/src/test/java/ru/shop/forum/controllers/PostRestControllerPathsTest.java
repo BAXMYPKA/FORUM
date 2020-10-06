@@ -24,7 +24,7 @@ import ru.shop.repositories.UserRepository;
 
 import java.util.Optional;
 
-@WebMvcTest(controllers = {ForumIndexController.class, PostRestController.class, PrivateMessageRestController.class})
+@WebMvcTest(controllers = {PostRestController.class})
 public class PostRestControllerPathsTest {
 	
 	@Autowired
@@ -35,9 +35,6 @@ public class PostRestControllerPathsTest {
 	
 	@Autowired
 	private PostRestController postRestController;
-	
-	@MockBean
-	private PrivateMessageService privateMessageService;
 	
 	@MockBean
 	private PostService postService;

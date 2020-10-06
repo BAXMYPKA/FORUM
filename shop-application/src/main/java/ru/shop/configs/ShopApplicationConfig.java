@@ -1,7 +1,9 @@
 package ru.shop.configs;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,8 @@ public class ShopApplicationConfig {
 	public ObjectMapper objectMapper() {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);//To ignore fields with null
+		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);//To pretty-print
 		return objectMapper;
 	}
 }

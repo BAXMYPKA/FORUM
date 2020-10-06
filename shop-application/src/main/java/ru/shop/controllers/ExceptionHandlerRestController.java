@@ -37,7 +37,7 @@ public class ExceptionHandlerRestController {
 	@ExceptionHandler(value = NullPointerException.class)
 	public ResponseEntity<String> nullPointerException(NullPointerException e, WebRequest request) {
 		System.out.println(e.getMessage());
-		return new ResponseEntity<>("dsfdsf", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(value = RuntimeException.class)

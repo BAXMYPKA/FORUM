@@ -4,12 +4,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.shop.entities.User;
 import ru.shop.services.UserService;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Objects;
 
+/**
+ * Returns true if a given Nickname is already occupied with another {@link User}.
+ * Otherwise returns false.
+ */
 @NoArgsConstructor
 @Setter
 @Getter
@@ -30,6 +34,6 @@ public class NickNameValidator implements ConstraintValidator<UniqueNickname, St
 		} else if (value.isBlank()) {
 			return false;
 		}
-		return userService.existsUserByNickName(Objects.requireNonNullElse(value, ""));
+		return !userService.existsUserByNickName(value);
 	}
 }

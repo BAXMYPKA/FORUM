@@ -20,7 +20,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class ValidationTest {
+class EntitiesValidationTest {
 	
 	private Validator validator;
 	
@@ -54,7 +54,7 @@ class ValidationTest {
 	@Test
 	public void duplicate_NickName_Should_Be_Rejected() {
 		//given
-		Mockito.when(userService.existsUserByNickName("Nick")).thenReturn(false);
+		Mockito.when(userService.existsUserByNickName("Nick")).thenReturn(true);
 		//when
 		boolean valid = nickNameValidator.isValid("Nick", null);
 		//then

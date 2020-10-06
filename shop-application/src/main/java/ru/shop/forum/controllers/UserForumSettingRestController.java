@@ -35,8 +35,8 @@ public class UserForumSettingRestController extends AbstractForumRestController<
 	@Override
 //	@PreAuthorize("$}")
 	@GetMapping(path = "/v1.0/users/user-forum-settings")
-	public Page<UserForumSettingsDto> getAllPageable(Pageable pageable) {
-		return super.getAllPageable(pageable);
+	public Page<UserForumSettingsDto> getAllPageable(Pageable pageable, Authentication authentication) {
+		return super.getAllPageable(pageable, authentication);
 	}
 	
 	public UserForumSettingRestController(ForumUserSettingsService entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {

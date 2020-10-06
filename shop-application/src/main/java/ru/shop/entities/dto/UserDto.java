@@ -1,17 +1,16 @@
 package ru.shop.entities.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.shop.entities.User;
-import ru.shop.entities.utils.ShopViews;
-import ru.shop.entities.utils.ValidationCreateGroup;
+import ru.shop.entities.utils.*;
 import ru.shop.forum.entities.ImgAvatar;
-import ru.shop.entities.utils.Sex;
-import ru.shop.entities.utils.UniqueNickname;
 import ru.shop.security.Roles;
 
+import javax.persistence.Convert;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
@@ -19,29 +18,29 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserDto extends AbstractDto<User> {
 	
-	@JsonView(ShopViews.UserDtoExt.class)
+	//	@JsonView(ShopViews.UserDtoExt.class)
 	@NotEmpty(message = "{field.notEmpty}")
 	@Email(message = "{email.notValid}")
 	private String email;
 	
-	@JsonView(ShopViews.UserDtoInt.class)
+	@JsonIgnore
 	@Pattern(groups = {ValidationCreateGroup.class}, message = "{field.password}", regexp = "^[\\d\\w]{3,}$")
 	private String password;
 	
-	@JsonView(ShopViews.UserDtoExt.class)
-	@UniqueNickname(message = "{user.nonUniqueNickname}")
+	//	@JsonView(ShopViews.UserDtoExt.class)
+	@UniqueNickname(groups = {ValidationCreateGroup.class}, message = "{user.nonUniqueNickname}")
 	@NotEmpty(message = "{field.notEmpty}")
 	private String nickName;
 	
-	@JsonView(ShopViews.UserDtoExt.class)
+	//	@JsonView(ShopViews.UserDtoExt.class)
 	@Size(min = 2, max = 35, message = "{user.nameLength}")
 	private String firstName;
 	
-	@JsonView(ShopViews.UserDtoExt.class)
+	//	@JsonView(ShopViews.UserDtoExt.class)
 	@Size(min = 2, max = 35, message = "{user.nameLength}")
 	private String lastName;
 	
-	@JsonView(ShopViews.UserDtoExt.class)
+	//	@JsonView(ShopViews.UserDtoExt.class)
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	@Past(message = "{date.past}")
 	private LocalDate birthdate;
@@ -49,9 +48,10 @@ public class UserDto extends AbstractDto<User> {
 	/**
 	 * Accepts possible English variations like 'F', 'fm', 'fem', 'female' etc and Russian 'М', 'Ж', 'муж', 'жен' etc.
 	 */
-	@Pattern(flags = {Pattern.Flag.CASE_INSENSITIVE}, message = "{user.sexPattern}",
-		  regexp = "(?i)^(m|M|ma|MA|male|f|fe|fem|female|м|М|му|МУ|муж|мужской|Мужской|мужчина|ж|Ж|жен|женский|Женский)$")
-	@Size(min = 1, max = 8, message = "{user.sex}")
+//	@Pattern(flags = {Pattern.Flag.CASE_INSENSITIVE}, message = "{user.sexPattern}",
+//			regexp = "(?i)^(m|M|ma|MA|male|f|fe|fem|female|м|М|му|МУ|муж|мужской|Мужской|мужчина|ж|Ж|жен|женский|Женский)$")
+//	@Size(min = 1, max = 8, message = "{user.sex}")
+//	@Convert(converter = SexSqlConverter.class) //No need if "autoApply=true" in the @Converter
 	private Sex sex;
 	
 	@Size(max = 512000, message = "{photo.maxSize}")
@@ -63,7 +63,7 @@ public class UserDto extends AbstractDto<User> {
 	/**
 	 * Security role. Default is {@link Roles#USER}
 	 */
-	@Size(max = 35, message = "{user.RoleLength}")
+//	@Size(max = 35, message = "{user.RoleLength}")
 	private Roles role = Roles.USER;
 	
 	private ImgAvatar avatar;

@@ -3,9 +3,9 @@ package ru.shop.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,6 @@ import ru.shop.entities.AbstractEntity;
 import ru.shop.entities.dto.AbstractDto;
 import ru.shop.entities.utils.ValidationCreateGroup;
 import ru.shop.entities.utils.ValidationUpdateGroup;
-import ru.shop.forum.repositories.ForumEntityRepository;
 import ru.shop.repositories.EntityRepository;
 import ru.shop.services.AbstractEntityService;
 
@@ -33,7 +33,6 @@ import javax.validation.groups.Default;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@NoArgsConstructor
 @RestController
 @RequestMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
 public abstract class AbstractRestController<
@@ -66,11 +65,12 @@ public abstract class AbstractRestController<
 		this.entityClass = entityService.getEntityClass();
 	}
 	
+	//	@JsonView(ShopViews.ExternalView.class)
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public D getOne(@PathVariable Long id, Authentication authentication) {
 		
-		AbstractEntity entity = entityService.findOne(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
-		return modelMapper.map(entity, entityDtoClass);
+		T entity = entityService.findOne(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
+		return mapEntityToDto(entity, authentication, null);
 	}
 	
 	/**
@@ -86,11 +86,12 @@ public abstract class AbstractRestController<
 			@SortDefault.SortDefaults({
 					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
 					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
-					Pageable pageable) {
+					Pageable pageable,
+			Authentication authentication) {
 		
 		Page<T> entitiesPage = entityService.findAll(pageable);
 		List<D> entitiesDto = entitiesPage.stream()
-				.map(entity -> modelMapper.map(entity, entityDtoClass))
+				.map(entity -> mapEntityToDto(entity, authentication, null))
 				.collect(Collectors.toList());
 		return new PageImpl<D>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
@@ -105,35 +106,37 @@ public abstract class AbstractRestController<
 					@SortDefault(sort = "created", direction = Sort.Direction.DESC, caseSensitive = false),
 					@SortDefault(sort = "id", direction = Sort.Direction.DESC, caseSensitive = false)})
 					Pageable pageable,
-			@RequestParam Set<Long> id) {
+			@RequestParam Set<Long> id,
+			Authentication authentication) {
 		
 		Page<T> entitiesPage = entityService.findAllByIds(pageable, id);
 		List<D> entitiesDto = entitiesPage.stream()
-				.map(entity -> modelMapper.map(entity, entityDtoClass))
+				.map(entity -> mapEntityToDto(entity, authentication, null))
 				.collect(Collectors.toList());
 		return new PageImpl<>(entitiesDto, entitiesPage.getPageable(), entitiesPage.getTotalElements());
 	}
 	
 	@DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> deleteOne(@PathVariable Long id) {
+	public ResponseEntity<String> deleteOne(@PathVariable Long id, Authentication authentication) {
 		entityService.deleteOne(id);
 		return new ResponseEntity<>(
 				"The " + entityClass.getSimpleName() + " with the given ID = " + id + " has been deleted.", HttpStatus.NO_CONTENT);
 	}
 	
-	@DeleteMapping(path = "/all-by-ids")
+	@DeleteMapping(path = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> deleteAllByIds(@RequestParam Set<Long> id) {
 		entityService.deleteAll(id);
 		return new ResponseEntity<>("All entities with the given ids = " + id + " have been deleted!", HttpStatus.NO_CONTENT);
 	}
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<D> postNewOne(
-			@Validated(value = {ValidationCreateGroup.class, Default.class}) D entityDto) {
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public D postNewOne(
+			@Validated(value = {ValidationCreateGroup.class, Default.class}) @RequestBody D entityDto, Authentication authentication) {
 		
 		T entity = modelMapper.map(entityDto, entityClass);
 		T savedEntity = entityService.save(entity);
-		return new ResponseEntity<D>(modelMapper.map(savedEntity, entityDtoClass), HttpStatus.CREATED);
+		return mapEntityToDto(savedEntity, authentication, null);
 	}
 	
 /*
@@ -149,11 +152,13 @@ public abstract class AbstractRestController<
 */
 	
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<D> putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody D entityDto) {
+	@ResponseStatus(code = HttpStatus.OK)
+	public D putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody D entityDto,
+						 Authentication authentication) {
 		
 		T entity = modelMapper.map(entityDto, entityClass);
 		entity = entityService.update(entity);
-		return new ResponseEntity<D>(modelMapper.map(entity, entityDtoClass), HttpStatus.OK);
+		return mapEntityToDto(entity, authentication, null);
 	}
 	
 /*
@@ -167,5 +172,15 @@ public abstract class AbstractRestController<
 				.map(forumEntity -> modelMapper.map(forumEntity, entityDtoClass)).collect(Collectors.toList());
 	}
 */
-
+	
+	/**
+	 * Can be overridden to write custom mappings for every type of DTO
+	 *
+	 * @param propertyMap A possible set of rules how to map properties
+	 * @return {@link AbstractDto<T>} with mapped properties according to either a given "propertyMap" (if present) or DTO with the default mapping.
+	 */
+	protected D mapEntityToDto(T entity, Authentication authentication, @Nullable PropertyMap<T, D> propertyMap) {
+		return modelMapper.map(entity, entityDtoClass);
+	}
+	
 }

@@ -25,11 +25,14 @@ public class ForumUserSettings extends AbstractForumEntity {
 	@Column(name = "enable_private_messaging")
 	private Boolean enablePrivateMessaging = true;
 	
-	@Column(name = "show_signature")
-	private Boolean showSignature = true;
+	@Column(name = "hide_signature")
+	private Boolean hideSignature = true;
 	
 	@Column(name = "hide_birthdate")
 	private Boolean hideBirthdate = true;
+	
+	@Column(name = "hide_email")
+	private Boolean hideEmail = true;
 	
 	@Pattern(message = "{field.timeZone}", regexp = "(?i)^\\w{1,25}/\\w{1,25}/*\\w*$")
 	@Column
