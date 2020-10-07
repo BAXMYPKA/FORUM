@@ -88,7 +88,7 @@ public class UserRestControllerPathsTest {
 	}
 	
 	@Test
-	public void delete_One_User_Should_Return_OK() throws Exception {
+	public void delete_One_User_Should_Return_NoContent() throws Exception {
 		//given
 		userRestController.setEntityClass(User.class);
 		//when
@@ -100,7 +100,7 @@ public class UserRestControllerPathsTest {
 	}
 	
 	@Test
-	public void delete_All_Users_By_Ids_Should_Return_OK() throws Exception {
+	public void delete_All_Users_By_Ids_Should_Return_NoContent() throws Exception {
 		//given
 		userRestController.setEntityClass(User.class);
 		//when
