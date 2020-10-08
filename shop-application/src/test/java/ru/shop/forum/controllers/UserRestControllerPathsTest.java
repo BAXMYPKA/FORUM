@@ -1,7 +1,6 @@
 package ru.shop.forum.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,9 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.shop.controllers.UserRestController;
-import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
-import ru.shop.forum.services.PostService;
 import ru.shop.repositories.UserRepository;
 import ru.shop.services.UserService;
 
@@ -51,9 +48,9 @@ public class UserRestControllerPathsTest {
 	
 	@BeforeEach
 	public void beforeEach() {
-		Mockito.when(userService.getEntityClass()).thenReturn(User.class);
-		userRestController.setEntityClass(User.class);
-		Mockito.when(userService.save(Mockito.any(User.class))).thenReturn(new User());
+		Mockito.when(userService.getEntityClass()).thenReturn(ru.shop.entities.User.class);
+		userRestController.setEntityClass(ru.shop.entities.User.class);
+		Mockito.when(userService.save(Mockito.any(ru.shop.entities.User.class))).thenReturn(new ru.shop.entities.User());
 	}
 	
 	@Test
@@ -69,7 +66,7 @@ public class UserRestControllerPathsTest {
 	@Test
 	public void get_One_User_Should_Return_OK() throws Exception {
 		//given
-		Mockito.when(userService.findOne(0L)).thenReturn(Optional.of(new User()));
+		Mockito.when(userService.findOne(0L)).thenReturn(Optional.of(new ru.shop.entities.User()));
 		//when
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/users/0").secure(true))
 			.andDo(MockMvcResultHandlers.print())
@@ -90,7 +87,7 @@ public class UserRestControllerPathsTest {
 	@Test
 	public void delete_One_User_Should_Return_NoContent() throws Exception {
 		//given
-		userRestController.setEntityClass(User.class);
+		userRestController.setEntityClass(ru.shop.entities.User.class);
 		//when
 		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/users/0")
 				.secure(true)
@@ -102,7 +99,7 @@ public class UserRestControllerPathsTest {
 	@Test
 	public void delete_All_Users_By_Ids_Should_Return_NoContent() throws Exception {
 		//given
-		userRestController.setEntityClass(User.class);
+		userRestController.setEntityClass(ru.shop.entities.User.class);
 		//when
 		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/users/all-by-ids?id=0,1,2")
 				.secure(true)
@@ -140,7 +137,7 @@ public class UserRestControllerPathsTest {
 		userDto.setId(1L);
 		
 		Mockito.when(userService.existsUserByNickName("Nick")).thenReturn(true);
-		Mockito.when(userService.update(Mockito.any(User.class))).thenReturn(new User("userdto@email.com"));
+		Mockito.when(userService.update(Mockito.any(ru.shop.entities.User.class))).thenReturn(new ru.shop.entities.User("userdto@email.com"));
 		
 		//when
 		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/users")

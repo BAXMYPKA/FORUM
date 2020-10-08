@@ -6,17 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.shop.controllers.UserRestController;
-import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
 import ru.shop.repositories.UserRepository;
 import ru.shop.services.UserService;
@@ -48,7 +44,7 @@ public class RestControllersValidationTest {
 	
 	@BeforeEach
 	public void beforeEach() {
-		userRestController.setEntityClass(User.class);
+		userRestController.setEntityClass(ru.shop.entities.User.class);
 	}
 	
 	@Test

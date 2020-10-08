@@ -119,6 +119,7 @@ public abstract class AbstractRestController<
 	@DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> deleteOne(@PathVariable Long id, Authentication authentication) {
 		entityService.deleteOne(id);
+		//The body wont be returned with this status
 		return new ResponseEntity<>(
 				"The " + entityClass.getSimpleName() + " with the given ID = " + id + " has been deleted.", HttpStatus.NO_CONTENT);
 	}

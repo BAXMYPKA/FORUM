@@ -1,29 +1,31 @@
 package ru.shop.forum.controllers;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
-import org.mockito.verification.VerificationMode;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.data.domain.Page;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.shop.controllers.UserRestController;
 import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
-import ru.shop.repositories.UserRepository;
 import ru.shop.security.configs.TestSslUtil;
 import ru.shop.services.UserService;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,9 +43,9 @@ public class UserRestControllersDtoTemplatesTest {
 	@Autowired
 	private UserRestController userRestController;
 	
-//	@Autowired
-//	private UserRepository userRepository;
-
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	@MockBean
 	private UserService userService;
 	
@@ -59,61 +61,35 @@ public class UserRestControllersDtoTemplatesTest {
 	
 	@BeforeEach
 	public void beforeEach() {
-		userRestController.setEntityClass(User.class);
+		userRestController.setEntityClass(ru.shop.entities.User.class);
 		Mockito.when(userService.getEntityClass()).thenReturn(User.class);
 	}
 	
-/*
-	@AfterEach
-	public void afterEach() {
-		userRepository.deleteAll();
-	}
-*/
-	
 	@Test
-	public void get_User_By_Id_Should_Return_User() {
+	public void get_User_By_Id_Should_Return_Status_Ok_With_User() {
 		//given
-		User user = new User("user@email.com");
+		ru.shop.entities.User user = new ru.shop.entities.User("user@email.com");
 		user.setId(1L);
 		user.setNickName("Nick");
 		user.setPassword("123");
-//		User savedUser = userRepository.save(user);
 		
 		Mockito.when(userService.findOne(1L)).thenReturn(Optional.of(user));
 		
 		//when
-		UserDto userDto =
-				restTemplate.getForObject(restTemplate.getRootUri() + "/v1.0/users/" + user.getId(), UserDto.class);
+		ResponseEntity<UserDto> userDtoResponse =
+			restTemplate.getForEntity(restTemplate.getRootUri() + "/v1.0/users/1", UserDto.class);
 		
 		//then
-		assertEquals("user@email.com", userDto.getEmail());
-	}
-	
-	@Disabled
-	@Test
-	public void get_All_Users_Should_Return_Users() {
-		//given
-		User user = new User("user@email.com");
-		user.setNickName("Nick");
-		user.setPassword("123");
-		
-		User user2 = new User("user2@email.com");
-		user2.setNickName("Nick2");
-		user2.setPassword("123");
-		
-		//when
-		ResponseEntity<Page> userDtos =
-				restTemplate.getForEntity(restTemplate.getRootUri() + "/v1.0/users/", Page.class);
-		
-		//then
-//		assertEquals(2, userDtos.length);
+		assertEquals(HttpStatus.OK, userDtoResponse.getStatusCode());
+		assertEquals("user@email.com", userDtoResponse.getBody().getEmail());
 	}
 	
 	@Test
-	public void delete_User_By_Id_Should_Return_NoContent() {
+	public void delete_User_By_Id_Should_Return_Status_NoContent() {
 		//given
-		User user = new User("user@email.com");
+		User user = new User();
 		user.setId(1L);
+		user.setEmail("user@email.com");
 		user.setNickName("Nick");
 		user.setPassword("123");
 		
@@ -121,11 +97,64 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<String> deleted
-				= restTemplate.exchange(restTemplate.getRootUri() + "/v1.0/users", HttpMethod.DELETE, null, String.class);
+			= restTemplate.exchange(restTemplate.getRootUri() + "/v1.0/users/1", HttpMethod.DELETE, null, String.class);
 		
 		//then
 		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).deleteOne(idCaptor.capture());
-		assertEquals(1L, idCaptor.capture());
+		
+		assertEquals(HttpStatus.NO_CONTENT, deleted.getStatusCode());
+		assertEquals(1L, idCaptor.getValue());
+	}
+	
+	@Test
+	public void post_New_User_Should_Return_Status_Created_With_New_UserDto() {
+		//given
+		User user = new User();
+		user.setEmail("user@email.com");
+		user.setNickName("Nick");
+		user.setPassword("123");
+		
+		UserDto userDto = modelMapper.map(user, UserDto.class);
+		
+		Mockito.when(userService.save(Mockito.any(User.class))).thenReturn(user);
+		
+		ArgumentCaptor<User> idCaptor = ArgumentCaptor.forClass(User.class);
+		
+		//when
+		ResponseEntity<UserDto> responseEntity = restTemplate.postForEntity(
+			restTemplate.getRootUri() + "/v1.0/users", userDto, UserDto.class);
+		
+		//then
+		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).save(idCaptor.capture());
+		
+		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+		assertEquals(user.getEmail(), idCaptor.getValue().getEmail());
+	}
+	
+	@Test
+	public void put_Existing_User_By_Id_Should_Return_Status_Ok_With_UserDto() {
+		//given
+		User user = new User();
+		user.setId(1L);
+		user.setEmail("user@email.com");
+		user.setNickName("Nick");
+		user.setPassword("123");
+		
+		UserDto userDto = modelMapper.map(user, UserDto.class);
+		
+		Mockito.when(userService.update(Mockito.any(User.class))).thenReturn(user);
+		
+		ArgumentCaptor<User> idCaptor = ArgumentCaptor.forClass(User.class);
+		
+		//when
+		ResponseEntity<UserDto> responseEntity = restTemplate.exchange(
+			restTemplate.getRootUri() + "/v1.0/users", HttpMethod.PUT, new HttpEntity<>(userDto), UserDto.class);
+		
+		//then
+		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).update(idCaptor.capture());
+		
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(user.getEmail(), idCaptor.getValue().getEmail());
 	}
 	
 }

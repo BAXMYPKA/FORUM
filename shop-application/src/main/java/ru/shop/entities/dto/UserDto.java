@@ -74,7 +74,7 @@ public class UserDto extends AbstractDto<User> {
 	
 	private LocalDate lockedUntil;
 	
-	public void setEntityClass(Class<User> entityClass) {
+	public void setEntityClass(Class<ru.shop.entities.User> entityClass) {
 		this.entityClass = entityClass;
 	}
 }
