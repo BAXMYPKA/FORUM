@@ -16,5 +16,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>3.9.0</version>
+		</dependency>
 	</dependencies>
 </project>

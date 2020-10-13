@@ -3,6 +3,7 @@ package ru.shop.services;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.shop.entities.User;
@@ -13,6 +14,7 @@ import javax.transaction.Transactional;
 import java.util.Objects;
 
 @Getter
+@CacheConfig(cacheNames = "users")
 @Service
 public class UserService extends AbstractEntityService<User, UserRepository> {
 	

@@ -16,8 +16,8 @@ public class ShopApplicationConfig {
 	public ModelMapper modelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
 		modelMapper.getConfiguration()
-				.setSkipNullEnabled(true)
-				.setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
+			.setSkipNullEnabled(true)
+			.setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
 		return modelMapper;
 	}
 	

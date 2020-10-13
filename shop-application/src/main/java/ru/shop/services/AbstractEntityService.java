@@ -6,6 +6,9 @@ import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,13 +21,12 @@ import ru.shop.repositories.EntityRepository;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 //@NoArgsConstructor
 @Getter
 @Setter
+//@CacheConfig
 @Service
 public abstract class AbstractEntityService<T extends AbstractEntity, R extends EntityRepository<T>> {
 	
@@ -48,12 +50,14 @@ public abstract class AbstractEntityService<T extends AbstractEntity, R extends 
 		this.repository = repository;
 	}
 	
-	@Transactional(value = Transactional.TxType.SUPPORTS)
+	@Cacheable
+	@Transactional(value = Transactional.TxType.REQUIRED)
 	public Optional<T> findOne(Long id) {
 		return repository.findById(id);
 	}
 	
-	@Transactional(value = Transactional.TxType.SUPPORTS)
+	@Cacheable(key = "#entityExample.getId()")
+	@Transactional(value = Transactional.TxType.REQUIRED)
 	public Optional<T> findOne(T entityExample) {
 		return repository.findOne(Example.of(entityExample));
 	}
@@ -82,12 +86,13 @@ public abstract class AbstractEntityService<T extends AbstractEntity, R extends 
 		return repository.findAll(pageable);
 	}
 	
-	
-	@Transactional(value = Transactional.TxType.SUPPORTS)
+	@CachePut
+	@Transactional(value = Transactional.TxType.REQUIRED)
 	public T save(T entity) {
 		return repository.saveAndFlush(Objects.requireNonNull(entity, "A Entity cannot be null!"));
 	}
 	
+	@CachePut
 	@Transactional(value = Transactional.TxType.REQUIRED)
 	public Collection<T> saveAll(Collection<T> entities) {
 		if (entities.size() > MAX_ENTITIES_AT_ONCE)
@@ -96,6 +101,7 @@ public abstract class AbstractEntityService<T extends AbstractEntity, R extends 
 		return repository.saveAll(entities);
 	}
 	
+	@CacheEvict
 	@Transactional(value = Transactional.TxType.REQUIRED)
 	public T update(T entity) {
 		T entitiesToBeUpdated = repository.findById(Objects.requireNonNull(entity.getId(), "An entity to be updated must have an id!"))
@@ -104,6 +110,7 @@ public abstract class AbstractEntityService<T extends AbstractEntity, R extends 
 		return entitiesToBeUpdated;
 	}
 	
+	@CacheEvict(allEntries = true)
 	@Transactional(value = Transactional.TxType.REQUIRED)
 	public Collection<T> updateAll(Collection<T> entities) {
 		if (entities.size() > MAX_ENTITIES_AT_ONCE)
@@ -117,6 +124,7 @@ public abstract class AbstractEntityService<T extends AbstractEntity, R extends 
 		return entities;
 	}
 	
+	@CacheEvict
 	@Transactional(value = Transactional.TxType.REQUIRED)
 	public void deleteOne(T entity) {
 		if (entity == null) return;
@@ -126,33 +134,37 @@ public abstract class AbstractEntityService<T extends AbstractEntity, R extends 
 	/**
 	 * @throws IllegalArgumentException If a given ID is null
 	 */
+	@CacheEvict
 	@Transactional(value = Transactional.TxType.REQUIRED)
 	public void deleteOne(Long id) throws IllegalArgumentException {
 		repository.deleteById(id);
 	}
 	
+	@CacheEvict(allEntries = true)
 	@Transactional(value = Transactional.TxType.REQUIRED)
 	public void deleteAll() {
 		repository.deleteAll();
 	}
 	
+	@CacheEvict(allEntries = true)
 	@Transactional(value = Transactional.TxType.REQUIRED)
 	public void deleteAll(Iterable<T> entities) {
 		if (entities == null) return;
 		repository.deleteAll(entities);
 	}
 	
+	@CacheEvict(allEntries = true)
 	@Transactional(value = Transactional.TxType.REQUIRED)
 	public void deleteAll(Collection<Long> ids) {
 		ids.forEach(id -> repository.deleteById(id));
 	}
 	
-	@Transactional(value = Transactional.TxType.SUPPORTS)
+	@Transactional(value = Transactional.TxType.REQUIRED)
 	public Long count() {
 		return repository.count();
 	}
 	
-	@Transactional(value = Transactional.TxType.SUPPORTS)
+	@Transactional(value = Transactional.TxType.REQUIRED)
 	public Boolean existById(Long id) {
 		if (id == null) return false;
 		return repository.existsById(id);
