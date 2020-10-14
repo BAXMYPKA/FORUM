@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
+import ru.shop.controllers.ExceptionHandlerRestController;
 import ru.shop.controllers.UserRestController;
 import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
@@ -68,7 +71,7 @@ public class UserRestControllersDtoTemplatesTest {
 	@Test
 	public void get_User_By_Id_Should_Return_Status_Ok_With_User() {
 		//given
-		ru.shop.entities.User user = new ru.shop.entities.User("user@email.com");
+		User user = new User("user@email.com");
 		user.setId(1L);
 		user.setNickName("Nick");
 		user.setPassword("123");
@@ -77,11 +80,26 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<UserDto> userDtoResponse =
-			restTemplate.getForEntity(restTemplate.getRootUri() + "/v1.0/users/1", UserDto.class);
+				restTemplate.getForEntity(restTemplate.getRootUri() + "/v1.0/users/1", UserDto.class);
 		
 		//then
 		assertEquals(HttpStatus.OK, userDtoResponse.getStatusCode());
 		assertEquals("user@email.com", userDtoResponse.getBody().getEmail());
+	}
+	
+	@ParameterizedTest
+	@ValueSource(longs = {1, 2, 2222})
+	public void get_Not_Existing_User_By_Id_Should_Return_Status_Not_Found_With_Message(Long wrongId) {
+		//given
+		Mockito.when(userService.findOne(wrongId)).thenReturn(Optional.empty());
+		
+		//when
+		ResponseEntity<ExceptionHandlerRestController.ResponseObject> notFoundResponse =
+				restTemplate.getForEntity(restTemplate.getRootUri() + "/v1.0/users/" + wrongId, ExceptionHandlerRestController.ResponseObject.class);
+		
+		//then
+		assertEquals(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
+		assertEquals("Nothing found for id = " + wrongId, notFoundResponse.getBody().getErrorMessage());
 	}
 	
 	@Test
@@ -97,7 +115,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<String> deleted
-			= restTemplate.exchange(restTemplate.getRootUri() + "/v1.0/users/1", HttpMethod.DELETE, null, String.class);
+				= restTemplate.exchange(restTemplate.getRootUri() + "/v1.0/users/1", HttpMethod.DELETE, null, String.class);
 		
 		//then
 		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).deleteOne(idCaptor.capture());
@@ -122,7 +140,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<UserDto> responseEntity = restTemplate.postForEntity(
-			restTemplate.getRootUri() + "/v1.0/users", userDto, UserDto.class);
+				restTemplate.getRootUri() + "/v1.0/users", userDto, UserDto.class);
 		
 		//then
 		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).save(idCaptor.capture());
@@ -148,7 +166,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<UserDto> responseEntity = restTemplate.exchange(
-			restTemplate.getRootUri() + "/v1.0/users", HttpMethod.PUT, new HttpEntity<>(userDto), UserDto.class);
+				restTemplate.getRootUri() + "/v1.0/users", HttpMethod.PUT, new HttpEntity<>(userDto), UserDto.class);
 		
 		//then
 		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).update(idCaptor.capture());

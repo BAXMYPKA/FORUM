@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.shop.forum.entities.Post;
 import ru.shop.forum.entities.dto.PostDto;
 import ru.shop.forum.services.PostService;
-import ru.shop.forum.services.PrivateMessageService;
 import ru.shop.repositories.UserRepository;
 
 import java.util.Optional;
@@ -58,8 +57,8 @@ public class PostRestControllerPathsTest {
 		Mockito.when(postService.findAll(Mockito.any(Pageable.class))).thenReturn(Page.empty());
 		//when
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/posts").secure(true))
-			.andDo(MockMvcResultHandlers.print())
-			.andExpect(MockMvcResultMatchers.status().isOk());
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
 	@Test
@@ -68,8 +67,8 @@ public class PostRestControllerPathsTest {
 		Mockito.when(postService.findOne(0L)).thenReturn(Optional.of(new Post()));
 		//when
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/posts/0").secure(true))
-			.andDo(MockMvcResultHandlers.print())
-			.andExpect(MockMvcResultMatchers.status().isOk());
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
 	@Test
@@ -79,8 +78,8 @@ public class PostRestControllerPathsTest {
 		
 		//when
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/posts/all-by-ids?id=0,1").secure(true))
-			.andDo(MockMvcResultHandlers.print())
-			.andExpect(MockMvcResultMatchers.status().isOk());
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
 	@Test
@@ -91,8 +90,8 @@ public class PostRestControllerPathsTest {
 		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/posts/0")
 				.secure(true)
 				.with(SecurityMockMvcRequestPostProcessors.csrf()))
-			.andDo(MockMvcResultHandlers.print())
-			.andExpect(MockMvcResultMatchers.status().isNoContent());
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isNoContent());
 	}
 	
 	@Test

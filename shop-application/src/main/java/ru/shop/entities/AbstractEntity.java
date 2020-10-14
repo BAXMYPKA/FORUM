@@ -29,8 +29,8 @@ public abstract class AbstractEntity implements Serializable {
 	@SequenceGenerator(name = "idGenerator", sequenceName = "entity_id", schema = "SHOP", initialValue = 1000)
 	private Long id;
 	
-	@Version
-	private Long version;
+//	@Version
+//	private Long version;
 	
 	@EqualsAndHashCode.Include
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

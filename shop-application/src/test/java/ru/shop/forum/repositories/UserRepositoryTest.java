@@ -1,9 +1,7 @@
 package ru.shop.forum.repositories;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -79,7 +77,7 @@ class UserRepositoryTest {
 	@Test
 	public void user_Should_Be_Found_By_NickName() {
 		//given
-		User savedUser = userRepository.saveAndFlush(UserRepositoryTest.user);
+		userRepository.saveAndFlush(UserRepositoryTest.user);
 		//when
 		Optional<User> userByNickName = userRepository.findByNickName("Nick");
 		//then

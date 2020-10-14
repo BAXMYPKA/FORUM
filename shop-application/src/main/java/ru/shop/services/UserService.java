@@ -1,20 +1,17 @@
 package ru.shop.services;
 
 import lombok.Getter;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.shop.entities.User;
 import ru.shop.repositories.UserRepository;
 
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
-import java.util.Objects;
 
 @Getter
-@CacheConfig(cacheNames = "users")
 @Service
 public class UserService extends AbstractEntityService<User, UserRepository> {
 	
@@ -27,27 +24,28 @@ public class UserService extends AbstractEntityService<User, UserRepository> {
 	}
 	
 	@Override
-	@Transactional(value = Transactional.TxType.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
 	public User save(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		return repository.save(user);
 	}
 	
-	@Transactional(value = Transactional.TxType.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
 	public Boolean existsUserByNickName(String nickname) {
-		return repository.existsUserByNickName(Objects.requireNonNullElse(nickname, ""));
+		if (nickname == null || nickname.isBlank()) return false;
+		return repository.existsUserByNickName(nickname);
 	}
 	
-	@Transactional(value = Transactional.TxType.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
 	public User findUserByNickname(String nickname) throws NoResultException {
-		return repository.findByNickName(Objects.requireNonNullElse(nickname, ""))
-			  .orElseThrow(() -> new NoResultException("No User found for name " + nickname));
+		if (nickname == null || nickname.isBlank()) throw new NoResultException("No User could by found for null or empty name!");
+		return repository.findByNickName(nickname).orElseThrow(() -> new NoResultException("No User found for name " + nickname));
 	}
 	
-	@Transactional(value = Transactional.TxType.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
 	public User findUserByEmail(String email) throws NoResultException {
-		return repository.findByEmail(Objects.requireNonNullElse(email, ""))
-			  .orElseThrow(() -> new NoResultException("No User found for email " + email));
+		if (email == null || email.isBlank()) throw new NoResultException("No User could by found for null or empty email!");
+		return repository.findByEmail(email).orElseThrow(() -> new NoResultException("No User found for email " + email));
 	}
 	
 }
