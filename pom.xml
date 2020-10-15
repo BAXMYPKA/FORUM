@@ -47,6 +47,42 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+<!--
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client &ndash;&gt;
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+            <version>5.4.1</version>
+        </dependency>
+-->
+
+<!--
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-jose &ndash;&gt;
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+            <version>5.4.1</version>
+        </dependency>
+-->
+
+<!--
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.keycloak/keycloak-dependencies-server-all &ndash;&gt;
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-dependencies-server-all</artifactId>
+            <version>11.0.2</version>
+            <type>pom</type>
+        </dependency>
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jackson2-provider &ndash;&gt;
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <version>4.5.8.Final</version>
+        </dependency>
+-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>

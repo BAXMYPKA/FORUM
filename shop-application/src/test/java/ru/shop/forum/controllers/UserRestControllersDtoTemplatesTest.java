@@ -12,13 +12,18 @@ import org.mockito.internal.verification.VerificationModeFactory;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.shop.controllers.ExceptionHandlerRestController;
 import ru.shop.controllers.UserRestController;
@@ -173,6 +178,26 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		assertEquals(user.getEmail(), idCaptor.getValue().getEmail());
+	}
+	
+	@TestConfiguration
+	@Order(1)
+	static class TestSecurityConfiguration extends WebSecurityConfigurerAdapter {
+		
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http
+					.csrf().disable()
+					.requiresChannel()
+					.anyRequest()
+					.requiresSecure()
+					.and()
+					.authorizeRequests()
+					.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
+					.and()
+					.sessionManagement()
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		}
 	}
 	
 }
