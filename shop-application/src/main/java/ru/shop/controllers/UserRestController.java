@@ -5,13 +5,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
 import ru.shop.entities.utils.ValidationCreateGroup;
 import ru.shop.entities.utils.ValidationUpdateGroup;
@@ -38,10 +37,20 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 		return super.getAllPageable(pageable, authentication);
 	}
 	
+	/**
+	 * Registration method
+	 * @return
+	 */
 	@Override
-	public UserDto postNewOne(@Validated(value = {ValidationCreateGroup.class, Default.class}) @RequestBody UserDto entityDto,
-							  Authentication authentication) {
-		return super.postNewOne(entityDto, authentication);
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public UserDto postNewOne(
+			@Validated(value = {ValidationCreateGroup.class, Default.class}) @RequestBody UserDto entityDto,
+			Authentication authentication) {
+		User user = modelMapper.map(entityDto, entityClass);
+		user.setEnabled(false);
+		User savedEntity = entityService.save(user);
+		return mapEntityToDto(savedEntity, authentication, null);
 	}
 	
 	@Override

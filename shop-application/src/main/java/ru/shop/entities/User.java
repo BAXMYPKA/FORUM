@@ -37,6 +37,9 @@ public class User extends AbstractEntity {
 	@Column(nullable = false, length = 255)
 	private String password;
 	
+	/**
+	 * If null, the first part of a given email will be used, e.g. "user@mail.com" will be set as a "user" nickname.
+	 */
 	@UniqueNickname(message = "{user.nonUniqueNickname}")
 //	@NonNull
 //	@NotEmpty(message = "{field.notEmpty}")
@@ -102,6 +105,9 @@ public class User extends AbstractEntity {
 	
 	@ManyToMany(mappedBy = "toUsers")
 	private Set<PrivateMessage> privateMessagesTo;
+	
+	@OneToOne
+	private RegistrationConfirmationUuid uuid;
 	
 	//	private Address address;
 
