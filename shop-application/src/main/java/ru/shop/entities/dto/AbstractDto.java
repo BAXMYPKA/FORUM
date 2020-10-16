@@ -3,6 +3,7 @@ package ru.shop.entities.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.shop.entities.AbstractEntity;
 import ru.shop.entities.utils.ShopViews;
@@ -15,6 +16,7 @@ import javax.validation.constraints.Null;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@NoArgsConstructor
 public abstract class AbstractDto<T extends AbstractEntity> {
 	
 	protected Class<T> entityClass;

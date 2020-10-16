@@ -48,9 +48,8 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 			@Validated(value = {ValidationCreateGroup.class, Default.class}) @RequestBody UserDto entityDto,
 			Authentication authentication) {
 		User user = modelMapper.map(entityDto, entityClass);
-		user.setEnabled(false);
-		User savedEntity = entityService.save(user);
-		return mapEntityToDto(savedEntity, authentication, null);
+		User savedNewUser = entityService.save(user);
+		return mapEntityToDto(savedNewUser, authentication, null);
 	}
 	
 	@Override
@@ -59,8 +58,8 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 		return super.putOne(entityDto, authentication);
 	}
 	
-	@Override
-	protected UserDto mapEntityToDto(ru.shop.entities.User entity, Authentication authentication, PropertyMap<ru.shop.entities.User, UserDto> propertyMap) {
-		return super.mapEntityToDto(entity, authentication, propertyMap);
-	}
+//	@Override
+//	protected UserDto mapEntityToDto(ru.shop.entities.User user, Authentication authentication, PropertyMap<ru.shop.entities.User, UserDto> propertyMap) {
+//		return super.mapEntityToDto(user, authentication, propertyMap);
+//	}
 }

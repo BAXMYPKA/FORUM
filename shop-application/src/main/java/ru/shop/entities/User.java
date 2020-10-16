@@ -15,6 +15,10 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Set;
 
+@NamedEntityGraphs(
+	@NamedEntityGraph(name = "new-user-with-registrationUuid", attributeNodes = {
+		@NamedAttributeNode("registrationConfirmationUuid")})
+)
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Getter
@@ -106,12 +110,12 @@ public class User extends AbstractEntity {
 	@ManyToMany(mappedBy = "toUsers")
 	private Set<PrivateMessage> privateMessagesTo;
 	
-	@OneToOne
-	private RegistrationConfirmationUuid uuid;
+	@OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "user", cascade = CascadeType.ALL)
+	private RegistrationConfirmationUuid registrationConfirmationUuid;
 	
 	//	private Address address;
 
-//	private Set<Phone> phones;
+	//	private Set<Phone> phones;
 	
 	@PrePersist
 	@Override

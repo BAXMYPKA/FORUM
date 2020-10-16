@@ -1,27 +1,33 @@
 package ru.shop.entities;
 
 import lombok.*;
+import ru.shop.entities.utils.ValidationCreateGroup;
+import ru.shop.entities.utils.ValidationUpdateGroup;
 
 import javax.persistence.*;
+import javax.validation.OverridesAttribute;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.UUID;
 
+@NamedEntityGraphs(
+	@NamedEntityGraph(name = "uuid-with-user", attributeNodes = {@NamedAttributeNode("user")})
+)
 @Getter
-@Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Table(name = "uuids", schema = "SHOP")
-public class RegistrationConfirmationUuid extends AbstractEntity{
+public class RegistrationConfirmationUuid extends AbstractEntity {
+	
+	//TODO: to schedule database inspecting every 24h to clear outdated UUIDs
 	
 	@Transient
 	protected static final long SerialVersionUID = 1L;
 	
-	@NonNull
-	@NotEmpty(message = "{field.notEmpty}")
-	@Email(message = "{email.notValid}")
-	@Column(unique = true, nullable = false)
-	private UUID uuid;
+	@EqualsAndHashCode.Include
+	private String uuid;
 	
 	@OneToOne(orphanRemoval = true)
 	@JoinColumn(name = "user_id", unique = true, nullable = false, updatable = false)
@@ -31,7 +37,15 @@ public class RegistrationConfirmationUuid extends AbstractEntity{
 	 * Automatically creates a new UUID
 	 */
 	public RegistrationConfirmationUuid() {
-		this.uuid = UUID.randomUUID();
+		this.uuid = UUID.randomUUID().toString();
 	}
 	
+	/**
+	 * Automatically creates a new UUID and set this UUID to {@link User#setRegistrationConfirmationUuid(RegistrationConfirmationUuid)}
+	 */
+	public RegistrationConfirmationUuid(User user) {
+		this.uuid = UUID.randomUUID().toString();
+		this.user = user;
+		this.user.setRegistrationConfirmationUuid(this);
+	}
 }

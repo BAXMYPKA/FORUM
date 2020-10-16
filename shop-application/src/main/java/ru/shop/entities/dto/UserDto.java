@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import ru.shop.entities.RegistrationConfirmationUuid;
 import ru.shop.entities.User;
 import ru.shop.entities.utils.*;
 import ru.shop.forum.entities.ImgAvatar;
@@ -15,7 +16,6 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
 public class UserDto extends AbstractDto<User> {
 	
 	//	@JsonView(ShopViews.UserDtoExt.class)
@@ -74,7 +74,15 @@ public class UserDto extends AbstractDto<User> {
 	
 	private LocalDate lockedUntil;
 	
+	private RegistrationConfirmationUuid registrationConfirmationUuid;
+	
+	public UserDto() {
+		this.entityClass = User.class;
+	}
+	
 	public void setEntityClass(Class<ru.shop.entities.User> entityClass) {
 		this.entityClass = entityClass;
 	}
+	
+	
 }

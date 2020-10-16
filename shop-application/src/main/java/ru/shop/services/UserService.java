@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.shop.entities.RegistrationConfirmationUuid;
 import ru.shop.entities.User;
 import ru.shop.repositories.UserRepository;
 
@@ -23,10 +24,17 @@ public class UserService extends AbstractEntityService<User, UserRepository> {
 		this.passwordEncoder = passwordEncoder;
 	}
 	
+	/**
+	 * Registration of a new User
+	 * @param user A new not registered User
+	 * @return Not enabled User with a newly created {@link ru.shop.entities.RegistrationConfirmationUuid}
+	 */
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public User save(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setEnabled(false);
+		user.setRegistrationConfirmationUuid(new RegistrationConfirmationUuid(user));
 		return repository.save(user);
 	}
 	
