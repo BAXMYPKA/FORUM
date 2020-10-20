@@ -29,7 +29,7 @@ public class RegistrationConfirmationUuid extends AbstractEntity {
 	@EqualsAndHashCode.Include
 	private String uuid;
 	
-	@OneToOne(orphanRemoval = true)
+	@OneToOne
 	@JoinColumn(name = "user_id", unique = true, nullable = false, updatable = false)
 	private User user;
 	

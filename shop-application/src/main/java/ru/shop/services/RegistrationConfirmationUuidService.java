@@ -34,13 +34,16 @@ public class RegistrationConfirmationUuidService extends AbstractEntityService
 			new IllegalArgumentException("No Registration Confirmation found for this uuid!" +
 				" It may have been expired within last 24h or this link has already been used to confirm a User account!"));
 		
-		repository.delete(confirmedUuid);
 		
 		User confirmedUser = confirmedUuid.getUser();
 		confirmedUser.setRegistrationConfirmationUuid(null);
 		confirmedUser.setEnabled(true);
+		repository.delete(confirmedUuid);
 	}
 	
+	/**
+	 * @return {@link RegistrationConfirmationUuid} with an eagerly loaded {@link User}
+	 */
 	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
 	public Optional<RegistrationConfirmationUuid> findOneByUuid(String uuid) {
 		if (uuid == null || uuid.isBlank())

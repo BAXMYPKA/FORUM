@@ -37,7 +37,7 @@ class UserServiceTest {
 	private User user;
 	
 	@BeforeEach
-	public void beforeAll() {
+	public void beforeEach() {
 		user = new User("user@email.com");
 		user.setPassword("123");
 		user.setFirstName("FirstName");
@@ -100,5 +100,4 @@ class UserServiceTest {
 				() -> userService.findUserByEmail("email@email.com"),
 				"No User found for email email@email.com");
 	}
-	
 }

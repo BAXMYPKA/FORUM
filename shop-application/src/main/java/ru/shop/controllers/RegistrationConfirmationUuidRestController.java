@@ -3,15 +3,11 @@ package ru.shop.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.shop.entities.RegistrationConfirmationUuid;
 import ru.shop.entities.dto.RegistrationConfirmationUuidDto;
@@ -24,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/v1.0/uuids")
-public class RegistrationConfirmationUuidRestController extends AbstractRestController<RegistrationConfirmationUuid, RegistrationConfirmationUuidDto, RegistrationConfirmationUuidService>{
+public class RegistrationConfirmationUuidRestController extends AbstractRestController<RegistrationConfirmationUuid, RegistrationConfirmationUuidDto, RegistrationConfirmationUuidService> {
 	
 	@Value("#{servletContext.contextPath}")
 	private String servletContextPath;
@@ -34,6 +30,7 @@ public class RegistrationConfirmationUuidRestController extends AbstractRestCont
 		super(entityService, modelMapper, objectMapper);
 	}
 	
+	//TODO: to make available only for admin
 	//TODO: to check the SPeL
 	@Override
 	@PreAuthorize(value = "#principal.authorities.contains('ADMIN')")
@@ -42,14 +39,14 @@ public class RegistrationConfirmationUuidRestController extends AbstractRestCont
 		return super.getOne(id, authentication);
 	}
 	
-	@GetMapping(path = "/confirm")
+	@GetMapping(path = "/{uuid}/confirm")
 	public ResponseEntity confirmOne(
-		@RequestParam String uuid, HttpServletResponse response, RedirectAttributes redirectAttributes)
+		@PathVariable String uuid, HttpServletResponse response, RedirectAttributes redirectAttributes)
 		throws IOException {
 		
 		entityService.confirmUuid(uuid);
 		Map<String, String> headers = new HashMap<>();
-		headers.put("Location", servletContextPath+"/login");
+		headers.put("Location", servletContextPath + "/login");
 //		response.setHeader("Location", servletContextPath+"/login");
 //		response.setStatus(302);
 // 		response.sendRedirect(servletContextPath+"/login");
