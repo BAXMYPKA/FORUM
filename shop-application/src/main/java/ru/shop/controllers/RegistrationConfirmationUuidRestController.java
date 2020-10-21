@@ -3,6 +3,7 @@ package ru.shop.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,9 +15,7 @@ import ru.shop.entities.dto.RegistrationConfirmationUuidDto;
 import ru.shop.services.RegistrationConfirmationUuidService;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URI;
 
 @RestController
 @RequestMapping(path = "/v1.0/uuids")
@@ -26,8 +25,8 @@ public class RegistrationConfirmationUuidRestController extends AbstractRestCont
 	private String servletContextPath;
 	
 	public RegistrationConfirmationUuidRestController(
-		RegistrationConfirmationUuidService entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
-		super(entityService, modelMapper, objectMapper);
+		RegistrationConfirmationUuidService uuidService, ModelMapper modelMapper, ObjectMapper objectMapper) {
+		super(uuidService, modelMapper, objectMapper);
 	}
 	
 	//TODO: to make available only for admin
@@ -40,19 +39,18 @@ public class RegistrationConfirmationUuidRestController extends AbstractRestCont
 	}
 	
 	@GetMapping(path = "/{uuid}/confirm")
+	@ResponseStatus(code = HttpStatus.PERMANENT_REDIRECT)
 	public ResponseEntity confirmOne(
-		@PathVariable String uuid, HttpServletResponse response, RedirectAttributes redirectAttributes)
-		throws IOException {
+		@PathVariable String uuid, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 		
 		entityService.confirmUuid(uuid);
-		Map<String, String> headers = new HashMap<>();
-		headers.put("Location", servletContextPath + "/login");
-//		response.setHeader("Location", servletContextPath+"/login");
-//		response.setStatus(302);
-// 		response.sendRedirect(servletContextPath+"/login");
+		
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setLocation(URI.create("/login"));
+		
 		redirectAttributes.addFlashAttribute("success", "Your account has been successfully confirmed!" +
 			" Now please enter your login and password.");
-		return new ResponseEntity(headers, HttpStatus.PERMANENT_REDIRECT);
+		return new ResponseEntity(httpHeaders, HttpStatus.PERMANENT_REDIRECT);
 	}
 	
 }

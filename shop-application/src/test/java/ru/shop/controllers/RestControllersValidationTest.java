@@ -22,24 +22,10 @@ import ru.shop.services.UserService;
 
 import java.time.LocalDate;
 
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @WebMvcTest(controllers = {UserRestController.class})
 @Import({UserRestController.class})
-//@ContextConfiguration(classes = {SecurityConfig.class, WebMvcConfig.class})
-//@ContextConfiguration
-//@ExtendWith(SpringExtension.class)
-//@WebMvcTest(controllers = {UserRestController.class})
-//@WebAppConfiguration
-//@AutoConfigureMockMvc
-//@EnableAutoConfiguration(exclude = {SecurityConfig.class})
-//@WithMockUser(username = "Admin", password = "Password", roles = {"ADMIN"})
-//	@WithMockUser
-//@ActiveProfiles(profiles = {"test"})
 class RestControllersValidationTest {
 	
-	//	@LocalServerPort
-//	private int port;
 	@Autowired
 	private MockMvc mockMvc;
 	@MockBean
@@ -49,18 +35,11 @@ class RestControllersValidationTest {
 	@MockBean
 	private UserService userService;
 	private final ObjectMapper objectMapper = new ObjectMapper();
-	
-	//////////////////////////////
-	
 	@Autowired
 	private WebApplicationContext webApplicationContext;
-//	@Autowired
-//	private Filter springSecurityFilterChain;
-	
-//	@Autowired
 	@MockBean
 	private ModelMapper modelMapper;
-
+	
 	private ru.shop.entities.User user;
 	
 	private UserDto userDto;
@@ -75,10 +54,8 @@ class RestControllersValidationTest {
 		user.setNickName("Nick");
 		
 		userDto = new UserDto();
-//		modelMapper.map(user, userDto);
-
+		
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-//			.addFilters(springSecurityFilterChain).build();
 	}
 	
 	@Test
@@ -98,17 +75,4 @@ class RestControllersValidationTest {
 			.accept(MediaType.APPLICATION_JSON)
 		).andDo(MockMvcResultHandlers.print());
 	}
-	
-/*
-	@Test
-	public void not_Valid_User_Email_Should_Be_Rejected() {
-		//given
-		userDto.setEmail("notValidEmail");
-		userDto.setFirstName("k");
-		//when
-		UserDto userDto = userRestController.postNewOne(this.userDto);
-		//then
-		System.out.println(userDto.getSex());
-	}
-*/
 }

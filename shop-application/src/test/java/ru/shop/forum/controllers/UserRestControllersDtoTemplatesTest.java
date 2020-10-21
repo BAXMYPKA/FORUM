@@ -1,9 +1,6 @@
 package ru.shop.forum.controllers;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
@@ -139,7 +136,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		UserDto userDto = modelMapper.map(user, UserDto.class);
 		
-		Mockito.when(userService.save(Mockito.any(User.class))).thenReturn(user);
+		Mockito.when(userService.saveNewUnconfirmed(Mockito.any(User.class))).thenReturn(user);
 		
 		ArgumentCaptor<User> idCaptor = ArgumentCaptor.forClass(User.class);
 		
@@ -148,7 +145,7 @@ public class UserRestControllersDtoTemplatesTest {
 				restTemplate.getRootUri() + "/v1.0/users", userDto, UserDto.class);
 		
 		//then
-		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).save(idCaptor.capture());
+		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).saveNewUnconfirmed(idCaptor.capture());
 		
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		assertEquals(user.getEmail(), idCaptor.getValue().getEmail());

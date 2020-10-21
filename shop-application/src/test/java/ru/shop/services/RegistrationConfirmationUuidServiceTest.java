@@ -11,12 +11,11 @@ import ru.shop.entities.User;
 import ru.shop.entities.utils.Sex;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@DirtiesContext
+//@DirtiesContext
 class RegistrationConfirmationUuidServiceTest {
 	
 	@Autowired

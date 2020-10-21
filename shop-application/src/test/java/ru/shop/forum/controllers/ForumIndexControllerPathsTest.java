@@ -1,6 +1,5 @@
 package ru.shop.forum.controllers;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,8 @@ public class ForumIndexControllerPathsTest {
 	public void forum_Index_Page_Should_Return_Ok(String path) throws Exception {
 		//given
 		mockMvc.perform(MockMvcRequestBuilders.get(path).secure(true))
-				.andDo(MockMvcResultHandlers.print())
-				.andExpect(MockMvcResultMatchers.status().isOk());
+			.andDo(MockMvcResultHandlers.print())
+			.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
 	

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import ru.shop.entities.User;
 import ru.shop.entities.utils.Sex;
 import ru.shop.repositories.UserRepository;
@@ -17,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@TestPropertySource(properties = {"spring.jpa.properties.javax.persistence.validation.mode=none"})
+@Transactional
+//@TestPropertySource(properties = {"spring.jpa.properties.javax.persistence.validation.mode=none"})
 class UserRepositoryTest {
 	
 	@Autowired
@@ -48,51 +49,51 @@ class UserRepositoryTest {
 	@Test
 	public void user_Should_Be_Found_By_Id() {
 		//given
-		User savedUser = userRepository.saveAndFlush(UserRepositoryTest.user);
+		User savedUser = userRepository.saveAndFlush(user);
 		//when
 		Optional<User> userById = userRepository.findById(savedUser.getId());
 		//then
 		assertAll(
-				() -> assertFalse(userById.isEmpty()),
-				() -> assertEquals("Nick", userById.get().getNickName()),
-				() -> assertNotNull(userById.get().getId())
+			() -> assertFalse(userById.isEmpty()),
+			() -> assertEquals("Nick", userById.get().getNickName()),
+			() -> assertNotNull(userById.get().getId())
 		);
 	}
 	
 	@Test
 	public void user_Should_Be_Found_By_Email() {
 		//given
-		User savedUser = userRepository.saveAndFlush(UserRepositoryTest.user);
+		User savedUser = userRepository.saveAndFlush(user);
 		//when
 		Optional<User> userByEmail = userRepository.findByEmail(savedUser.getEmail());
 		//then
 		assertAll(
-				() -> assertFalse(userByEmail.isEmpty()),
-				() -> assertEquals("user@email.com", userByEmail.get().getEmail()),
-				() -> assertEquals("Nick", userByEmail.get().getNickName()),
-				() -> assertNotNull(userByEmail.get().getId())
+			() -> assertFalse(userByEmail.isEmpty()),
+			() -> assertEquals("user@email.com", userByEmail.get().getEmail()),
+			() -> assertEquals("Nick", userByEmail.get().getNickName()),
+			() -> assertNotNull(userByEmail.get().getId())
 		);
 	}
 	
 	@Test
 	public void user_Should_Be_Found_By_NickName() {
 		//given
-		userRepository.saveAndFlush(UserRepositoryTest.user);
+		userRepository.saveAndFlush(user);
 		//when
 		Optional<User> userByNickName = userRepository.findByNickName("Nick");
 		//then
 		assertAll(
-				() -> assertFalse(userByNickName.isEmpty()),
-				() -> assertEquals("user@email.com", userByNickName.get().getEmail()),
-				() -> assertEquals("Nick", userByNickName.get().getNickName()),
-				() -> assertNotNull(userByNickName.get().getId())
+			() -> assertFalse(userByNickName.isEmpty()),
+			() -> assertEquals("user@email.com", userByNickName.get().getEmail()),
+			() -> assertEquals("Nick", userByNickName.get().getNickName()),
+			() -> assertNotNull(userByNickName.get().getId())
 		);
 	}
 	
 	@Test
 	public void duplicate_Email_Should_Be_Rejected() {
 		//given
-		User savedUser = userRepository.saveAndFlush(UserRepositoryTest.user);
+		User savedUser = userRepository.saveAndFlush(user);
 		
 		User duplicateEmailUser = new User("user@email.com");
 		duplicateEmailUser.setPassword("1234");
@@ -103,14 +104,14 @@ class UserRepositoryTest {
 		//when
 		//then
 		assertThrows(RuntimeException.class,
-				() -> userRepository.saveAndFlush(duplicateEmailUser)
+			() -> userRepository.saveAndFlush(duplicateEmailUser)
 		);
 	}
 	
 	@Test
 	public void duplicate_NickName_Should_Be_Rejected() {
 		//given
-		User savedUser = userRepository.saveAndFlush(UserRepositoryTest.user);
+		User savedUser = userRepository.saveAndFlush(user);
 		
 		User duplicateNickNameUser = new User("user2@email.com");
 		duplicateNickNameUser.setPassword("1234");
@@ -121,14 +122,14 @@ class UserRepositoryTest {
 		//when
 		//then
 		assertThrows(RuntimeException.class,
-				() -> userRepository.saveAndFlush(duplicateNickNameUser)
+			() -> userRepository.saveAndFlush(duplicateNickNameUser)
 		);
 	}
 	
 	@Test
 	public void preset_Id_Should_Be_Ignored() {
 		//given
-		User savedUser = userRepository.saveAndFlush(UserRepositoryTest.user);
+		User savedUser = userRepository.saveAndFlush(user);
 		
 		User presetIdUser = new User("user2@email.com");
 		presetIdUser.setId(123L);

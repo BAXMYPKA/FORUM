@@ -2,7 +2,6 @@ package ru.shop.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -39,16 +38,17 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 	
 	/**
 	 * Registration method
+	 *
 	 * @return
 	 */
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public UserDto postNewOne(
-			@Validated(value = {ValidationCreateGroup.class, Default.class}) @RequestBody UserDto entityDto,
-			Authentication authentication) {
+		@Validated(value = {ValidationCreateGroup.class, Default.class}) @RequestBody UserDto entityDto,
+		Authentication authentication) {
 		User user = modelMapper.map(entityDto, entityClass);
-		User savedNewUser = entityService.save(user);
+		User savedNewUser = entityService.saveNewUnconfirmed(user);
 		return mapEntityToDto(savedNewUser, authentication, null);
 	}
 	
@@ -57,7 +57,7 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 						  Authentication authentication) {
 		return super.putOne(entityDto, authentication);
 	}
-	
+
 //	@Override
 //	protected UserDto mapEntityToDto(ru.shop.entities.User user, Authentication authentication, PropertyMap<ru.shop.entities.User, UserDto> propertyMap) {
 //		return super.mapEntityToDto(user, authentication, propertyMap);

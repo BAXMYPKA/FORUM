@@ -1,6 +1,7 @@
 package ru.shop.services;
 
 import lombok.Getter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -25,13 +26,26 @@ public class UserService extends AbstractEntityService<User, UserRepository> {
 	}
 	
 	/**
-	 * Registration of a new User
-	 * @param user A new not registered User
-	 * @return Not enabled User with a newly created {@link ru.shop.entities.RegistrationConfirmationUuid}
+	 * A strict saving of a User to the database.
+	 * Allowed for {@link ru.shop.security.Roles#ADMIN} only.
+	 * @param user
+	 * @return Saved and enabled User
 	 */
 	@Override
+//	@PreAuthorize(value = "#principal.authorities.contains('ADMIN')")
 	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public User save(User user) {
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		return repository.save(user);
+	}
+	
+	/**
+	 * Registration of a new User who is required to be self-confirmed by email.
+	 * @param user A new not confirmed User
+	 * @return Not enabled User with a newly created {@link ru.shop.entities.RegistrationConfirmationUuid}
+	 */
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+	public User saveNewUnconfirmed(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setEnabled(false);
 		user.setRegistrationConfirmationUuid(new RegistrationConfirmationUuid(user));

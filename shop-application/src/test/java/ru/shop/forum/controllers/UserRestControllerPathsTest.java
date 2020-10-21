@@ -2,6 +2,7 @@ package ru.shop.forum.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -50,7 +51,7 @@ public class UserRestControllerPathsTest {
 	public void beforeEach() {
 		Mockito.when(userService.getEntityClass()).thenReturn(ru.shop.entities.User.class);
 		userRestController.setEntityClass(ru.shop.entities.User.class);
-		Mockito.when(userService.save(Mockito.any(ru.shop.entities.User.class))).thenReturn(new ru.shop.entities.User());
+		Mockito.when(userService.saveNewUnconfirmed(Mockito.any(ru.shop.entities.User.class))).thenReturn(new ru.shop.entities.User());
 	}
 	
 	@Test

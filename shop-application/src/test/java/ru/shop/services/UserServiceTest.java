@@ -1,16 +1,17 @@
 package ru.shop.services;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.DirtiesContext;
 import ru.shop.entities.User;
 import ru.shop.entities.utils.Sex;
 import ru.shop.repositories.UserRepository;
@@ -21,8 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@DirtiesContext
+@SpringBootTest(classes = {BCryptPasswordEncoder.class, UserService.class, ModelMapper.class})
 class UserServiceTest {
 	
 	@Autowired
@@ -46,6 +46,11 @@ class UserServiceTest {
 		user.setNickName("Nick");
 	}
 	
+	@AfterEach
+	public void afterEach() {
+		userService.deleteAll();
+	}
+	
 	/**
 	 * There are three fields separated by $:
 	 * The “2a” represents the BCrypt algorithm version
@@ -59,7 +64,7 @@ class UserServiceTest {
 		//given
 		Mockito.when(userRepositoryMock.save(user)).thenReturn(user);
 		//when
-		User savedUser = userService.save(user);
+		User savedUser = userService.saveNewUnconfirmed(user);
 		//then
 		assertNotNull(savedUser.getPassword());
 		assertNotEquals("123", savedUser.getPassword());
@@ -73,7 +78,7 @@ class UserServiceTest {
 		Mockito.when(userRepositoryMock.save(user)).thenReturn(user);
 		user.setPassword(nonEncodedPassword);
 		//when
-		User savedUser = userService.save(user);
+		User savedUser = userService.saveNewUnconfirmed(user);
 		//then
 		assertTrue(savedUser.getPassword().startsWith("$2a$10$"));
 		assertTrue(passwordEncoder.matches(nonEncodedPassword, savedUser.getPassword()));
@@ -84,7 +89,7 @@ class UserServiceTest {
 		//given
 		Mockito.when(userRepositoryMock.save(user)).thenReturn(user);
 		//when
-		User savedUser = userService.save(user);
+		User savedUser = userService.saveNewUnconfirmed(user);
 		//then
 		assertFalse(passwordEncoder.matches("122", savedUser.getPassword()));
 	}
@@ -96,8 +101,8 @@ class UserServiceTest {
 		//when
 		//then
 		assertThrows(
-				NoResultException.class,
-				() -> userService.findUserByEmail("email@email.com"),
-				"No User found for email email@email.com");
+			NoResultException.class,
+			() -> userService.findUserByEmail("email@email.com"),
+			"No User found for email email@email.com");
 	}
 }
