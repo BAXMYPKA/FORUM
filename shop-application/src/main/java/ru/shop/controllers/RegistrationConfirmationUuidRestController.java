@@ -21,9 +21,6 @@ import java.net.URI;
 @RequestMapping(path = "/v1.0/uuids")
 public class RegistrationConfirmationUuidRestController extends AbstractRestController<RegistrationConfirmationUuid, RegistrationConfirmationUuidDto, RegistrationConfirmationUuidService> {
 	
-	@Value("#{servletContext.contextPath}")
-	private String servletContextPath;
-	
 	public RegistrationConfirmationUuidRestController(
 		RegistrationConfirmationUuidService uuidService, ModelMapper modelMapper, ObjectMapper objectMapper) {
 		super(uuidService, modelMapper, objectMapper);

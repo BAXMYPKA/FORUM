@@ -1,7 +1,9 @@
 package ru.shop.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.shop.entities.RegistrationConfirmationUuid;
 import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
 import ru.shop.entities.utils.ValidationCreateGroup;
@@ -20,6 +23,10 @@ import javax.validation.groups.Default;
 @RestController
 @RequestMapping(path = "/v1.0/users", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class UserRestController extends AbstractRestController<ru.shop.entities.User, UserDto, UserService> {
+	
+	@Setter
+	@Value("#{servletContext.contextPath}")
+	private String servletContextPath;
 	
 	public UserRestController(UserService entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
 		super(entityService, modelMapper, objectMapper);
@@ -49,6 +56,10 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 		Authentication authentication) {
 		User user = modelMapper.map(entityDto, entityClass);
 		User savedNewUser = entityService.saveNewUnconfirmed(user);
+		
+		RegistrationConfirmationUuid confirmationUuid = savedNewUser.getRegistrationConfirmationUuid();
+		confirmationUuid.setConfirmationUrl(createConfirmationUrl(confirmationUuid.getUuid()));
+		
 		return mapEntityToDto(savedNewUser, authentication, null);
 	}
 	
@@ -57,7 +68,11 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 						  Authentication authentication) {
 		return super.putOne(entityDto, authentication);
 	}
-
+	
+	private String createConfirmationUrl(String uuid) {
+		return servletContextPath + "/v1.0/uuids/"+uuid+"/confirm";
+	}
+	
 //	@Override
 //	protected UserDto mapEntityToDto(ru.shop.entities.User user, Authentication authentication, PropertyMap<ru.shop.entities.User, UserDto> propertyMap) {
 //		return super.mapEntityToDto(user, authentication, propertyMap);

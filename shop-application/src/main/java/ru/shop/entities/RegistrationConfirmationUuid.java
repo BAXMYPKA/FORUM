@@ -27,7 +27,12 @@ public class RegistrationConfirmationUuid extends AbstractEntity {
 	protected static final long SerialVersionUID = 1L;
 	
 	@EqualsAndHashCode.Include
+	@Column(nullable = false, unique = true, updatable = false)
 	private String uuid;
+	
+	@Setter
+	@Column(unique = true)
+	private String confirmationUrl;
 	
 	@OneToOne
 	@JoinColumn(name = "user_id", unique = true, nullable = false, updatable = false)

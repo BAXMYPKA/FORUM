@@ -19,6 +19,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.shop.controllers.UserRestController;
+import ru.shop.entities.RegistrationConfirmationUuid;
+import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
 import ru.shop.repositories.UserRepository;
 import ru.shop.services.UserService;
@@ -51,6 +53,7 @@ public class UserRestControllerPathsTest {
 	public void beforeEach() {
 		Mockito.when(userService.getEntityClass()).thenReturn(ru.shop.entities.User.class);
 		userRestController.setEntityClass(ru.shop.entities.User.class);
+		userRestController.setServletContextPath("/shop.ru/forum");
 		Mockito.when(userService.saveNewUnconfirmed(Mockito.any(ru.shop.entities.User.class))).thenReturn(new ru.shop.entities.User());
 	}
 	
@@ -115,7 +118,11 @@ public class UserRestControllerPathsTest {
 		UserDto userDto = new UserDto();
 		userDto.setEmail("userdto@email.com");
 		userDto.setNickName("Nick");
+		userDto.setRegistrationConfirmationUuid(new RegistrationConfirmationUuid());
 		
+		User user = modelMapper.map(userDto, User.class);
+		
+		Mockito.when(userService.saveNewUnconfirmed(Mockito.any(User.class))).thenReturn(user);
 		Mockito.when(userService.existsUserByNickName("Nick")).thenReturn(false);
 		
 		//when

@@ -24,6 +24,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.shop.controllers.ExceptionHandlerRestController;
 import ru.shop.controllers.UserRestController;
+import ru.shop.entities.RegistrationConfirmationUuid;
 import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
 import ru.shop.security.configs.TestSslUtil;
@@ -33,7 +34,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
@@ -68,6 +69,26 @@ public class UserRestControllersDtoTemplatesTest {
 	public void beforeEach() {
 		userRestController.setEntityClass(ru.shop.entities.User.class);
 		Mockito.when(userService.getEntityClass()).thenReturn(User.class);
+	}
+	
+	@TestConfiguration
+	@Order(1)
+	static class TestSecurityConfiguration extends WebSecurityConfigurerAdapter {
+		
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http
+					.csrf().disable()
+					.requiresChannel()
+					.anyRequest()
+					.requiresSecure()
+					.and()
+					.authorizeRequests()
+					.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
+					.and()
+					.sessionManagement()
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		}
 	}
 	
 	@Test
@@ -133,6 +154,7 @@ public class UserRestControllersDtoTemplatesTest {
 		user.setEmail("user@email.com");
 		user.setNickName("Nick");
 		user.setPassword("123");
+		user.setRegistrationConfirmationUuid(new RegistrationConfirmationUuid());
 		
 		UserDto userDto = modelMapper.map(user, UserDto.class);
 		
@@ -149,6 +171,29 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		assertEquals(user.getEmail(), idCaptor.getValue().getEmail());
+	}
+	
+	@Test
+	public void post_New_User_Should_Return_New_UserDto_With_New_RegistrationConfirmationUuid() {
+		//given
+		User user = new User();
+		user.setEmail("user@email.com");
+		user.setNickName("Nick");
+		user.setPassword("123");
+		user.setRegistrationConfirmationUuid(new RegistrationConfirmationUuid());
+		
+		UserDto userDto = modelMapper.map(user, UserDto.class);
+		
+		Mockito.when(userService.saveNewUnconfirmed(Mockito.any(User.class))).thenReturn(user);
+		
+		//when
+		UserDto newUserDto = restTemplate.postForObject(
+				restTemplate.getRootUri() + "/v1.0/users", userDto, UserDto.class);
+		
+		//then
+		assertNotNull(newUserDto.getRegistrationConfirmationUuid());
+		assertTrue(newUserDto.getRegistrationConfirmationUuid().getConfirmationUrl().startsWith("/shop.ru/forum/v1.0/uuids/"));
+		assertTrue(newUserDto.getRegistrationConfirmationUuid().getConfirmationUrl().endsWith("/confirm"));
 	}
 	
 	@Test
@@ -177,24 +222,5 @@ public class UserRestControllersDtoTemplatesTest {
 		assertEquals(user.getEmail(), idCaptor.getValue().getEmail());
 	}
 	
-	@TestConfiguration
-	@Order(1)
-	static class TestSecurityConfiguration extends WebSecurityConfigurerAdapter {
-		
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http
-					.csrf().disable()
-					.requiresChannel()
-					.anyRequest()
-					.requiresSecure()
-					.and()
-					.authorizeRequests()
-					.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
-					.and()
-					.sessionManagement()
-					.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		}
-	}
 	
 }
