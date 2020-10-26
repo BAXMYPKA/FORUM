@@ -121,8 +121,8 @@ public class User extends AbstractEntity {
 	@Override
 	public void prePersist() {
 		super.prePersist();
-		if (this.nickName == null || this.nickName.isBlank()) {
-			this.nickName = this.email.substring(0, this.email.indexOf("@"));
-		}
+//		if (this.nickName == null || this.nickName.isBlank()) {
+//			this.nickName = this.email.substring(0, this.email.indexOf("@"));
+//		}
 	}
 }

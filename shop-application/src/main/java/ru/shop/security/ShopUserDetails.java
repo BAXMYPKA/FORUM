@@ -30,9 +30,12 @@ public class ShopUserDetails implements UserDetails {
 		return this.user.getPassword();
 	}
 	
+	/**
+	 * @return {@link User#getNickName()} if not null. Otherwise {@link User#getEmail()} will be returned.
+	 */
 	@Override
 	public String getUsername() {
-		return this.user.getNickName();
+		return this.user.getNickName() != null ? this.user.getNickName() : this.user.getEmail();
 	}
 	
 	@Override

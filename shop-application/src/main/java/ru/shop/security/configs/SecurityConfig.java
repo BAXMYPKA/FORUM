@@ -34,7 +34,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-//			.csrf().disable()
 			.requiresChannel()
 			.anyRequest()
 			.requiresSecure()
@@ -44,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
 			.and()
 			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
 			.and()
 			.formLogin()
 			.loginPage("/shop.ru/forum/v1.0/login")
