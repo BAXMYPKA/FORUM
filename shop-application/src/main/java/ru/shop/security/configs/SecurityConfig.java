@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
 			.and()
 			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.formLogin()
 			.loginPage("/shop.ru/forum/v1.0/login")

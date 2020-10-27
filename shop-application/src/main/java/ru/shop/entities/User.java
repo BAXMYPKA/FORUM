@@ -78,7 +78,7 @@ public class User extends AbstractEntity {
 	private String selfDescription;
 	
 	@Column
-	private boolean enabled = true;
+	private boolean enabled;
 	
 	@Column
 	private boolean locked = false;

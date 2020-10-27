@@ -36,6 +36,7 @@ public class UserService extends AbstractEntityService<User, UserRepository> {
 	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public User save(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setEnabled(true);
 		return repository.save(user);
 	}
 	

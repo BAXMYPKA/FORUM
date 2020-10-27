@@ -48,23 +48,19 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!--
-                &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client &ndash;&gt;
+                <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client -->
                 <dependency>
                     <groupId>org.springframework.security</groupId>
                     <artifactId>spring-security-oauth2-client</artifactId>
-                    <version>5.4.1</version>
+                    <version>5.3.4.RELEASE</version>
                 </dependency>
-        -->
 
-        <!--
-                &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-jose &ndash;&gt;
+                <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-jose -->
                 <dependency>
                     <groupId>org.springframework.security</groupId>
                     <artifactId>spring-security-oauth2-jose</artifactId>
-                    <version>5.4.1</version>
+                    <version>5.3.4.RELEASE</version>
                 </dependency>
-        -->
 
         <!--
                 &lt;!&ndash; https://mvnrepository.com/artifact/org.keycloak/keycloak-dependencies-server-all &ndash;&gt;
@@ -85,13 +81,11 @@
 
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
 
-<!--
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
--->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -140,12 +134,14 @@
             <version>1.4.199</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.session/spring-session-hazelcast -->
+<!--
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.session/spring-session-hazelcast &ndash;&gt;
         <dependency>
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-hazelcast</artifactId>
             <version>2.3.1.RELEASE</version>
         </dependency>
+-->
 
 <!--
         &lt;!&ndash; https://mvnrepository.com/artifact/com.hazelcast/hazelcast &ndash;&gt;

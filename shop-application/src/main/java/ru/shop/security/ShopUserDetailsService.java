@@ -37,7 +37,7 @@ public class ShopUserDetailsService implements UserDetailsService {
 			.orElseGet(() -> userRepository.findByNickName(nickNameOrEmail, "new-user-with-registrationUuid")
 				.orElseThrow(() -> new NoResultException("No user found for = " + nickNameOrEmail)));
 		
-		if (user.getRegistrationConfirmationUuid() != null) {
+		if (!user.isEnabled() || user.getRegistrationConfirmationUuid() != null) {
 			throw new BadCredentialsException("User with " + nickNameOrEmail + " is not activated!");
 		}
 		return new ShopUserDetails(user);
