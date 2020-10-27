@@ -9,6 +9,7 @@ import ru.shop.entities.RegistrationConfirmationUuid;
 import ru.shop.entities.User;
 import ru.shop.entities.utils.*;
 import ru.shop.forum.entities.ImgAvatar;
+import ru.shop.forum.entities.dto.UserForumSettingsDto;
 import ru.shop.security.Roles;
 
 import javax.persistence.Convert;
@@ -74,7 +75,10 @@ public class UserDto extends AbstractDto<User> {
 	
 	private LocalDate lockedUntil;
 	
+	//TODO: in production this field must be eliminated
 	private RegistrationConfirmationUuid registrationConfirmationUuid;
+	
+	private UserForumSettingsDto userForumSettingsDto;
 	
 	public UserDto() {
 		this.entityClass = User.class;

@@ -27,6 +27,7 @@ import ru.shop.entities.utils.ValidationCreateGroup;
 import ru.shop.entities.utils.ValidationUpdateGroup;
 import ru.shop.repositories.EntityRepository;
 import ru.shop.services.AbstractEntityService;
+import ru.shop.utils.ShopEventPublisher;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.groups.Default;
@@ -45,6 +46,8 @@ public abstract class AbstractRestController<
 	
 	protected ObjectMapper objectMapper;
 	
+	protected ShopEventPublisher shopEventPublisher;
+	
 	@Getter(AccessLevel.PROTECTED)
 	protected S entityService;
 	
@@ -58,11 +61,12 @@ public abstract class AbstractRestController<
 	protected Class<D> entityDtoClass;
 	
 	@Autowired
-	public AbstractRestController(S entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
+	public AbstractRestController(S entityService, ModelMapper modelMapper, ObjectMapper objectMapper, ShopEventPublisher shopEventPublisher) {
 		this.modelMapper = modelMapper;
 		this.entityService = entityService;
 		this.objectMapper = objectMapper;
 		this.entityClass = entityService.getEntityClass();
+		this.shopEventPublisher = shopEventPublisher;
 	}
 	
 	//	@JsonView(ShopViews.ExternalView.class)

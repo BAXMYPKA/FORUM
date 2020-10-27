@@ -8,14 +8,18 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.shop.forum.entities.ForumSection;
 import ru.shop.forum.entities.dto.ForumSectionDto;
 import ru.shop.forum.services.ForumSectionService;
+import ru.shop.utils.ShopEventPublisher;
 
 @RestController
 @RequestMapping(path = "/v1.0/forum-sections")
 public class ForumSectionRestController extends AbstractForumRestController<ForumSection, ForumSectionDto, ForumSectionService> {
 	
 	
-	public ForumSectionRestController(ForumSectionService entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
-		super(entityService, modelMapper, objectMapper);
+	public ForumSectionRestController(ForumSectionService entityService,
+												 ModelMapper modelMapper,
+												 ObjectMapper objectMapper,
+												 ShopEventPublisher shopEventPublisher) {
+		super(entityService, modelMapper, objectMapper, shopEventPublisher);
 		this.entityDtoClass = ForumSectionDto.class;
 	}
 }

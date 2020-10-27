@@ -20,12 +20,11 @@ public class JwtService {
 	
 	private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 	
+	private final Key key;
+	
 	@Setter
 	@Value("${jwt.token.secret-word}")
 	private String secretWord;
-	
-	private final Key key = new SecretKeySpec(secretWord.getBytes(StandardCharsets.UTF_8), signatureAlgorithm.getValue());
-	
 	@Setter
 	@Value("${jwt.token.issuer}")
 	private String issuer;
@@ -38,6 +37,18 @@ public class JwtService {
 	@Value("${system.current.time-zone}")
 	private String currentTimeZone;
 	
+	public JwtService() {
+		key = new SecretKeySpec(secretWord.getBytes(StandardCharsets.UTF_8), signatureAlgorithm.getValue());
+	}
+	
+	public JwtService(String secretWord, String issuer, Integer tokenExpirationDays, String currentTimeZone) {
+		this.secretWord = secretWord;
+		this.issuer = issuer;
+		this.tokenExpirationDays = tokenExpirationDays;
+		this.currentTimeZone = currentTimeZone;
+		key = new SecretKeySpec(secretWord.getBytes(StandardCharsets.UTF_8), signatureAlgorithm.getValue());
+	}
+	
 	public String issueJwt(ShopUserDetails userDetails) {
 		if (!userDetails.isEnabled())
 			throw new BadCredentialsException("Account=" + userDetails.getUsername() + " is not enabled!");
@@ -47,7 +58,7 @@ public class JwtService {
 				.setSubject(userDetails.getUsername())
 				.setExpiration(Date.from(LocalDate.now().atStartOfDay(ZoneId.of(currentTimeZone)).plusDays(tokenExpirationDays).toInstant()))
 				.setIssuedAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.of(currentTimeZone)).toInstant()))
-				.claim("scope", userDetails.getAuthorities().iterator().next().getAuthority())
+				.claim("role", userDetails.getAuthorities().iterator().next().getAuthority())
 				.compact();
 	}
 	
@@ -63,6 +74,8 @@ public class JwtService {
 			log.debug(e.getMessage(), e);
 		} catch (IllegalArgumentException e) {
 			log.debug(e.getMessage(), e);
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
 		}
 		return false;
 	}
@@ -73,6 +86,6 @@ public class JwtService {
 	}
 	
 	public String getAuthority(String jwt) {
-		return (String) Jwts.parser().setSigningKey(key).parseClaimsJws(jwt).getBody().get("scope");
+		return (String) Jwts.parser().setSigningKey(key).parseClaimsJws(jwt).getBody().get("role");
 	}
 }

@@ -17,6 +17,7 @@ import ru.shop.entities.dto.UserDto;
 import ru.shop.entities.utils.ValidationCreateGroup;
 import ru.shop.entities.utils.ValidationUpdateGroup;
 import ru.shop.services.UserService;
+import ru.shop.utils.ShopEventPublisher;
 
 import javax.validation.groups.Default;
 
@@ -28,8 +29,11 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 	@Value("#{servletContext.contextPath}")
 	private String servletContextPath;
 	
-	public UserRestController(UserService entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
-		super(entityService, modelMapper, objectMapper);
+	public UserRestController(UserService entityService,
+									  ModelMapper modelMapper,
+									  ObjectMapper objectMapper,
+									  ShopEventPublisher shopEventPublisher) {
+		super(entityService, modelMapper, objectMapper, shopEventPublisher);
 		this.entityDtoClass = UserDto.class;
 	}
 	
@@ -43,10 +47,12 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 		return super.getAllPageable(pageable, authentication);
 	}
 	
+	
 	/**
 	 * Registration method
 	 *
-	 * @return
+	 * @return {@link UserDto} with the corresponding {@link RegistrationConfirmationUuid} inside with the temporary (!)
+	 * {@link RegistrationConfirmationUuid#getConfirmationUrl()} in it.
 	 */
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -59,6 +65,8 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 		
 		RegistrationConfirmationUuid confirmationUuid = savedNewUser.getRegistrationConfirmationUuid();
 		confirmationUuid.setConfirmationUrl(createConfirmationUrl(confirmationUuid.getUuid()));
+		
+		shopEventPublisher.publishUnregisteredUserCreated(savedNewUser);
 		
 		return mapEntityToDto(savedNewUser, authentication, null);
 	}

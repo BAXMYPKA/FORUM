@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.shop.repositories.UserRepository;
+import ru.shop.security.Roles;
 import ru.shop.security.ShopUserDetailsService;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.requiresSecure()
 			.and()
 			.authorizeRequests()
-			.antMatchers("/shop.ru/forum/v?/admin/**").authenticated()
+			.antMatchers("/shop.ru/forum/v?/admin/**").hasAnyRole(Roles.ADMIN.getAuthority())
 			.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
 			.and()
 			.sessionManagement()

@@ -7,13 +7,17 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.shop.forum.entities.Post;
 import ru.shop.forum.entities.dto.PostDto;
 import ru.shop.forum.services.PostService;
+import ru.shop.utils.ShopEventPublisher;
 
 @RestController
 @RequestMapping(path = "/v1.0/posts")
 public class PostRestController extends AbstractForumRestController<Post, PostDto, PostService> {
 	
-	public PostRestController(PostService entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
-		super(entityService, modelMapper, objectMapper);
+	public PostRestController(PostService entityService,
+									  ModelMapper modelMapper,
+									  ObjectMapper objectMapper,
+									  ShopEventPublisher shopEventPublisher) {
+		super(entityService, modelMapper, objectMapper, shopEventPublisher);
 		this.entityDtoClass = PostDto.class;
 	}
 }

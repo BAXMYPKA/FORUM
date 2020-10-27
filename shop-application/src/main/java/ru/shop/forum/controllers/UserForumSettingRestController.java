@@ -13,10 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.shop.forum.entities.ForumUserSettings;
 import ru.shop.forum.entities.dto.UserForumSettingsDto;
 import ru.shop.forum.services.ForumUserSettingsService;
+import ru.shop.utils.ShopEventPublisher;
 
 @RestController
 @RequestMapping(path = {"/v1.0/users/{id}/user-forum-settings"})
 public class UserForumSettingRestController extends AbstractForumRestController<ForumUserSettings, UserForumSettingsDto, ForumUserSettingsService> {
+	
+	public UserForumSettingRestController(ForumUserSettingsService entityService,
+													  ModelMapper modelMapper,
+													  ObjectMapper objectMapper,
+													  ShopEventPublisher shopEventPublisher) {
+		super(entityService, modelMapper, objectMapper, shopEventPublisher);
+		this.entityDtoClass = UserForumSettingsDto.class;
+	}
 	
 	@Override
 	@GetMapping(path = "/v1.0/users/{id}/user-forum-settings")
@@ -37,10 +46,5 @@ public class UserForumSettingRestController extends AbstractForumRestController<
 	@GetMapping(path = "/v1.0/users/user-forum-settings")
 	public Page<UserForumSettingsDto> getAllPageable(Pageable pageable, Authentication authentication) {
 		return super.getAllPageable(pageable, authentication);
-	}
-	
-	public UserForumSettingRestController(ForumUserSettingsService entityService, ModelMapper modelMapper, ObjectMapper objectMapper) {
-		super(entityService, modelMapper, objectMapper);
-		this.entityDtoClass = UserForumSettingsDto.class;
 	}
 }
