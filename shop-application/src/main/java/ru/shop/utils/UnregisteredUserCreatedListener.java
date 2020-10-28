@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 public class UnregisteredUserCreatedListener implements ApplicationListener<UnregisteredUserCreated> {
 	
 	@Autowired
-	private MailSender mailSender;
+	private ShopEmailService shopEmailService;
 	
 	@Override
 	public void onApplicationEvent(UnregisteredUserCreated event) {
-		mailSender.sendSimpleEmail(event.getUser());
+		shopEmailService.sendSimpleEmail(event.getUser());
 	}
 }

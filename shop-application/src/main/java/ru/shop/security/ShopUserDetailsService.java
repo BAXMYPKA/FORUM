@@ -29,7 +29,7 @@ public class ShopUserDetailsService implements UserDetailsService {
 	 *                                   As activated Users must not contain it.
 	 */
 	@Override
-	public UserDetails loadUserByUsername(String nickNameOrEmail) throws UsernameNotFoundException, BadCredentialsException {
+	public ShopUserDetails loadUserByUsername(String nickNameOrEmail) throws UsernameNotFoundException, BadCredentialsException {
 		if (nickNameOrEmail == null || nickNameOrEmail.isBlank())
 			throw new UsernameNotFoundException("Nickname or email is null or empty!");
 		

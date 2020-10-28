@@ -3,7 +3,10 @@ package ru.shop.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.*;
+import org.springframework.mail.MailAuthenticationException;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailParseException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import ru.shop.entities.User;
@@ -15,7 +18,7 @@ import java.util.TimeZone;
 
 @Slf4j
 @Component
-public class MailSender {
+public class ShopEmailService {
 	
 	@Autowired
 	private JavaMailSender mailSender;
@@ -41,7 +44,7 @@ public class MailSender {
 		mailMessage.setFrom(this.from);
 		mailMessage.setSentDate(currentDate);
 		mailMessage.setText("You have just registered at SHOP.RU. \n To confirm you registration and enter the portal please click to follow this link: "
-				+ user.getRegistrationConfirmationUuid().getConfirmationUrl() + " \n If you consider this email as a wrong one please ignore it.");
+			+ user.getRegistrationConfirmationUuid().getConfirmationUrl() + " \n If you consider this email as a wrong one please ignore it.");
 		try {
 			mailSender.send(mailMessage);
 		} catch (MailParseException | MailAuthenticationException e) {

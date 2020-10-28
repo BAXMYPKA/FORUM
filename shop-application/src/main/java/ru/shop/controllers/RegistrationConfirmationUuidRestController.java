@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,9 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 
 @RestController
-@RequestMapping(path = "/v1.0/uuids")
-public class RegistrationConfirmationUuidRestController
-		extends AbstractRestController<RegistrationConfirmationUuid, RegistrationConfirmationUuidDto, RegistrationConfirmationUuidService> {
+@RequestMapping(path = "/v1.0/uuids", produces = {MediaType.APPLICATION_JSON_VALUE})
+public class RegistrationConfirmationUuidRestController	extends
+	AbstractRestController
+		<RegistrationConfirmationUuid, RegistrationConfirmationUuidDto, RegistrationConfirmationUuidService> {
 	
 	public RegistrationConfirmationUuidRestController(
 			RegistrationConfirmationUuidService uuidService,
@@ -41,7 +43,7 @@ public class RegistrationConfirmationUuidRestController
 	
 	@GetMapping(path = "/{uuid}/confirm")
 	@ResponseStatus(code = HttpStatus.PERMANENT_REDIRECT)
-	public ResponseEntity confirmOne(
+	public ResponseEntity<String> confirmOne(
 			@PathVariable String uuid, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 		
 		entityService.confirmUuid(uuid);
@@ -51,7 +53,7 @@ public class RegistrationConfirmationUuidRestController
 		
 		redirectAttributes.addFlashAttribute("success", "Your account has been successfully confirmed!" +
 				" Now please enter your login and password.");
-		return new ResponseEntity(httpHeaders, HttpStatus.PERMANENT_REDIRECT);
+		return new ResponseEntity<>(httpHeaders, HttpStatus.PERMANENT_REDIRECT);
 	}
 	
 }

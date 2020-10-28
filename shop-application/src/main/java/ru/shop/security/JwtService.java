@@ -5,8 +5,10 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -20,7 +22,7 @@ public class JwtService {
 	
 	private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 	
-	private final Key key;
+	private Key key;
 	
 	@Setter
 	@Value("${jwt.token.secret-word}")
@@ -38,7 +40,6 @@ public class JwtService {
 	private String currentTimeZone;
 	
 	public JwtService() {
-		key = new SecretKeySpec(secretWord.getBytes(StandardCharsets.UTF_8), signatureAlgorithm.getValue());
 	}
 	
 	public JwtService(String secretWord, String issuer, Integer tokenExpirationDays, String currentTimeZone) {
@@ -49,17 +50,35 @@ public class JwtService {
 		key = new SecretKeySpec(secretWord.getBytes(StandardCharsets.UTF_8), signatureAlgorithm.getValue());
 	}
 	
+	@PostConstruct
+	void setKey() {
+		key = new SecretKeySpec(secretWord.getBytes(StandardCharsets.UTF_8), signatureAlgorithm.getValue());
+	}
+	
 	public String issueJwt(ShopUserDetails userDetails) {
 		if (!userDetails.isEnabled())
 			throw new BadCredentialsException("Account=" + userDetails.getUsername() + " is not enabled!");
 		
 		return Jwts.builder()
-				.signWith(signatureAlgorithm, key)
-				.setSubject(userDetails.getUsername())
-				.setExpiration(Date.from(LocalDate.now().atStartOfDay(ZoneId.of(currentTimeZone)).plusDays(tokenExpirationDays).toInstant()))
-				.setIssuedAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.of(currentTimeZone)).toInstant()))
-				.claim("role", userDetails.getAuthorities().iterator().next().getAuthority())
-				.compact();
+			.signWith(signatureAlgorithm, key)
+			.setSubject(userDetails.getUsername())
+			.setIssuer(issuer)
+			.setExpiration(Date.from(LocalDate.now().atStartOfDay(ZoneId.of(currentTimeZone)).plusDays(tokenExpirationDays).toInstant()))
+			.setIssuedAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.of(currentTimeZone)).toInstant()))
+			.claim("role", userDetails.getAuthorities().iterator().next().getAuthority())
+			.compact();
+	}
+	
+	public String issueJwt(String username, GrantedAuthority authority) {
+		
+		return Jwts.builder()
+			.signWith(signatureAlgorithm, key)
+			.setSubject(username)
+			.setIssuer(issuer)
+			.setExpiration(Date.from(LocalDate.now().atStartOfDay(ZoneId.of(currentTimeZone)).plusDays(tokenExpirationDays).toInstant()))
+			.setIssuedAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.of(currentTimeZone)).toInstant()))
+			.claim("role", authority.getAuthority())
+			.compact();
 	}
 	
 	public boolean validateToken(String jwt) {

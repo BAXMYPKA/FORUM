@@ -49,7 +49,9 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 	
 	
 	/**
-	 * Registration method
+	 * Registration method.
+	 * Temporary it returns {@link UserDto} with attached {@link RegistrationConfirmationUuid#getConfirmationUrl()}
+	 *  to be exposed at the presentation level. But in production that confirmationUrl must be sent only by email.
 	 *
 	 * @return {@link UserDto} with the corresponding {@link RegistrationConfirmationUuid} inside with the temporary (!)
 	 * {@link RegistrationConfirmationUuid#getConfirmationUrl()} in it.
