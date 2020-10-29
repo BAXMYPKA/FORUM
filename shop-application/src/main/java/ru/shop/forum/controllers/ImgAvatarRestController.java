@@ -10,7 +10,7 @@ import ru.shop.forum.services.ImgAvatarService;
 import ru.shop.utils.ShopEventPublisher;
 
 @RestController
-@RequestMapping(path = "/v1.0/img-avatars")
+@RequestMapping(path = "/forum/v1.0/img-avatars")
 public class ImgAvatarRestController extends AbstractForumRestController<ImgAvatar, ImgAvatarDto, ImgAvatarService> {
 	
 	public ImgAvatarRestController(ImgAvatarService entityService,

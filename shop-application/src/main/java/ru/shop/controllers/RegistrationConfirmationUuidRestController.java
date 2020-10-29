@@ -36,7 +36,7 @@ public class RegistrationConfirmationUuidRestController	extends
 	//TODO: to check the SPeL
 	@Override
 	@PreAuthorize(value = "#principal.authorities.contains('ADMIN')")
-	@GetMapping
+	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RegistrationConfirmationUuidDto getOne(@RequestParam Long id, Authentication authentication) {
 		return super.getOne(id, authentication);
 	}

@@ -10,7 +10,7 @@ import ru.shop.forum.services.PostService;
 import ru.shop.utils.ShopEventPublisher;
 
 @RestController
-@RequestMapping(path = "/v1.0/posts")
+@RequestMapping(path = "/forum/v1.0/posts")
 public class PostRestController extends AbstractForumRestController<Post, PostDto, PostService> {
 	
 	public PostRestController(PostService entityService,

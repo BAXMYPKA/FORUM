@@ -16,7 +16,7 @@ import ru.shop.forum.services.ForumUserSettingsService;
 import ru.shop.utils.ShopEventPublisher;
 
 @RestController
-@RequestMapping(path = {"/v1.0/users/{id}/user-forum-settings"})
+@RequestMapping(path = {"/forum/v1.0/users/{id}/user-forum-settings"})
 public class UserForumSettingRestController extends AbstractForumRestController<ForumUserSettings, UserForumSettingsDto, ForumUserSettingsService> {
 	
 	public UserForumSettingRestController(ForumUserSettingsService entityService,

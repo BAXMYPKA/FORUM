@@ -11,7 +11,7 @@ import ru.shop.forum.services.ForumSectionService;
 import ru.shop.utils.ShopEventPublisher;
 
 @RestController
-@RequestMapping(path = "/v1.0/forum-sections")
+@RequestMapping(path = "/forum/v1.0/forum-sections")
 public class ForumSectionRestController extends AbstractForumRestController<ForumSection, ForumSectionDto, ForumSectionService> {
 	
 	

@@ -10,7 +10,7 @@ import ru.shop.forum.services.PrivateMessageService;
 import ru.shop.utils.ShopEventPublisher;
 
 @RestController
-@RequestMapping(path = "/v1.0/pms")
+@RequestMapping(path = "/forum/v1.0/pms")
 public class PrivateMessageRestController extends AbstractForumRestController<PrivateMessage, PrivateMessageDto, PrivateMessageService> {
 	
 	public PrivateMessageRestController(PrivateMessageService entityService,

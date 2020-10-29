@@ -8,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ForumIndexController {
 	
-	@GetMapping(path = {"/", "/index"})
+	@GetMapping(path = {"/forum", "/forum/index"})
 	public String getIndex() {
 		return "index_forum";
 	}

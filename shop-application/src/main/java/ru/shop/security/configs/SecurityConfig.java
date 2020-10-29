@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -25,50 +26,79 @@ import ru.shop.security.UsernamePasswordJwtFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private JwtService jwtService;
 	
 	/**
 	 * AntMatchers syntax: https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html
 	 */
 	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.requiresChannel()
-			.anyRequest()
-			.requiresSecure()
-			.and()
-			.authorizeRequests()
-			.antMatchers("/shop.ru/forum/v?/admin/**").hasAnyRole(Roles.ADMIN.getAuthority())
-			.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
-			.and()
-			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
-			.formLogin()
-			.loginPage("/shop.ru/forum/v1.0/login")
-			.successForwardUrl("/shop.ru/forum/v1.0/")
-			.permitAll()
-			.and()
-			.logout()
-			.permitAll()
-			.and()
-			.addFilterAt(new UsernamePasswordJwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
-	}
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authenticationProvider());
-	}
-
-//The following method MUST be in a separate @Configuration class file!!!!!!!!!!!!!!!!!!!
-	//Otherwise "java.lang.IllegalStateException: No ServletContext set" error will be raised.
+	@Order(2)
+	@Configuration
+	public static class ShopConfig extends WebSecurityConfigurerAdapter {
+		
+		@Autowired
+		private UserRepository userRepository;
+		
+		@Autowired
+		private JwtService jwtService;
+		
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http
+				.requiresChannel()
+				.anyRequest()
+				.requiresSecure()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/shop.ru/admin/**", "/shop.ru/v?/admin/**").hasAnyRole(Roles.ADMIN.getAuthority())
+//				.antMatchers("/shop.ru", "/shop.ru/v?").permitAll()
+				.antMatchers("/resources/**").permitAll()
+				.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+				.and()
+				.formLogin()
+//				.loginPage("/login")
+				.loginProcessingUrl("/do-login")
+				.successForwardUrl("/shop.ru")
+				.permitAll()
+				.and()
+				.logout()
+				.logoutUrl("/logout")
+				.deleteCookies("JSESSIONID")
+				.logoutSuccessUrl("/shop.ru")
+				.permitAll()
+				.and()
+				.addFilterBefore(new UsernamePasswordJwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
+			;
+		}
+		
+		@Override
+		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+			auth.authenticationProvider(authenticationProvider());
+		}
+		
+		@Bean
+		public UserDetailsService userDetailsService() {
+			return new ShopUserDetailsService(userRepository);
+		}
+		
+		@Bean
+		public PasswordEncoder passwordEncoder() {
+			return new BCryptPasswordEncoder(10);
+		}
+		
+		@Bean
+		public DaoAuthenticationProvider authenticationProvider() {
+			DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+			authenticationProvider.setPasswordEncoder(passwordEncoder());
+			authenticationProvider.setUserDetailsService(userDetailsService());
+			return authenticationProvider;
+		}
+		
+		//The following method MUST be in a separate @Configuration class file!!!!!!!!!!!!!!!!!!!
+		//Otherwise "java.lang.IllegalStateException: No ServletContext set" error will be raised.
 /*
 	@Bean
 	public ServletWebServerFactory servletContainer() {
@@ -97,27 +127,39 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 */
 	
-	
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return new ShopUserDetailsService(userRepository);
 	}
 	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder(10);
+	@Order(3)
+	@Configuration
+	public static class ShopForumConfig extends WebSecurityConfigurerAdapter {
+		
+		@Autowired
+		private JwtService jwtService;
+		
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http
+				.requiresChannel()
+				.anyRequest()
+				.requiresSecure()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/shop.ru/forum/v?/admin/**").hasAnyRole(Roles.ADMIN.getAuthority())
+//				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
+				.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.formLogin()
+				.loginPage("/shop.ru/forum/login")
+				.loginProcessingUrl("/shop.ru/forum/do-login")
+				.successForwardUrl("/shop.ru/forum/v1.0/")
+				.permitAll()
+				.and()
+				.logout()
+				.permitAll()
+				.and()
+				.addFilterAt(new UsernamePasswordJwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
+		}
 	}
-	
-	@Bean
-	public DaoAuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setPasswordEncoder(passwordEncoder());
-		authenticationProvider.setUserDetailsService(userDetailsService());
-		return authenticationProvider;
-	}
-//	@Configuration
-//	@Order(1)
-//	public static class ShopSecurityConfig extends WebSecurityConfigurerAdapter {
-//
-//	}
 }
