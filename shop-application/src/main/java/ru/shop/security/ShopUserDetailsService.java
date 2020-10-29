@@ -1,7 +1,6 @@
 package ru.shop.security;
 
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.shop.entities.User;
@@ -15,7 +14,7 @@ public class ShopUserDetailsService implements UserDetailsService {
 	private UserRepository userRepository;
 	
 	/**
-	 * @param userRepository bean ss included in {@link SecurityConfig#userDetailsService()}
+	 * @param userRepository bean ss included in {@link SecurityConfig}
 	 */
 	public ShopUserDetailsService(UserRepository userRepository) {
 		this.userRepository = userRepository;
@@ -34,8 +33,8 @@ public class ShopUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException("Nickname or email is null or empty!");
 		
 		User user = userRepository.findByEmail(nickNameOrEmail, "new-user-with-registrationUuid")
-			.orElseGet(() -> userRepository.findByNickName(nickNameOrEmail, "new-user-with-registrationUuid")
-				.orElseThrow(() -> new NoResultException("No user found for = " + nickNameOrEmail)));
+				.orElseGet(() -> userRepository.findByNickName(nickNameOrEmail, "new-user-with-registrationUuid")
+						.orElseThrow(() -> new NoResultException("No user found for = " + nickNameOrEmail)));
 		
 		if (!user.isEnabled() || user.getRegistrationConfirmationUuid() != null) {
 			throw new BadCredentialsException("User with " + nickNameOrEmail + " is not activated!");

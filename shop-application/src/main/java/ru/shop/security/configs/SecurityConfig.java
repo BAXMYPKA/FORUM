@@ -29,13 +29,11 @@ import ru.shop.security.UsernamePasswordJwtFilter;
 public class SecurityConfig {
 	
 	
-	/**
-	 * AntMatchers syntax: https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html
-	 */
-	
 	@Order(2)
 	@Configuration
 	public static class ShopConfig extends WebSecurityConfigurerAdapter {
+		
+		private final String SHOP_AUTHENTICATION_URL = "/shop/authentication";
 		
 		@Autowired
 		private UserRepository userRepository;
@@ -43,39 +41,40 @@ public class SecurityConfig {
 		@Autowired
 		private JwtService jwtService;
 		
+		/**
+		 * AntMatchers syntax: https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html
+		 */
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-				.requiresChannel()
-				.anyRequest()
-				.requiresSecure()
-				.and()
-				.authorizeRequests()
-				.antMatchers("/shop.ru/admin/**", "/shop.ru/v?/admin/**").hasAnyRole(Roles.ADMIN.getAuthority())
-//				.antMatchers("/shop.ru", "/shop.ru/v?").permitAll()
-				.antMatchers("/resources/**").permitAll()
-				.and()
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-				.and()
-				.formLogin()
+					.requiresChannel()
+					.anyRequest()
+					.requiresSecure()
+					.and()
+					.authorizeRequests()
+					.antMatchers("/shop.ru/v?/admin/**").hasRole(Roles.ADMIN.getAuthority())
+					.antMatchers("/shop.ru/v?/users").authenticated()
+					.antMatchers("/shop.ru", "/shop.ru/v?").permitAll()
+					.antMatchers("/resources/**").permitAll()
+					.and()
+					.sessionManagement()
+					.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+					.and()
+					.formLogin()
 //				.loginPage("/login")
-				.loginProcessingUrl("/do-login")
-				.successForwardUrl("/shop.ru")
-				.permitAll()
-				.and()
-				.logout()
-				.logoutUrl("/logout")
-				.deleteCookies("JSESSIONID")
-				.logoutSuccessUrl("/shop.ru")
-				.permitAll()
-				.and()
-				.addFilterBefore(new UsernamePasswordJwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
-			;
+					.loginProcessingUrl(SHOP_AUTHENTICATION_URL)
+					.defaultSuccessUrl("/shop.ru/")
+					.permitAll()
+					.and()
+					.logout()
+					.logoutUrl("/shop.ru/logout")
+					.deleteCookies("JSESSIONID")
+					.logoutSuccessUrl("/shop.ru")
+					.permitAll();
 		}
 		
 		@Override
-		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		protected void configure(AuthenticationManagerBuilder auth) {
 			auth.authenticationProvider(authenticationProvider());
 		}
 		
@@ -133,33 +132,44 @@ public class SecurityConfig {
 	@Configuration
 	public static class ShopForumConfig extends WebSecurityConfigurerAdapter {
 		
+		private final String FORUM_AUTHENTICATION_URL = "/shop/forum/authentication";
+		
 		@Autowired
 		private JwtService jwtService;
+		
+		@Bean
+		UsernamePasswordJwtFilter usernamePasswordJwtFilter() throws Exception {
+			return new UsernamePasswordJwtFilter(
+					jwtService, authenticationManager(), FORUM_AUTHENTICATION_URL);
+		}
 		
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-				.requiresChannel()
-				.anyRequest()
-				.requiresSecure()
-				.and()
-				.authorizeRequests()
-				.antMatchers("/shop.ru/forum/v?/admin/**").hasAnyRole(Roles.ADMIN.getAuthority())
+					.requiresChannel()
+					.anyRequest()
+					.requiresSecure()
+					.and()
+					.authorizeRequests()
+					.antMatchers("/shop/forum/v?/admin/**").hasAnyRole(Roles.ADMIN.getAuthority())
+					.and()
+					.authorizeRequests()
+					.antMatchers("/shop/forum/login", "/shop/forum/v?/**").permitAll()
 //				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
-				.and()
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and()
-				.formLogin()
-				.loginPage("/shop.ru/forum/login")
-				.loginProcessingUrl("/shop.ru/forum/do-login")
-				.successForwardUrl("/shop.ru/forum/v1.0/")
-				.permitAll()
-				.and()
-				.logout()
-				.permitAll()
-				.and()
-				.addFilterAt(new UsernamePasswordJwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
+					.and()
+					.sessionManagement()
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+					.and()
+					.formLogin()
+					.loginPage("/shop/forum/login")
+					.loginProcessingUrl(FORUM_AUTHENTICATION_URL)
+					.defaultSuccessUrl("/shop.ru/forum/v1.0/")
+					.permitAll()
+					.and()
+					.logout()
+					.permitAll()
+					.and()
+					.addFilterAt(usernamePasswordJwtFilter(), UsernamePasswordAuthenticationFilter.class);
 		}
 	}
 }
