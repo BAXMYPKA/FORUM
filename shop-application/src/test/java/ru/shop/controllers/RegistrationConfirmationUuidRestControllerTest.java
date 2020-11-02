@@ -14,12 +14,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.shop.repositories.UserRepository;
+import ru.shop.security.JwtService;
 import ru.shop.services.RegistrationConfirmationUuidService;
+import ru.shop.utils.ShopEventPublisher;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(controllers = {RegistrationConfirmationUuidRestController.class, ExceptionHandlerRestController.class})
-@Import({ModelMapper.class, ObjectMapper.class})
+@Import({ModelMapper.class, ObjectMapper.class, ShopEventPublisher.class, JwtService.class})
 class RegistrationConfirmationUuidRestControllerTest {
 	
 	@MockBean

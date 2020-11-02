@@ -23,12 +23,14 @@ import ru.shop.entities.RegistrationConfirmationUuid;
 import ru.shop.entities.User;
 import ru.shop.entities.dto.UserDto;
 import ru.shop.repositories.UserRepository;
+import ru.shop.security.JwtService;
 import ru.shop.services.UserService;
+import ru.shop.utils.ShopEventPublisher;
 
 import java.util.Optional;
 
 @WebMvcTest(controllers = {UserRestController.class})
-@Import({ModelMapper.class})
+@Import({ModelMapper.class, ShopEventPublisher.class, JwtService.class})
 public class UserRestControllerPathsTest {
 	
 	@Autowired

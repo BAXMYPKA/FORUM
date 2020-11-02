@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.shop.repositories.UserRepository;
 import ru.shop.security.JwtService;
@@ -41,36 +42,45 @@ public class SecurityConfig {
 		@Autowired
 		private JwtService jwtService;
 		
+		@Bean
+		SimpleUrlAuthenticationSuccessHandler shopSuccessHandler() {
+			SimpleUrlAuthenticationSuccessHandler successHandler =
+				new SimpleUrlAuthenticationSuccessHandler("/shop.ru/123");
+			successHandler.setUseReferer(true);
+			return successHandler;
+		}
+		
 		/**
 		 * AntMatchers syntax: https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html
 		 */
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-					.requiresChannel()
-					.anyRequest()
-					.requiresSecure()
-					.and()
-					.authorizeRequests()
-					.antMatchers("/shop.ru/v?/admin/**").hasRole(Roles.ADMIN.getAuthority())
-					.antMatchers("/shop.ru/v?/users").authenticated()
-					.antMatchers("/shop.ru", "/shop.ru/v?").permitAll()
-					.antMatchers("/resources/**").permitAll()
-					.and()
-					.sessionManagement()
-					.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-					.and()
-					.formLogin()
+				.requiresChannel()
+				.anyRequest()
+				.requiresSecure()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/shop.ru/v?/admin/**").hasRole(Roles.ADMIN.getAuthority())
+				.antMatchers("/shop.ru/v?/users").authenticated()
+				.antMatchers("/", "/index", "/shop.ru", "/shop.ru/v?").permitAll()
+				.antMatchers("/resources/**").permitAll()
+				.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+				.and()
+				.formLogin()
 //				.loginPage("/login")
-					.loginProcessingUrl(SHOP_AUTHENTICATION_URL)
-					.defaultSuccessUrl("/shop.ru/")
-					.permitAll()
-					.and()
-					.logout()
-					.logoutUrl("/shop.ru/logout")
-					.deleteCookies("JSESSIONID")
-					.logoutSuccessUrl("/shop.ru")
-					.permitAll();
+				.loginProcessingUrl(SHOP_AUTHENTICATION_URL)
+				.successHandler(shopSuccessHandler())
+//				.defaultSuccessUrl("/shop.ru/111")
+//				.permitAll()
+				.and()
+				.logout()
+				.logoutUrl("/shop.ru/logout")
+				.deleteCookies("JSESSIONID")
+				.logoutSuccessUrl("/shop.ru")
+				.permitAll();
 		}
 		
 		@Override
@@ -140,36 +150,46 @@ public class SecurityConfig {
 		@Bean
 		UsernamePasswordJwtFilter usernamePasswordJwtFilter() throws Exception {
 			return new UsernamePasswordJwtFilter(
-					jwtService, authenticationManager(), FORUM_AUTHENTICATION_URL);
+				jwtService, authenticationManager(), FORUM_AUTHENTICATION_URL);
+		}
+		
+		@Bean
+		SimpleUrlAuthenticationSuccessHandler shopForumSuccessHandler() {
+			SimpleUrlAuthenticationSuccessHandler successHandler =
+				new SimpleUrlAuthenticationSuccessHandler("/shop.ru/forum/v1.0/");
+//			successHandler.setTargetUrlParameter("");
+			successHandler.setUseReferer(true);
+			return successHandler;
 		}
 		
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-					.requiresChannel()
-					.anyRequest()
-					.requiresSecure()
-					.and()
-					.authorizeRequests()
-					.antMatchers("/shop/forum/v?/admin/**").hasAnyRole(Roles.ADMIN.getAuthority())
-					.and()
-					.authorizeRequests()
-					.antMatchers("/shop/forum/login", "/shop/forum/v?/**").permitAll()
+				.requiresChannel()
+				.anyRequest()
+				.requiresSecure()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/shop/forum/v?/admin/**").hasAnyRole(Roles.ADMIN.getAuthority())
+				.and()
+				.authorizeRequests()
+				.antMatchers("/shop/forum/login", "/shop/forum/v?/**").permitAll()
 //				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
-					.and()
-					.sessionManagement()
-					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-					.and()
-					.formLogin()
-					.loginPage("/shop/forum/login")
-					.loginProcessingUrl(FORUM_AUTHENTICATION_URL)
-					.defaultSuccessUrl("/shop.ru/forum/v1.0/")
-					.permitAll()
-					.and()
-					.logout()
-					.permitAll()
-					.and()
-					.addFilterAt(usernamePasswordJwtFilter(), UsernamePasswordAuthenticationFilter.class);
+				.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.formLogin()
+				.loginPage("/shop/forum/login")
+				.loginProcessingUrl(FORUM_AUTHENTICATION_URL)
+				.successHandler(shopForumSuccessHandler())
+//				.defaultSuccessUrl("/shop.ru/forum/v1.0/")
+//				.permitAll()
+				.and()
+				.logout()
+				.permitAll()
+				.and()
+				.addFilterAt(usernamePasswordJwtFilter(), UsernamePasswordAuthenticationFilter.class);
 		}
 	}
 }

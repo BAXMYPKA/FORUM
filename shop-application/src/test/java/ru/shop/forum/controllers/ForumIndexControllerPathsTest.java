@@ -5,13 +5,16 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.shop.repositories.UserRepository;
+import ru.shop.security.JwtService;
 
 @WebMvcTest(controllers = {ForumIndexController.class})
+@Import(JwtService.class)
 public class ForumIndexControllerPathsTest {
 	
 	@Autowired
@@ -21,7 +24,7 @@ public class ForumIndexControllerPathsTest {
 	private UserRepository userRepository;
 	
 	@ParameterizedTest
-	@ValueSource(strings = {"/", "/index"})
+	@ValueSource(strings = {"/forum", "/forum/index"})
 	public void forum_Index_Page_Should_Return_Ok(String path) throws Exception {
 		//given
 		mockMvc.perform(MockMvcRequestBuilders.get(path).secure(true))

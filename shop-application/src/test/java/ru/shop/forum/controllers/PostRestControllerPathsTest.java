@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -20,10 +21,13 @@ import ru.shop.forum.entities.Post;
 import ru.shop.forum.entities.dto.PostDto;
 import ru.shop.forum.services.PostService;
 import ru.shop.repositories.UserRepository;
+import ru.shop.security.JwtService;
+import ru.shop.utils.ShopEventPublisher;
 
 import java.util.Optional;
 
 @WebMvcTest(controllers = {PostRestController.class})
+@Import({ShopEventPublisher.class, JwtService.class})
 public class PostRestControllerPathsTest {
 	
 	@Autowired
@@ -56,7 +60,7 @@ public class PostRestControllerPathsTest {
 		//given
 		Mockito.when(postService.findAll(Mockito.any(Pageable.class))).thenReturn(Page.empty());
 		//when
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/posts").secure(true))
+		mockMvc.perform(MockMvcRequestBuilders.get("/forum/v1.0/posts").secure(true))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -66,7 +70,7 @@ public class PostRestControllerPathsTest {
 		//given
 		Mockito.when(postService.findOne(0L)).thenReturn(Optional.of(new Post()));
 		//when
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/posts/0").secure(true))
+		mockMvc.perform(MockMvcRequestBuilders.get("/forum/v1.0/posts/0").secure(true))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -77,7 +81,7 @@ public class PostRestControllerPathsTest {
 		Mockito.when(postService.findAllByIds(Mockito.any(Pageable.class), Mockito.anySet())).thenReturn(Page.empty());
 		
 		//when
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/posts/all-by-ids?id=0,1").secure(true))
+		mockMvc.perform(MockMvcRequestBuilders.get("/forum/v1.0/posts/all-by-ids?id=0,1").secure(true))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -87,7 +91,7 @@ public class PostRestControllerPathsTest {
 		//given
 		postRestController.setEntityClass(Post.class);
 		//when
-		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/posts/0")
+		mockMvc.perform(MockMvcRequestBuilders.delete("/forum/v1.0/posts/0")
 				.secure(true)
 				.with(SecurityMockMvcRequestPostProcessors.csrf()))
 				.andDo(MockMvcResultHandlers.print())
@@ -99,7 +103,7 @@ public class PostRestControllerPathsTest {
 		//given
 		postRestController.setEntityClass(Post.class);
 		//when
-		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/posts/all-by-ids?id=0,1,2")
+		mockMvc.perform(MockMvcRequestBuilders.delete("/forum/v1.0/posts/all-by-ids?id=0,1,2")
 				.secure(true)
 				.with(SecurityMockMvcRequestPostProcessors.csrf()))
 				.andDo(MockMvcResultHandlers.print())
@@ -111,7 +115,7 @@ public class PostRestControllerPathsTest {
 		//given
 		PostDto postDto = new PostDto();
 		//when
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/posts")
+		mockMvc.perform(MockMvcRequestBuilders.post("/forum/v1.0/posts")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(postDto))
 				.secure(true)
@@ -127,7 +131,7 @@ public class PostRestControllerPathsTest {
 		PostDto postDto = new PostDto();
 		postDto.setId(1L);
 		//when
-		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/posts")
+		mockMvc.perform(MockMvcRequestBuilders.put("/forum/v1.0/posts")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(postDto))
 				.secure(true)

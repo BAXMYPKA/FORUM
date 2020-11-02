@@ -16,7 +16,6 @@ public class ForumLoginController {
 	
 	@PostMapping(path = "/login")
 	public String postForumLogin() {
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		return "login_forum";
 	}
 	

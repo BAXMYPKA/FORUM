@@ -16,7 +16,8 @@ public class ShopEventPublisher {
 	
 	public void publishUnregisteredUserCreated(User user) {
 		UnregisteredUserCreated userCreatedEvent = new UnregisteredUserCreated(user);
-		eventPublisher.publishEvent(userCreatedEvent);
+		new Thread(() -> eventPublisher.publishEvent(userCreatedEvent)).start();
+//		eventPublisher.publishEvent(userCreatedEvent);
 		log.debug("Even for new User={} has been published", user.getEmail());
 	}
 }

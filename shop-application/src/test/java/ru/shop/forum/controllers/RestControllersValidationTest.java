@@ -15,13 +15,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import ru.shop.controllers.UserRestController;
 import ru.shop.entities.dto.UserDto;
 import ru.shop.repositories.UserRepository;
+import ru.shop.security.JwtService;
 import ru.shop.services.UserService;
+import ru.shop.utils.ShopEventPublisher;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {UserRestController.class})
-@Import({ModelMapper.class})
+@Import({ModelMapper.class, ShopEventPublisher.class, JwtService.class})
 public class RestControllersValidationTest {
 	
 	@Autowired

@@ -18,12 +18,14 @@ import ru.shop.entities.dto.UserDto;
 import ru.shop.entities.utils.Sex;
 import ru.shop.forum.repositories.ForumSectionRepository;
 import ru.shop.repositories.UserRepository;
+import ru.shop.security.JwtService;
 import ru.shop.services.UserService;
+import ru.shop.utils.ShopEventPublisher;
 
 import java.time.LocalDate;
 
 @WebMvcTest(controllers = {UserRestController.class})
-@Import({UserRestController.class})
+@Import({UserRestController.class, ShopEventPublisher.class, JwtService.class})
 class RestControllersValidationTest {
 	
 	@Autowired

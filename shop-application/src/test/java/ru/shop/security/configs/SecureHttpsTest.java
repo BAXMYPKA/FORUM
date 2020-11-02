@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,10 +14,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.shop.forum.controllers.ForumIndexController;
 import ru.shop.repositories.UserRepository;
+import ru.shop.security.JwtService;
 import ru.shop.services.UserService;
 
 @WebMvcTest(controllers = {ForumIndexController.class})
 @WebAppConfiguration
+@Import(JwtService.class)
 class SecureHttpsTest {
 	
 	@Autowired

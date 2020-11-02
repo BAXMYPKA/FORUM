@@ -14,7 +14,6 @@ import java.sql.SQLException;
 @Configuration
 @EnableJpaRepositories(basePackages = {"ru.shop.repositories", "ru.shop.forum.repositories"})
 @EntityScan(basePackages = {"ru.shop.entities", "ru.shop.forum.entities"})
-//@EnableJpaRepositories
 @EnableTransactionManagement
 public class JpaConfig {
 	

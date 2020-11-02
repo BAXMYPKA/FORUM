@@ -18,7 +18,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 import ru.shop.entities.User;
 import ru.shop.repositories.UserRepository;
+import ru.shop.security.JwtService;
 import ru.shop.services.UserService;
+import ru.shop.utils.ShopEventPublisher;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -28,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @WebMvcTest(controllers = {UserRestController.class, ExceptionHandlerRestController.class})
-@Import({ModelMapper.class})
+@Import({ModelMapper.class, ShopEventPublisher.class, JwtService.class})
 class ExceptionHandlerRestControllerTest {
 	
 	@Autowired

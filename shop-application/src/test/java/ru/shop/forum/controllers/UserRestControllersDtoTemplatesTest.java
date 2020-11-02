@@ -192,7 +192,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//then
 		assertNotNull(newUserDto.getRegistrationConfirmationUuid());
-		assertTrue(newUserDto.getRegistrationConfirmationUuid().getConfirmationUrl().startsWith("/shop.ru/forum/v1.0/uuids/"));
+		assertTrue(newUserDto.getRegistrationConfirmationUuid().getConfirmationUrl().startsWith("/shop.ru/v1.0/uuids/"));
 		assertTrue(newUserDto.getRegistrationConfirmationUuid().getConfirmationUrl().endsWith("/confirm"));
 	}
 	
