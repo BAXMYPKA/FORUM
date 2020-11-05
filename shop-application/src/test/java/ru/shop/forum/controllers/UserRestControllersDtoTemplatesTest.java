@@ -1,6 +1,10 @@
 package ru.shop.forum.controllers;
 
-import org.junit.jupiter.api.*;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
@@ -14,10 +18,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -30,6 +33,7 @@ import ru.shop.entities.dto.UserDto;
 import ru.shop.security.configs.TestSslUtil;
 import ru.shop.services.UserService;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -78,16 +82,24 @@ public class UserRestControllersDtoTemplatesTest {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-					.csrf().disable()
-					.requiresChannel()
-					.anyRequest()
-					.requiresSecure()
-					.and()
-					.authorizeRequests()
-					.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
-					.and()
-					.sessionManagement()
-					.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+				.csrf().disable()
+				.requiresChannel()
+				.anyRequest()
+				.requiresSecure()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
+				.and()
+//				.httpBasic()
+//				.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		}
+		
+		@Override
+		public void configure(AuthenticationManagerBuilder builder)	throws Exception {
+			builder.inMemoryAuthentication()
+				.withUser("testUser").password("123").roles("USER");
 		}
 	}
 	
@@ -103,7 +115,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<UserDto> userDtoResponse =
-				restTemplate.getForEntity(restTemplate.getRootUri() + "/v1.0/users/1", UserDto.class);
+			restTemplate.getForEntity(restTemplate.getRootUri() + "/v1.0/users/1", UserDto.class);
 		
 		//then
 		assertEquals(HttpStatus.OK, userDtoResponse.getStatusCode());
@@ -118,7 +130,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<ExceptionHandlerRestController.ResponseObject> notFoundResponse =
-				restTemplate.getForEntity(restTemplate.getRootUri() + "/v1.0/users/" + wrongId, ExceptionHandlerRestController.ResponseObject.class);
+			restTemplate.getForEntity(restTemplate.getRootUri() + "/v1.0/users/" + wrongId, ExceptionHandlerRestController.ResponseObject.class);
 		
 		//then
 		assertEquals(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
@@ -138,10 +150,10 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<String> deleted
-				= restTemplate.exchange(restTemplate.getRootUri() + "/v1.0/users/1", HttpMethod.DELETE, null, String.class);
+			= restTemplate.exchange(restTemplate.getRootUri() + "/v1.0/users/1", HttpMethod.DELETE, null, String.class);
 		
 		//then
-		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).deleteOne(idCaptor.capture());
+//		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).deleteOne(idCaptor.capture());
 		
 		assertEquals(HttpStatus.NO_CONTENT, deleted.getStatusCode());
 		assertEquals(1L, idCaptor.getValue());
@@ -164,7 +176,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<UserDto> responseEntity = restTemplate.postForEntity(
-				restTemplate.getRootUri() + "/v1.0/users", userDto, UserDto.class);
+			restTemplate.getRootUri() + "/v1.0/users", userDto, UserDto.class);
 		
 		//then
 		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).saveNewUnconfirmed(idCaptor.capture());
@@ -188,7 +200,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		UserDto newUserDto = restTemplate.postForObject(
-				restTemplate.getRootUri() + "/v1.0/users", userDto, UserDto.class);
+			restTemplate.getRootUri() + "/v1.0/users", userDto, UserDto.class);
 		
 		//then
 		assertNotNull(newUserDto.getRegistrationConfirmationUuid());
@@ -213,7 +225,7 @@ public class UserRestControllersDtoTemplatesTest {
 		
 		//when
 		ResponseEntity<UserDto> responseEntity = restTemplate.exchange(
-				restTemplate.getRootUri() + "/v1.0/users", HttpMethod.PUT, new HttpEntity<>(userDto), UserDto.class);
+			restTemplate.getRootUri() + "/v1.0/users", HttpMethod.PUT, new HttpEntity<>(userDto), UserDto.class);
 		
 		//then
 		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).update(idCaptor.capture());

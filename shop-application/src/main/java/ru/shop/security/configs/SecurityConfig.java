@@ -26,7 +26,7 @@ import ru.shop.security.UsernamePasswordJwtFilter;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(jsr250Enabled = true)
 public class SecurityConfig {
 	
 	

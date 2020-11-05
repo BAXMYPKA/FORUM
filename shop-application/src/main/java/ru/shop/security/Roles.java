@@ -6,9 +6,18 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public enum Roles implements GrantedAuthority {
-
+	
+	/**
+	 * Anonymous, not registered user
+	 */
 	ANONYMOUS,
+	/**
+	 * Registered {@link ru.shop.entities.User}
+	 */
 	USER,
+	/**
+	 * Registered, but temporary locked {@link ru.shop.entities.User}
+	 */
 	LOCKED_USER,
 	MODERATOR,
 	ADMIN;

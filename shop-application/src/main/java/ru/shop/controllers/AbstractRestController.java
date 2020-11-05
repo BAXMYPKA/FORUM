@@ -29,6 +29,7 @@ import ru.shop.repositories.EntityRepository;
 import ru.shop.services.AbstractEntityService;
 import ru.shop.utils.ShopEventPublisher;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.groups.Default;
 import java.util.*;
@@ -69,8 +70,8 @@ public abstract class AbstractRestController<
 		this.shopEventPublisher = shopEventPublisher;
 	}
 	
-	//	@JsonView(ShopViews.ExternalView.class)
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
 	public D getOne(@PathVariable Long id, Authentication authentication) {
 		
 		T entity = entityService.findOne(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
@@ -85,6 +86,7 @@ public abstract class AbstractRestController<
 	 * .param("sort", "name,asc")) // <-- no space after comma!
 	 */
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
 	public Page<D> getAllPageable(
 			@PageableDefault
 			@SortDefault.SortDefaults({
@@ -104,6 +106,7 @@ public abstract class AbstractRestController<
 	 * @param id "/all-by-ids?id=1,2" etc.
 	 */
 	@GetMapping(path = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
 	public Page<D> getAllByIds(
 			@PageableDefault
 			@SortDefault.SortDefaults({
@@ -121,6 +124,7 @@ public abstract class AbstractRestController<
 	}
 	
 	@DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
 	public ResponseEntity<String> deleteOne(@PathVariable Long id, Authentication authentication) {
 		entityService.deleteOne(id);
 		//The body wont be returned with this status
@@ -129,6 +133,7 @@ public abstract class AbstractRestController<
 	}
 	
 	@DeleteMapping(path = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
 	public ResponseEntity<String> deleteAllByIds(@RequestParam Set<Long> id) {
 		entityService.deleteAll(id);
 		return new ResponseEntity<>("All entities with the given ids = " + id + " have been deleted!", HttpStatus.NO_CONTENT);
@@ -136,6 +141,7 @@ public abstract class AbstractRestController<
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.CREATED)
+	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
 	public D postNewOne(
 			@Validated(value = {ValidationCreateGroup.class, Default.class}) @RequestBody D entityDto, Authentication authentication) {
 		
@@ -158,6 +164,7 @@ public abstract class AbstractRestController<
 	
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
+	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
 	public D putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody D entityDto,
 						 Authentication authentication) {
 		

@@ -127,7 +127,7 @@ class UsernamePasswordJwtFilterTest {
 		//then
 		assertTrue(mvcResult.getResponse().getHeaderValue("Authentication").toString().startsWith("Bearer "));
 		assertTrue(mvcResult.getResponse().getHeaderValue("Authentication").toString()
-			.matches("^Bearer [\\w\\d]*\\.[\\w\\d]*\\.[\\w\\d]*$"));
+			.matches("^Bearer [\\w\\d-]*\\.[\\w\\d-]*\\.[\\w\\d-_]*$"));
 	}
 	
 }

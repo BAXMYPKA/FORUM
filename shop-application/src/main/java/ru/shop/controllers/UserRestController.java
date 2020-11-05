@@ -19,6 +19,7 @@ import ru.shop.entities.utils.ValidationUpdateGroup;
 import ru.shop.services.UserService;
 import ru.shop.utils.ShopEventPublisher;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.groups.Default;
 
 @RestController
@@ -57,6 +58,7 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 	 * {@link RegistrationConfirmationUuid#getConfirmationUrl()} in it.
 	 */
 	@Override
+	@RolesAllowed({"ANONYMOUS", "ADMIN", "MODERATOR"})
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public UserDto postNewOne(
@@ -73,11 +75,11 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 		return mapEntityToDto(savedNewUser, authentication, null);
 	}
 	
-	@Override
-	public UserDto putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody UserDto entityDto,
-						  Authentication authentication) {
-		return super.putOne(entityDto, authentication);
-	}
+//	@Override
+//	public UserDto putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody UserDto entityDto,
+//						  Authentication authentication) {
+//		return super.putOne(entityDto, authentication);
+//	}
 	
 	private String createConfirmationUrl(String uuid) {
 		return servletContextPath + "/v1.0/uuids/"+uuid+"/confirm";

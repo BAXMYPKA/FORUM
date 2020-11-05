@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -47,6 +48,12 @@ public class ExceptionHandlerRestController {
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	public ResponseObject nullPointerException(NullPointerException e, WebRequest request) {
 		return new ResponseObject(e.getMessage());
+	}
+	
+	@ExceptionHandler(value = AccessDeniedException.class)
+	@ResponseStatus(code = HttpStatus.FORBIDDEN)
+	public ResponseObject accessDenied(RuntimeException e, WebRequest request) {
+		return new ResponseObject(e.getMessage() == null ? "NULL" : e.getMessage());
 	}
 	
 	@ExceptionHandler(value = RuntimeException.class)
