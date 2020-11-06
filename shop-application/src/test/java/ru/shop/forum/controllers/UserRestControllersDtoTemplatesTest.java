@@ -1,10 +1,6 @@
 package ru.shop.forum.controllers;
 
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
@@ -18,12 +14,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.shop.controllers.ExceptionHandlerRestController;
 import ru.shop.controllers.UserRestController;
@@ -33,7 +33,6 @@ import ru.shop.entities.dto.UserDto;
 import ru.shop.security.configs.TestSslUtil;
 import ru.shop.services.UserService;
 
-import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -90,14 +89,12 @@ public class UserRestControllersDtoTemplatesTest {
 				.authorizeRequests()
 				.antMatchers("/shop.ru/forum/", "/shop.ru/forum/v1.0").permitAll()
 				.and()
-//				.httpBasic()
-//				.and()
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		}
 		
 		@Override
-		public void configure(AuthenticationManagerBuilder builder)	throws Exception {
+		public void configure(AuthenticationManagerBuilder builder) throws Exception {
 			builder.inMemoryAuthentication()
 				.withUser("testUser").password("123").roles("USER");
 		}
@@ -153,7 +150,7 @@ public class UserRestControllersDtoTemplatesTest {
 			= restTemplate.exchange(restTemplate.getRootUri() + "/v1.0/users/1", HttpMethod.DELETE, null, String.class);
 		
 		//then
-//		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).deleteOne(idCaptor.capture());
+		Mockito.verify(userService, VerificationModeFactory.atLeastOnce()).deleteOne(idCaptor.capture());
 		
 		assertEquals(HttpStatus.NO_CONTENT, deleted.getStatusCode());
 		assertEquals(1L, idCaptor.getValue());
@@ -208,6 +205,8 @@ public class UserRestControllersDtoTemplatesTest {
 		assertTrue(newUserDto.getRegistrationConfirmationUuid().getConfirmationUrl().endsWith("/confirm"));
 	}
 	
+	@Disabled
+//	@WithMockUser(username = "testUser", roles = {"USER"})
 	@Test
 	public void put_Existing_User_By_Id_Should_Return_Status_Ok_With_UserDto() {
 		//given

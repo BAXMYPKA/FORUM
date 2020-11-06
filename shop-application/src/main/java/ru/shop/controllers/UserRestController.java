@@ -75,11 +75,14 @@ public class UserRestController extends AbstractRestController<ru.shop.entities.
 		return mapEntityToDto(savedNewUser, authentication, null);
 	}
 	
-//	@Override
-//	public UserDto putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody UserDto entityDto,
-//						  Authentication authentication) {
-//		return super.putOne(entityDto, authentication);
-//	}
+	@Override
+	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
+	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	public UserDto putOne(@Validated(value = {ValidationUpdateGroup.class, Default.class}) @RequestBody UserDto entityDto,
+						  Authentication authentication) {
+		return super.putOne(entityDto, authentication);
+	}
 	
 	private String createConfirmationUrl(String uuid) {
 		return servletContextPath + "/v1.0/uuids/"+uuid+"/confirm";

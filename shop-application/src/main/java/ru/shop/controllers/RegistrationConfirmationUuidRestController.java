@@ -15,6 +15,7 @@ import ru.shop.entities.dto.RegistrationConfirmationUuidDto;
 import ru.shop.services.RegistrationConfirmationUuidService;
 import ru.shop.utils.ShopEventPublisher;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 
@@ -35,7 +36,7 @@ public class RegistrationConfirmationUuidRestController	extends
 	//TODO: to make available only for admin
 	//TODO: to check the SPeL
 	@Override
-	@PreAuthorize(value = "#principal.authorities.contains('ADMIN')")
+	@RolesAllowed({"MODERATOR", "ADMIN"})
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RegistrationConfirmationUuidDto getOne(@RequestParam Long id, Authentication authentication) {
 		return super.getOne(id, authentication);

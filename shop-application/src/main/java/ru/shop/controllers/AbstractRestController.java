@@ -124,7 +124,7 @@ public abstract class AbstractRestController<
 	}
 	
 	@DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
+	@RolesAllowed({"ADMIN", "MODERATOR"})
 	public ResponseEntity<String> deleteOne(@PathVariable Long id, Authentication authentication) {
 		entityService.deleteOne(id);
 		//The body wont be returned with this status
@@ -133,7 +133,7 @@ public abstract class AbstractRestController<
 	}
 	
 	@DeleteMapping(path = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
-	@RolesAllowed({"USER", "ADMIN", "MODERATOR"})
+	@RolesAllowed({"ADMIN", "MODERATOR"})
 	public ResponseEntity<String> deleteAllByIds(@RequestParam Set<Long> id) {
 		entityService.deleteAll(id);
 		return new ResponseEntity<>("All entities with the given ids = " + id + " have been deleted!", HttpStatus.NO_CONTENT);

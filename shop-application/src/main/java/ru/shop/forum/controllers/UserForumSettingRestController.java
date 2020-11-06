@@ -15,6 +15,8 @@ import ru.shop.forum.entities.dto.UserForumSettingsDto;
 import ru.shop.forum.services.ForumUserSettingsService;
 import ru.shop.utils.ShopEventPublisher;
 
+import javax.annotation.security.RolesAllowed;
+
 @RestController
 @RequestMapping(path = {"/forum/v1.0/users/{id}/user-forum-settings"})
 public class UserForumSettingRestController extends AbstractForumRestController<ForumUserSettings, UserForumSettingsDto, ForumUserSettingsService> {
@@ -29,6 +31,7 @@ public class UserForumSettingRestController extends AbstractForumRestController<
 	
 	@Override
 	@GetMapping(path = "/v1.0/users/{id}/user-forum-settings")
+	@RolesAllowed(value = {"USER", "ADMIN", "MODERATOR"})
 	public UserForumSettingsDto getOne(@PathVariable Long id, Authentication authentication)
 			throws AuthorizationServiceException {
 		
@@ -40,10 +43,9 @@ public class UserForumSettingRestController extends AbstractForumRestController<
 //			throw new AuthorizationServiceException("The authenticated users ids mismatch!");
 	}
 	
-	//TODO: to preauthorize
 	@Override
-//	@PreAuthorize("$}")
 	@GetMapping(path = "/v1.0/users/user-forum-settings")
+	@RolesAllowed(value = {"MODERATOR", "ADMIN"})
 	public Page<UserForumSettingsDto> getAllPageable(Pageable pageable, Authentication authentication) {
 		return super.getAllPageable(pageable, authentication);
 	}
