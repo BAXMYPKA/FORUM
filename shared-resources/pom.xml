@@ -8,20 +8,23 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-
+	
 	<groupId>ru.shop</groupId>
-	<artifactId>shop-application</artifactId>
-	<name>shop-application</name>
-	<packaging>jar</packaging>
+	<artifactId>shared-resources</artifactId>
+	<name>shared-resources</name>
 	<version>0.0.1-SNAPSHOT</version>
-<!--	<version>${shop-version}</version>-->
-
-	<dependencies>
-		<dependency>
-			<groupId>ru.shop</groupId>
-			<artifactId>shared-resources</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+	<packaging>jar</packaging>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 	
 </project>

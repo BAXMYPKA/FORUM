@@ -18,10 +18,13 @@
 
     <modules>
         <module>shop-application</module>
+        <module>shared-resources</module>
     </modules>
 
     <properties>
         <java.version>11</java.version>
+        <shop-version>0.0.1-SNAPSHOT</shop-version>
+        <start-class>ru.shop.ShopApplication</start-class>
     </properties>
 
     <dependencies>
