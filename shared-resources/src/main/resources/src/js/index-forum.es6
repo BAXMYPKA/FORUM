@@ -1,12 +1,16 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import {render} from 'react-dom'
+import H1 from "./h1.jsx";
 
-let reactElement = React.createElement("input", "pro", null);
-let r = React.createElement("h3", "prol", null);
+// let reactElement = React.createElement("input", "pro", null);
+// let r = React.createElement("h3", "prol", null);
 
 // const element = <h3>element</h3>;
 
-ReactDOM.render(
-    r,
-    document.getElementById('root"')
+
+const h1Element = <H1 text="FIRST H1"/>;
+
+render(
+	h1Element,
+	document.getElementById('root')
 );

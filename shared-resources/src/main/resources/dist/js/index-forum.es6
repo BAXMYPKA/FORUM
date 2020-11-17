@@ -546,21 +546,29 @@ if (true) {
 /******/ 	
 /************************************************************************/
 (() => {
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(294);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(935);
+
+// EXTERNAL MODULE: ./node_modules/react/index.js
+var react = __webpack_require__(294);
+// EXTERNAL MODULE: ./node_modules/react-dom/index.js
+var react_dom = __webpack_require__(935);
+// CONCATENATED MODULE: ./src/js/h1.jsx
+;
+/* harmony default export */ const h1 = (H1);
+
+function H1(props) {
+  return /*#__PURE__*/react.createElement("h1", null, props.text);
+}
+// CONCATENATED MODULE: ./src/js/index-forum.es6
 ;
 
-
-let reactElement = react__WEBPACK_IMPORTED_MODULE_0__.createElement("input", "pro", null);
-let r = react__WEBPACK_IMPORTED_MODULE_0__.createElement("h3", "prol", null);
-
+ // let reactElement = React.createElement("input", "pro", null);
+// let r = React.createElement("h3", "prol", null);
 // const element = <h3>element</h3>;
 
-react_dom__WEBPACK_IMPORTED_MODULE_1__.render(
-    r,
-    document.getElementById('root"')
-);
-
+var h1Element = /*#__PURE__*/react.createElement(h1, {
+  text: "FIRST H1"
+});
+(0,react_dom.render)(h1Element, document.getElementById('root'));
 })();
 
 /******/ })()
