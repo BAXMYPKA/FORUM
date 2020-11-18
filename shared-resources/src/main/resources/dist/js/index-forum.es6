@@ -551,14 +551,14 @@ if (true) {
 var react = __webpack_require__(294);
 // EXTERNAL MODULE: ./node_modules/react-dom/index.js
 var react_dom = __webpack_require__(935);
-// CONCATENATED MODULE: ./src/js/h1.jsx
+// CONCATENATED MODULE: ./src/js/elements/h1.jsx
 ;
 /* harmony default export */ const h1 = (H1);
 
 function H1(props) {
   return /*#__PURE__*/react.createElement("h1", null, props.text);
 }
-// CONCATENATED MODULE: ./src/js/index-forum.es6
+// CONCATENATED MODULE: ./src/js/index-forum-src.es6
 ;
 
  // let reactElement = React.createElement("input", "pro", null);
@@ -566,7 +566,7 @@ function H1(props) {
 // const element = <h3>element</h3>;
 
 var h1Element = /*#__PURE__*/react.createElement(h1, {
-  text: "FIRST H1"
+  text: "FIRST H12345"
 });
 (0,react_dom.render)(h1Element, document.getElementById('root'));
 })();

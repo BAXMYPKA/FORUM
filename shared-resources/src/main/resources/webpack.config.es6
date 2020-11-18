@@ -3,7 +3,7 @@ const path = require('path');
 
 
 module.exports = {
-	entry: './src/js/index-forum.es6',
+	entry: './src/js/index-forum-src.es6',
 	mode: "development",
 	output: {
 		path: path.resolve(__dirname, 'dist/js'),
@@ -37,6 +37,7 @@ module.exports = {
 	//Also MUST be installed globally by 'npm install -g webpack-dev-server webpack-cli'
 	devServer: {
 		contentBase: path.join(__dirname, "dist"),
+		publicPath: "/js",
 		compress: true,
 		port: 9000,
 		watchContentBase: true,

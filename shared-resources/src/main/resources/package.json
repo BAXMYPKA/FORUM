@@ -19,7 +19,7 @@
   },
   "scripts": {
     "webpack": "webpack --config ./webpack.config.es6 --mode production",
-    "server": "webpack --config ./webpack.config.es6 --mode development && webpack serve --config ./webpack.config.es6 --watch --progress --mode development",
+    "server": "webpack serve --config ./webpack.config.es6 --watch --progress --mode development",
     "watch": "webpack --watch"
   }
 }
